@@ -1,0 +1,52 @@
+.login-form {
+    max-width: 800px;
+    min-width: 800px;
+  }
+  
+  .login-form-margin {
+    margin-bottom: 16px;
+  }
+  
+  .login-form-forgot {
+    float: right;
+  }
+  
+  .login-form-button {
+    width: 100%;
+  }
+
+  .login-form {
+    max-width: 300px;
+    background-color: #f11c38; 
+    border: 2px solid grey; 
+    border-radius: 10px; 
+    padding: 20px; 
+    position: absolute; 
+    top: 50%; 
+    left: 50%;
+    transform: translate(-50%, -50%); 
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; 
+  }
+  
+  .login-form-item {
+    width: 100%;
+    margin-bottom: 16px; 
+  }
+
+
+.login-form-button {
+    width: 20%; 
+    background-color: black; 
+    color: white; 
+    border-radius: 15px;
+    border:  solid white;
+  }
+  
+  .login-form-forgot {
+    color: black; 
+  }
+  
+  
+  
