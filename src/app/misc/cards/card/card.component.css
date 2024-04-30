@@ -1,0 +1,19 @@
+/* Estilo para el contenedor */
+.custom-container {
+    display: flex;
+    justify-content: center; 
+    align-items: center;
+    padding: 30px;
+  }
+  
+  /* Estilo para la nz-card */
+  .custom-card {
+    width: 300px;
+    background: #303135;
+    border-radius: 5px;
+    color: aliceblue;
+  }
+  
+  .custom-card .ant-card-head-title {
+    color: white;
+  }
