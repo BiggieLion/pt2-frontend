@@ -1,24 +1,29 @@
 <ul nz-menu nzMode="horizontal">
-    <li nz-submenu nzTitle="Menu de Navegacion" nzIcon="menu-unfold">
-      <ul>
-        <li nz-menu-group nzTitle="Usuario">
-          <ul>
-            <li nz-menu-item>        
-                <a href="/form" target="_blank" rel="noopener noreferrer">Solicitud de credito</a></li>
-            <li nz-menu-item>        
-                <a href="" target="_blank" rel="noopener noreferrer">Mis solicitudes</a>
-            </li>
-          </ul>
-        <li nz-menu-group nzTitle="Aplicacion">
-          <ul>
-            <li nz-menu-item>
-                <a href="" target="_blank" rel="noopener noreferrer">Ayuda</a>
-            </li>
-            <li nz-menu-item>
-                <a href="/login" target="_blank" rel="noopener noreferrer">Salir</a>
-            </li>
-          </ul>
-        </li>
-      </ul>
-    </li>
-  </ul>
+  <li nz-submenu nzTitle="Menu de Navegacion" nzIcon="menu-unfold">
+    <ul>
+      <li nz-menu-group nzTitle="Usuario">
+        <ul>
+          <li nz-menu-item>        
+            <a (click)="navigateTo('/dashboard')">Inicio</a>
+          </li>
+          <li nz-menu-item>        
+            <a (click)="navigateTo('/form')">Solicitud de crédito</a>
+          </li>
+          <li nz-menu-item>        
+            <a (click)="navigateTo('/mis-solicitudes')">Mis solicitudes</a>
+          </li>
+        </ul>
+      </li>
+      <li nz-menu-group nzTitle="Aplicacion">
+        <ul>
+          <li nz-menu-item>
+            <a (click)="navigateTo('/ayuda')">Ayuda</a>
+          </li>
+          <li nz-menu-item>
+            <a (click)="navigateTo('/login')">Salir</a>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>

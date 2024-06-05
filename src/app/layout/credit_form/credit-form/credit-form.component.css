@@ -1,11 +1,49 @@
+.container {
+  background-color: #f43a49;
+  justify-content: center;
+  align-items: center;
+  height: 91%;
+  padding-top: 20px;
+  padding-left: 50px;
+  padding-right: 50px;
+}
+
+.form-container {
+  display: flex;
+  background-color: white;
+  border-radius: 10px; 
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+.personal {
+  display: flex;
+}
+
+.house {
+  display: flex;
+}
+.proffesional {
+  display: flex;
+}
+
 [nz-form] {
-    max-width: 600px;
-  }
+  max-width: 1000px; 
+  min-width: 1000px;
+  padding: 20px;
+}
 
-  .ant-select.ant-select-in-form-item.phone-select {
-    width: 70px;
-  }
+.register-area {
+  margin-top: 20px; 
+}
 
-  .register-area {
-    margin-bottom: 8px;
-  }
+nz-form-label {
+  margin-right: 5px; 
+  width: 200px; 
+}
+
+nz-form-control {
+  flex: 1; 
+}
+
+nz-form-control input {
+  width: 150px;
+}

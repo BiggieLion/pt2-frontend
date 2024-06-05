@@ -1,38 +1,24 @@
 import { Component } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NavBarComponent } from '../../../misc/navBar/nav-bar/nav-bar.component';
 import { NzFormModule } from 'ng-zorro-antd/form';
-import {
-  AbstractControl,
-  FormControl,
-  FormGroup,
-  NonNullableFormBuilder,
-  ValidatorFn,
-  Validators
-} from '@angular/forms';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzSelectModule } from 'ng-zorro-antd/select';
 import { ReactiveFormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-credit-form',
   standalone: true,
-  imports: [NzFormModule, NzInputModule, NzSelectModule, ReactiveFormsModule, NavBarComponent ],
+  imports: [ CommonModule, NzFormModule, NzInputModule, NzSelectModule, ReactiveFormsModule, NavBarComponent ],
   templateUrl: './credit-form.component.html',
   styleUrl: './credit-form.component.css'
 })
 export class CreditFormComponent {
-  validateForm: FormGroup<{
-    email: FormControl<string>;
-    password: FormControl<string>;
-    checkPassword: FormControl<string>;
-    nickname: FormControl<string>;
-    phoneNumberPrefix: FormControl<'+86' | '+87'>;
-    phoneNumber: FormControl<string>;
-    website: FormControl<string>;
-    captcha: FormControl<string>;
-    agree: FormControl<boolean>;
-  }>;
+  validateForm: FormGroup;
 
+  // Opciones para edad, hijos y personas que dependen
+  opciones0a99: number[] = Array.from({length: 100}, (_, i) => i);
 
   submitForm(): void {
     if (this.validateForm.valid) {
@@ -47,35 +33,20 @@ export class CreditFormComponent {
     }
   }
 
-  updateConfirmValidator(): void {
-    /** wait for refresh value */
-    Promise.resolve().then(() => this.validateForm.controls.checkPassword.updateValueAndValidity());
-  }
-
-  confirmationValidator: ValidatorFn = (control: AbstractControl): { [s: string]: boolean } => {
-    if (!control.value) {
-      return { required: true };
-    } else if (control.value !== this.validateForm.controls.password.value) {
-      return { confirm: true, error: true };
-    }
-    return {};
-  };
-
-  getCaptcha(e: MouseEvent): void {
-    e.preventDefault();
-  }
-
-  constructor(private fb: NonNullableFormBuilder) {
+  constructor(private fb: FormBuilder) {
     this.validateForm = this.fb.group({
-      email: ['', [Validators.email, Validators.required]],
-      password: ['', [Validators.required]],
-      checkPassword: ['', [Validators.required, this.confirmationValidator]],
-      nickname: ['', [Validators.required]],
-      phoneNumberPrefix: '+86' as '+86' | '+87',
-      phoneNumber: ['', [Validators.required]],
-      website: ['', [Validators.required]],
-      captcha: ['', [Validators.required]],
-      agree: [false]
+      genero: ['masculino', [Validators.required]],
+      propiedades: ['casa', [Validators.required]],
+      hijos: [0, [Validators.required]],
+      edad: [18, [Validators.required]],
+      ingresoAnual: [0, [Validators.required]],
+      estatusTrabajo: ['asalariado', [Validators.required]],
+      gradoEstudios: ['primaria', [Validators.required]],
+      estadoCivil: ['soltero', [Validators.required]],
+      tipoVivienda: ['propia', [Validators.required]],
+      fechaTrabajo: ['', [Validators.required]],
+      ocupacion: ['', [Validators.required]],
+      personasDependen: [0, [Validators.required]]
     });
   }
 }

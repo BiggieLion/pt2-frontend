@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 import { NzMenuModule } from 'ng-zorro-antd/menu';
 
 @Component({
@@ -6,8 +7,12 @@ import { NzMenuModule } from 'ng-zorro-antd/menu';
   standalone: true,
   imports: [NzMenuModule],
   templateUrl: './nav-bar.component.html',
-  styleUrl: './nav-bar.component.css'
+  styleUrls: ['./nav-bar.component.css']
 })
 export class NavBarComponent {
+  constructor(private router: Router) { }
 
+  navigateTo(route: string) {
+    this.router.navigate([route]);
+  }
 }
