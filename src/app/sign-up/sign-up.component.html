@@ -1,0 +1,126 @@
+<app-top-menu></app-top-menu>
+<div class="container">        
+    <h2>Registro</h2>
+    <div class="form-container">
+        <form nz-form [formGroup]="validateForm" (ngSubmit)="submitForm()">
+            <p>Datos personales</p>
+            <div class="proffesional">
+                <nz-form-item>
+                    <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="firstName">Nombre(s)</nz-form-label>
+                    <nz-form-control [nzSm]="14" [nzXs]="24">
+                        <input nz-input formControlName="firstName" id="firstName"/>
+                    </nz-form-control>
+                </nz-form-item>
+                <nz-form-item>
+                    <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="lastName">Apellidos</nz-form-label>
+                    <nz-form-control [nzSm]="14" [nzXs]="24">
+                        <input nz-input formControlName="lastName" id="lastName" />
+                    </nz-form-control>
+                </nz-form-item>
+                <div class="personal"> 
+                    <nz-form-item>
+                        <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="rfc">RFC</nz-form-label>
+                        <nz-form-control [nzSm]="14" [nzXs]="24">
+                            <input nz-input formControlName="rfc" id="rfc"/>
+                        </nz-form-control>
+                    </nz-form-item>
+                    <nz-form-item>
+                        <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="curp">CURP</nz-form-label>
+                        <nz-form-control [nzSm]="14" [nzXs]="24">
+                            <input nz-input formControlName="curp" id="curp"/>
+                        </nz-form-control>
+                    </nz-form-item>
+                </div>
+            </div>
+            <div class="personal">
+                <nz-form-item>
+                    <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="civilStatus">Estado civil</nz-form-label>
+                    <nz-form-control [nzSm]="14" [nzXs]="24">
+                        <select nz-select formControlName="civilStatus" id="civilStatus">
+                            <option value="soltero">Soltero</option>
+                            <option value="casado">Casado</option>
+                            <option value="unionLibre">Unión libre</option>
+                            <option value="divorciado">Divorciado</option>
+                            <option value="viudo">Viudo</option>
+                        </select>
+                    </nz-form-control>
+                </nz-form-item>
+                <nz-form-item>
+                    <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="educationLevel">Estudios</nz-form-label>
+                    <nz-form-control [nzSm]="14" [nzXs]="24">
+                        <select nz-select formControlName="educationLevel" id="educationLevel">
+                            <option value="primaria">Primaria</option>
+                            <option value="secundaria">Secundaria</option>
+                            <option value="preparatoria">Preparatoria</option>
+                            <option value="licenciatura">Licenciatura</option>
+                            <option value="maestria">Maestría</option>
+                        </select>
+                    </nz-form-control>
+                </nz-form-item>
+            </div>    
+            <div class="personal">
+                <nz-form-item>
+                    <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="gender">Género</nz-form-label>
+                    <nz-form-control [nzSm]="14" [nzXs]="24">
+                        <select nz-select formControlName="gender" id="gender">
+                            <option value="masculino">Masculino</option>
+                            <option value="femenino">Femenino</option>
+                        </select>
+                    </nz-form-control>
+                </nz-form-item>
+                <nz-form-item>
+                    <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="age">Edad</nz-form-label>
+                    <nz-form-control [nzSm]="14" [nzXs]="24">
+                        <select nz-select formControlName="age" id="age">
+                            <option *ngFor="let i of opciones18a99" [ngValue]="i">{{ i }}</option>
+                        </select>
+                    </nz-form-control>
+                </nz-form-item>
+            </div>
+            <div class="personal">
+                <nz-form-item>
+                    <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="laboralYears">Años trabajando</nz-form-label>
+                    <nz-form-control [nzSm]="14" [nzXs]="24">
+                        <select nz-select formControlName="laboralYears" id="laboralYears">
+                            <option *ngFor="let i of opciones0a99" [ngValue]="i">{{ i }}</option>
+                        </select>
+                    </nz-form-control>
+                </nz-form-item>
+                <nz-form-item>
+                    <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="workingStatus">Labora actualmente</nz-form-label>
+                    <nz-form-control [nzSm]="14" [nzXs]="24">
+                        <select nz-select formControlName="workingStatus" id="workingStatus">
+                            <option value="masculino">Si</option>
+                            <option value="femenino">No</option>
+                        </select>
+                    </nz-form-control>
+                </nz-form-item>
+            </div>
+            <div class="proffesional">
+                <nz-form-item>
+                    <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="email">Correo</nz-form-label>
+                    <nz-form-control [nzSm]="14" [nzXs]="24">
+                        <input nz-input formControlName="email" id="email" type="email" />
+                    </nz-form-control>
+                </nz-form-item>
+                <nz-form-item>
+                    <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="password">Contraseña</nz-form-label>
+                    <nz-form-control [nzSm]="14" [nzXs]="24">
+                        <input nz-input formControlName="password" id="password" />
+                    </nz-form-control>
+                </nz-form-item>
+                <nz-form-item>
+                    <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="confirmPassword">Repetir contraseña</nz-form-label>
+                    <nz-form-control [nzSm]="14" [nzXs]="24">
+                        <input nz-input formControlName="confirmPassword" id="confirmPassword" />
+                    </nz-form-control>
+                </nz-form-item>
+            </div>              
+            <nz-form-item nz-row class="register-area">
+                <nz-form-control [nzSpan]="14" [nzOffset]="6">
+                    <button nz-button nzType="primary" type="submit">Registrar</button>
+                </nz-form-control>
+            </nz-form-item>
+        </form>
+    </div>
+</div>

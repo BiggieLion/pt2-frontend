@@ -3,49 +3,41 @@
     <h2>Solicitud de crédito</h2>
     <div class="form-container">
         <form nz-form [formGroup]="validateForm" (ngSubmit)="submitForm()">
+            <p>Datos del credito</p>
+            <div class="personal">
+                <nz-form-item>
+                    <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="credit">Tipo de credito</nz-form-label>
+                    <nz-form-control [nzSm]="14" [nzXs]="24">
+                        <select nz-select formControlName="credit" id="credit">
+                            <option value="casa">Personal</option>
+                            <option value="terreno">Hipotecario</option>
+                            <option value="ambos">Prestario</option>
+                        </select>
+                    </nz-form-control>
+                </nz-form-item>
+                <nz-form-item>
+                    <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="term">Plazo</nz-form-label>
+                    <nz-form-control [nzSm]="14" [nzXs]="24">
+                        <select nz-select formControlName="term" id="term">
+                            <option *ngFor="let i of opciones0a99" [ngValue]="i">{{ i }}</option>
+                        </select>
+                    </nz-form-control>
+                </nz-form-item>
+            </div>
             <p>Datos personales</p>
             <div class="personal">
                 <nz-form-item>
-                    <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="genero">Género</nz-form-label>
+                    <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="children">No. hijos</nz-form-label>
                     <nz-form-control [nzSm]="14" [nzXs]="24">
-                        <select nz-select formControlName="genero" id="genero">
-                            <option value="masculino">Masculino</option>
-                            <option value="femenino">Femenino</option>
-                        </select>
-                    </nz-form-control>
-                </nz-form-item>
-                <nz-form-item>
-                    <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="edad">Edad</nz-form-label>
-                    <nz-form-control [nzSm]="14" [nzXs]="24">
-                        <select nz-select formControlName="edad" id="edad">
+                        <select nz-select formControlName="children" id="children">
                             <option *ngFor="let i of opciones0a99" [ngValue]="i">{{ i }}</option>
                         </select>
                     </nz-form-control>
                 </nz-form-item>
                 <nz-form-item>
-                    <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="hijos">Cuantos hijos tiene?</nz-form-label>
+                    <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="dependents">No. dependendientes</nz-form-label>
                     <nz-form-control [nzSm]="14" [nzXs]="24">
-                        <select nz-select formControlName="hijos" id="hijos">
-                            <option *ngFor="let i of opciones0a99" [ngValue]="i">{{ i }}</option>
-                        </select>
-                    </nz-form-control>
-                </nz-form-item>
-                <nz-form-item>
-                    <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="estadoCivil">Cual es su estado civil?</nz-form-label>
-                    <nz-form-control [nzSm]="14" [nzXs]="24">
-                        <select nz-select formControlName="estadoCivil" id="estadoCivil">
-                            <option value="soltero">Soltero</option>
-                            <option value="casado">Casado</option>
-                            <option value="unionLibre">Unión libre</option>
-                            <option value="divorciado">Divorciado</option>
-                            <option value="viudo">Viudo</option>
-                        </select>
-                    </nz-form-control>
-                </nz-form-item>
-                <nz-form-item>
-                    <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="personasDependen">Cuantas personas dependen de usted?</nz-form-label>
-                    <nz-form-control [nzSm]="14" [nzXs]="24">
-                        <select nz-select formControlName="personasDependen" id="personasDependen">
+                        <select nz-select formControlName="dependents" id="dependents">
                             <option *ngFor="let i of opciones0a99" [ngValue]="i">{{ i }}</option>
                         </select>
                     </nz-form-control>
@@ -54,9 +46,9 @@
             <p>Datos de vivienda</p>
             <div class="house">
                 <nz-form-item>
-                    <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="propiedades">Tiene casa o terreno propio?</nz-form-label>
+                    <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="properties">Propiedades</nz-form-label>
                     <nz-form-control [nzSm]="14" [nzXs]="24">
-                        <select nz-select formControlName="propiedades" id="propiedades">
+                        <select nz-select formControlName="properties" id="properties">
                             <option value="casa">Casa propia</option>
                             <option value="terreno">Terreno propio</option>
                             <option value="ambos">Ambos</option>
@@ -64,9 +56,9 @@
                     </nz-form-control>
                 </nz-form-item>   
                 <nz-form-item>
-                    <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="tipoVivienda">Tipo de vivienda en la que habita</nz-form-label>
+                    <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="housingType">Tipo de vivienda en la que habita</nz-form-label>
                     <nz-form-control [nzSm]="14" [nzXs]="24">
-                        <select nz-select formControlName="tipoVivienda" id="tipoVivienda">
+                        <select nz-select formControlName="housingType" id="housingType">
                             <option value="propia">Propia</option>
                             <option value="rentada">Rentada</option>
                             <option value="prestada">Prestada</option>
@@ -74,56 +66,35 @@
                     </nz-form-control>
                 </nz-form-item>         
             </div>
-            <p>Informacion profesional </p>
-            <div class="proffesional">
+            <p>Información profesional</p>
+            <div class="professional">
                 <nz-form-item>
-                    <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="estatusTrabajo">Cual es su estatus de trabajo?</nz-form-label>
+                    <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="position">Cual es su estatus de trabajo?</nz-form-label>
                     <nz-form-control [nzSm]="14" [nzXs]="24">
-                        <select nz-select formControlName="estatusTrabajo" id="estatusTrabajo">
+                        <select nz-select formControlName="position" id="position">
                             <option value="asalariado">Asalariado</option>
                             <option value="manager">Manager</option>
                         </select>
                     </nz-form-control>
                 </nz-form-item>
                 <nz-form-item>
-                    <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="gradoEstudios">Cual es su grado de estudios?</nz-form-label>
+                    <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="anualIncome">Cual es su ingreso anual?</nz-form-label>
                     <nz-form-control [nzSm]="14" [nzXs]="24">
-                        <select nz-select formControlName="gradoEstudios" id="gradoEstudios">
-                            <option value="primaria">Primaria</option>
-                            <option value="secundaria">Secundaria</option>
-                            <option value="preparatoria">Preparatoria</option>
-                            <option value="licenciatura">Licenciatura</option>
-                            <option value="maestria">Maestría</option>
-                        </select>
+                        <input nz-input formControlName="anualIncome" id="anualIncome" type="number" />
                     </nz-form-control>
                 </nz-form-item>
                 <nz-form-item>
-                    <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="ingresoAnual">Cual es su ingreso anual?</nz-form-label>
+                    <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="ocupation">Ocupación</nz-form-label>
                     <nz-form-control [nzSm]="14" [nzXs]="24">
-                        <input nz-input formControlName="ingresoAnual" id="ingresoAnual" type="number" />
+                        <input nz-input formControlName="ocupation" id="ocupation" />
                     </nz-form-control>
                 </nz-form-item>
-                <nz-form-item>
-                    <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="fechaTrabajo">Trabaja desde cuando?</nz-form-label>
-                    <nz-form-control [nzSm]="14" [nzXs]="24">
-                        <input nz-input formControlName="fechaTrabajo" id="fechaTrabajo" type="date" />
-                    </nz-form-control>
-                </nz-form-item>
-                <nz-form-item>
-                    <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="ocupacion">Ocupación</nz-form-label>
-                    <nz-form-control [nzSm]="14" [nzXs]="24">
-                        <input nz-input formControlName="ocupacion" id="ocupacion" />
-                    </nz-form-control>
-                </nz-form-item>
-
             </div>                
             <nz-form-item nz-row class="register-area">
                 <nz-form-control [nzSpan]="14" [nzOffset]="6">
-                    <button nz-button nzType="primary">Register</button>
+                    <button nz-button nzType="primary" type="submit">Solicitar</button>
                 </nz-form-control>
             </nz-form-item>
         </form>
     </div>
 </div>
-
-                    

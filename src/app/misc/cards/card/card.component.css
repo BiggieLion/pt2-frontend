@@ -9,11 +9,11 @@
   /* Estilo para la nz-card */
   .custom-card {
     width: 300px;
-    background: #303135;
+    background: #E8CDD1;
     border-radius: 5px;
-    color: aliceblue;
+    color: #AD0019;
   }
   
   .custom-card .ant-card-head-title {
-    color: white;
+    color: #AD0019;
   }

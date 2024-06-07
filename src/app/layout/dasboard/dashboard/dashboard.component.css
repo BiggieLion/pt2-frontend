@@ -1,21 +1,18 @@
 div {
-    background-color: #f43a49;
     height: 92%;
 }
 
 
-/* Estilo para el contenedor principal */
 .container {
     display: flex;
     flex-direction: column;
-    height: 100%; /* Ocupar toda la altura de la ventana */
+    height: 100%; 
   }
   
-  /* Estilo para el contenido */
   .content {
-    flex: 1; /* Ocupar todo el espacio disponible */
+    flex: 1; 
     display: flex;
-    justify-content: center; /* Centrar horizontalmente */
-    align-items: center; /* Centrar verticalmente */
+    justify-content: center;
+    align-items: center; 
   }
   

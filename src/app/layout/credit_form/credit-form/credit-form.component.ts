@@ -10,19 +10,17 @@ import { CommonModule } from '@angular/common';
 @Component({
   selector: 'app-credit-form',
   standalone: true,
-  imports: [ CommonModule, NzFormModule, NzInputModule, NzSelectModule, ReactiveFormsModule, NavBarComponent ],
+  imports: [CommonModule, NzFormModule, NzInputModule, NzSelectModule, ReactiveFormsModule, NavBarComponent],
   templateUrl: './credit-form.component.html',
-  styleUrl: './credit-form.component.css'
+  styleUrls: ['./credit-form.component.css']
 })
 export class CreditFormComponent {
   validateForm: FormGroup;
-
-  // Opciones para edad, hijos y personas que dependen
-  opciones0a99: number[] = Array.from({length: 100}, (_, i) => i);
+  opciones0a99: number[] = Array.from({ length: 100 }, (_, i) => i);
 
   submitForm(): void {
     if (this.validateForm.valid) {
-      console.log('submit', this.validateForm.value);
+      console.log('submit', this.validateForm.value); //de nuez el form de solicitud~~~~~~~~~~~~~~~
     } else {
       Object.values(this.validateForm.controls).forEach(control => {
         if (control.invalid) {
@@ -35,18 +33,15 @@ export class CreditFormComponent {
 
   constructor(private fb: FormBuilder) {
     this.validateForm = this.fb.group({
-      genero: ['masculino', [Validators.required]],
-      propiedades: ['casa', [Validators.required]],
-      hijos: [0, [Validators.required]],
-      edad: [18, [Validators.required]],
-      ingresoAnual: [0, [Validators.required]],
-      estatusTrabajo: ['asalariado', [Validators.required]],
-      gradoEstudios: ['primaria', [Validators.required]],
-      estadoCivil: ['soltero', [Validators.required]],
-      tipoVivienda: ['propia', [Validators.required]],
-      fechaTrabajo: ['', [Validators.required]],
-      ocupacion: ['', [Validators.required]],
-      personasDependen: [0, [Validators.required]]
+      credit: ['', [Validators.required]],
+      term: [0, [Validators.required]],
+      children: [0, [Validators.required]],
+      dependents: [0, [Validators.required]],
+      properties: ['', [Validators.required]],
+      housingType: ['', [Validators.required]],
+      position: ['', [Validators.required]],
+      anualIncome: [0, [Validators.required]],
+      ocupation: ['', [Validators.required]],
     });
   }
 }
