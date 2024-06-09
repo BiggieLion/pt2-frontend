@@ -108,44 +108,36 @@
                 </nz-form-item>
             </div>
             <h2>Documentacion</h2>
-            <p>Para darle validez a su solicitud y a su perfil, por favor, cargue la documentacion requerida, en formato PDF</p>
+            <p>Para darle validez a su solicitud y a su perfil, por favor, cargue la documentacion requerida.</p> 
+            <p><strong>IMPORTANTE... Subir una sola carpta comprimida (rar. zip, etc).</strong></p>  
             <ul>
-              <li>INE</li>
-              <li>Acta de nacimiento</li>
-              <li>Comprobante de domicilio</li>
-              <li>*De ser el caso, comprobante de su garantía</li>
-            </ul>
-            
+                <li>INE</li>
+                <li>Acta de nacimiento</li>
+                <li>Comprobante de domicilio</li>
+                <li>*De ser el caso, comprobante de su garantía</li>
+            </ul>     
             <div>
-<!-- credit-form.component.html -->
-<nz-upload
-  nzAction="https://www.mocky.io/v2/5cc8019d300000980a055e76"
-  nzListType="picture-card"
-  [(nzFileList)]="fileList"
-  (nzRemove)="removeFile($event)"
-  (nzPreview)="handlePreview($event)"
-  [nzShowUploadList]="{
-    showPreviewIcon: true,
-    showRemoveIcon: true
-  }"
->
-  <i class="anticon anticon-plus"></i>
-  <div style="margin-top: 8px;">Upload</div>
-</nz-upload>
-
-            </div>
-            
-            <nz-modal [(nzVisible)]="previewVisible">
-              <ng-template #nzTitle>
-                Vista previa del archivo
-              </ng-template>
-              <img [src]="previewImage" style="width: 100%;" *ngIf="previewImage">
-            </nz-modal>
-            
+                <nz-upload
+                    nzAction="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+                    nzListType="picture-card"
+                    [(nzFileList)]="fileList"
+                    [nzShowButton]="!uploading"
+                    [nzPreview]="handlePreview"
+                    [nzBeforeUpload]="beforeUpload"
+                    (nzChange)="handleChange($event)">
+                    <div>
+                        <i nz-icon nzType="plus"></i>
+                        <div style="margin-top: 8px;">Subir archivo</div>
+                    </div>
+                </nz-upload>
+                <nz-modal [nzVisible]="previewVisible" [nzFooter]="null" (nzOnCancel)="handleCancel()">
+                    <img [src]="previewImage" [alt]="previewTitle" style="width: 100%;">
+                </nz-modal>
+            </div>      
             <nz-form-item nz-row class="register-area">
-              <nz-form-control [nzSpan]="14" [nzOffset]="6">
-                <button nz-button nzType="primary" type="submit">Solicitar</button>
-              </nz-form-control>
+                <nz-form-control [nzSpan]="14" [nzOffset]="6">
+                    <button nz-button nzType="primary" type="submit">Solicitar</button>
+                </nz-form-control>
             </nz-form-item>
         </form>
     </div>

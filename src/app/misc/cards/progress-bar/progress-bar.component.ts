@@ -10,13 +10,12 @@ import { NzProgressModule } from 'ng-zorro-antd/progress';
   styleUrls: ['./progress-bar.component.css']
 })
 export class ProgressBarComponent {
-  @Input() progress: number = 0; // Propiedad de entrada para el progreso
-  @Input() status: string = ''; // Propiedad de entrada para el estado de la tarjeta
+  @Input() progress: number = 0; 
+  @Input() status: string = ''; 
 
   isApproved: boolean = false;
 
   ngOnChanges() {
-    // Determinar el estado de aprobación según el estado de la tarjeta
     this.isApproved = this.status === 'Aprobada';
   }
 

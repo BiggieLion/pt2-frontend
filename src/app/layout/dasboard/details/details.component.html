@@ -1,6 +1,25 @@
 <div class="custom-container">
+  <div class="section">
     <p>Credito con Id: {{ solicitud.id }}</p>
     <p>Estatus: {{ solicitud.status }}</p> 
-    <p>Tipo de credito: {{ solicitud.creditType }}</p>
   </div>
-  
+  <div class="section">    
+    <p>Tipo de credito: {{ solicitud.creditType }}</p>  
+    <p>Plazo: {{ solicitud.term }}</p>
+    <p>Tipo de garantía: {{ solicitud.guarantee }}</p>
+    <p>Valor de la garantía: {{ solicitud.guaranteeValue }}</p>
+  </div>
+  <div *ngIf="isAdmin" class="section"> 
+    <p>No. hijos: {{ solicitud.children }}</p>
+    <p>No. dependientes: {{ solicitud.dependents }}</p>
+  </div>
+  <div *ngIf="isAdmin" class="section"> 
+    <p>Propiedades: {{ solicitud.properties }}</p>
+    <p>Tipo de vivienda: {{ solicitud.housingType }}</p>
+  </div>
+  <div *ngIf="isAdmin" class="section"> 
+    <p>Estatus de trabajo: {{ solicitud.position }}</p>
+    <p>Ocupación: {{ solicitud.ocupation }}</p>
+    <p>Ingreso anual: {{ solicitud.anualIncome }}</p>
+  </div>
+</div>

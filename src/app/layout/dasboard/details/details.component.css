@@ -1,0 +1,6 @@
+.section{
+    display: flex;
+}
+.section p {
+    margin-right: 20px;
+}

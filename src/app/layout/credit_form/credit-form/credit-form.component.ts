@@ -6,34 +6,26 @@ import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzSelectModule } from 'ng-zorro-antd/select';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { NzUploadModule, NzUploadFile } from 'ng-zorro-antd/upload';
+import { NzUploadModule } from 'ng-zorro-antd/upload';
+import { NzUploadFile } from 'ng-zorro-antd/upload';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { NzModalModule } from 'ng-zorro-antd/modal';
 
 @Component({
   selector: 'app-credit-form',
   standalone: true,
-  imports: [
-    CommonModule,
-    NzFormModule,
-    NzInputModule,
-    NzSelectModule,
-    ReactiveFormsModule,
-    NavBarComponent,
-    NzUploadModule,
-    NzModalModule
-  ],
+  imports: [CommonModule, NzFormModule, NzInputModule, NzSelectModule, ReactiveFormsModule, NavBarComponent, NzUploadModule, NzModalModule],
   templateUrl: './credit-form.component.html',
-  styleUrls: ['./credit-form.component.css'],
-  providers: [NzModalService]
+  styleUrls: ['./credit-form.component.css']
 })
 export class CreditFormComponent {
   validateForm: FormGroup;
   opciones0a99: number[] = Array.from({ length: 100 }, (_, i) => i);
   fileList: NzUploadFile[] = [];
   uploading = false;
+  previewImage: string | undefined = '';
   previewVisible = false;
-  previewImage: string | undefined; // Updated previewImage declaration
+    previewTitle: string | undefined;
 
   constructor(private fb: FormBuilder, private modal: NzModalService) {
     this.validateForm = this.fb.group({
@@ -53,7 +45,7 @@ export class CreditFormComponent {
 
   submitForm(): void {
     if (this.validateForm.valid) {
-      console.log('submit', this.validateForm.value);
+      console.log('submit', this.validateForm.value); 
     } else {
       Object.values(this.validateForm.controls).forEach(control => {
         if (control.invalid) {
@@ -65,20 +57,8 @@ export class CreditFormComponent {
   }
 
   beforeUpload = (file: NzUploadFile): boolean => {
-    const filesLimit = 4;
-    if (this.fileList.length >= filesLimit) {
-      this.modal.error({
-        nzTitle: 'Error',
-        nzContent: `Solo se pueden subir un máximo de ${filesLimit} archivos.`
-      });
-      return false;
-    }
-    this.fileList = [...this.fileList, file];
+    this.fileList = [file];
     return false;
-  };
-
-  removeFile = (file: NzUploadFile): void => {
-    this.fileList = this.fileList.filter(item => item.uid !== file.uid);
   };
 
   handleChange(info: { file: NzUploadFile }): void {

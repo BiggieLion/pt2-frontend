@@ -8,6 +8,7 @@ import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { Router, RouterModule } from '@angular/router';
 import { TopMenuComponent } from '../../../misc/topMenu/top-menu/top-menu.component';
+import { LocalStorageService } from 'angular-web-storage'; // Importa el servicio de almacenamiento local
 
 @Component({
   selector: 'app-login',
@@ -16,13 +17,13 @@ import { TopMenuComponent } from '../../../misc/topMenu/top-menu/top-menu.compon
      NzIconModule, FormsModule,  NzCheckboxModule, NzInputModule, TopMenuComponent
   ],
   templateUrl: './login.component.html',
-  styleUrl: './login.component.css'
+  styleUrls: ['./login.component.css'] 
 })
 
 export class LoginComponent {
   validateForm: FormGroup;
 
-  constructor(private fb: FormBuilder, private router: Router) { 
+  constructor(private fb: FormBuilder, private router: Router, private localStorage: LocalStorageService) { 
     this.validateForm = this.fb.group({
       userName: ['', [Validators.required]],
       password: ['', [Validators.required]],
@@ -35,10 +36,14 @@ export class LoginComponent {
       const { userName, password } = this.validateForm.value;
       if (userName === 'risky@mail.com' && password === 'test123') {
         console.log('submit', this.validateForm.value);
+        this.localStorage.set('typeUser', 'normal'); 
+        this.router.navigate(['/dashboard']);
+      } else if (userName === 'radmin@mail.com' && password === 'admin123') {
+        console.log('submit', this.validateForm.value);
+        this.localStorage.set('typeUser', 'admin'); 
         this.router.navigate(['/dashboard']);
       } else {
-        console.log('Datos erroneos');
-        // Aquí podrías mostrar un mensaje de error o realizar alguna acción adicional
+        console.log('Datos erróneos');
       }
     } else {
       Object.values(this.validateForm.controls).forEach(control => {
@@ -54,4 +59,3 @@ export class LoginComponent {
     this.router.navigate(['/sign-up']);
   }
 }
-
