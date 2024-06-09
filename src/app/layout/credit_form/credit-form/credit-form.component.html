@@ -24,6 +24,23 @@
                     </nz-form-control>
                 </nz-form-item>
             </div>
+            <div class="personal">
+                <nz-form-item>
+                    <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="guarantee">Tipo de credito</nz-form-label>
+                    <nz-form-control [nzSm]="14" [nzXs]="24">
+                        <select nz-select formControlName="guarantee" id="guarantee">
+                            <option value="propertie">Propiedad</option>
+                            <option value="noGuarantee">Sin garantia</option>                        
+                        </select>
+                    </nz-form-control>
+                </nz-form-item>
+                <nz-form-item>
+                    <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="guaranteeValue">Valor de la garantia</nz-form-label>
+                    <nz-form-control [nzSm]="14" [nzXs]="24">
+                        <input nz-input formControlName="guaranteeValue" id="guaranteeValue" type="number" />
+                    </nz-form-control>
+                </nz-form-item>
+            </div>
             <p>Datos personales</p>
             <div class="personal">
                 <nz-form-item>
@@ -78,22 +95,57 @@
                     </nz-form-control>
                 </nz-form-item>
                 <nz-form-item>
-                    <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="anualIncome">Cual es su ingreso anual?</nz-form-label>
-                    <nz-form-control [nzSm]="14" [nzXs]="24">
-                        <input nz-input formControlName="anualIncome" id="anualIncome" type="number" />
-                    </nz-form-control>
-                </nz-form-item>
-                <nz-form-item>
                     <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="ocupation">Ocupación</nz-form-label>
                     <nz-form-control [nzSm]="14" [nzXs]="24">
                         <input nz-input formControlName="ocupation" id="ocupation" />
                     </nz-form-control>
                 </nz-form-item>
-            </div>                
+                <nz-form-item>
+                    <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="anualIncome">Cual es su ingreso anual?</nz-form-label>
+                    <nz-form-control [nzSm]="14" [nzXs]="24">
+                        <input nz-input formControlName="anualIncome" id="anualIncome" type="number" />
+                    </nz-form-control>
+                </nz-form-item>
+            </div>
+            <h2>Documentacion</h2>
+            <p>Para darle validez a su solicitud y a su perfil, por favor, cargue la documentacion requerida, en formato PDF</p>
+            <ul>
+              <li>INE</li>
+              <li>Acta de nacimiento</li>
+              <li>Comprobante de domicilio</li>
+              <li>*De ser el caso, comprobante de su garantía</li>
+            </ul>
+            
+            <div>
+<!-- credit-form.component.html -->
+<nz-upload
+  nzAction="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+  nzListType="picture-card"
+  [(nzFileList)]="fileList"
+  (nzRemove)="removeFile($event)"
+  (nzPreview)="handlePreview($event)"
+  [nzShowUploadList]="{
+    showPreviewIcon: true,
+    showRemoveIcon: true
+  }"
+>
+  <i class="anticon anticon-plus"></i>
+  <div style="margin-top: 8px;">Upload</div>
+</nz-upload>
+
+            </div>
+            
+            <nz-modal [(nzVisible)]="previewVisible">
+              <ng-template #nzTitle>
+                Vista previa del archivo
+              </ng-template>
+              <img [src]="previewImage" style="width: 100%;" *ngIf="previewImage">
+            </nz-modal>
+            
             <nz-form-item nz-row class="register-area">
-                <nz-form-control [nzSpan]="14" [nzOffset]="6">
-                    <button nz-button nzType="primary" type="submit">Solicitar</button>
-                </nz-form-control>
+              <nz-form-control [nzSpan]="14" [nzOffset]="6">
+                <button nz-button nzType="primary" type="submit">Solicitar</button>
+              </nz-form-control>
             </nz-form-item>
         </form>
     </div>

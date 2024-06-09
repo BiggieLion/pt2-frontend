@@ -1,18 +1,24 @@
-div {
-    height: 92%;
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 
+.content {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 
-.container {
-    display: flex;
-    flex-direction: column;
-    height: 100%; 
-  }
-  
-  .content {
-    flex: 1; 
-    display: flex;
-    justify-content: center;
-    align-items: center; 
-  }
-  
+.card-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* Crear tres columnas con el mismo ancho */
+  gap: 20px; /* Espacio entre las tarjetas */
+  justify-content: center; /* Centrar las tarjetas horizontalmente */
+  align-items: center; /* Centrar las tarjetas verticalmente */
+}
+
+.custom-card {
+  width: 300px; /* Ancho de cada tarjeta */
+}

@@ -1,12 +1,16 @@
-import { Component } from '@angular/core';
+// details.component.ts
+import { Component, Input, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-details',
   standalone: true,
-  imports: [],
   templateUrl: './details.component.html',
-  styleUrl: './details.component.css'
+  styleUrls: ['./details.component.css']
 })
-export class DetailsComponent {
+export class DetailsComponent implements OnInit {
+  @Input() solicitud: any;
 
+  ngOnInit(): void {
+    console.log('Solicitud recibida en DetailsComponent:', this.solicitud);
+  }
 }

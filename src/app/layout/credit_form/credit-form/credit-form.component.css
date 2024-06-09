@@ -2,7 +2,7 @@
   background-color: #f43a49;
   justify-content: center;
   align-items: center;
-  height: 91%;
+  padding-bottom: 20px;
   padding-top: 20px;
   padding-left: 50px;
   padding-right: 50px;
@@ -37,7 +37,8 @@
 
 nz-form-label {
   margin-right: 5px; 
-  width: 200px; 
+  width: 250px; 
+  min-width: 250px;
 }
 
 nz-form-control {

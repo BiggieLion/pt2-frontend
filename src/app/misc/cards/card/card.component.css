@@ -1,19 +1,23 @@
-/* Estilo para el contenedor */
 .custom-container {
-    display: flex;
-    justify-content: center; 
-    align-items: center;
-    padding: 30px;
-  }
-  
-  /* Estilo para la nz-card */
-  .custom-card {
-    width: 300px;
-    background: #E8CDD1;
-    border-radius: 5px;
-    color: #AD0019;
-  }
-  
-  .custom-card .ant-card-head-title {
-    color: #AD0019;
-  }
+  justify-content: center; 
+  align-items: center;
+  padding: 30px;
+}
+
+.custom-card {
+  width: 300px;
+  background: #FF9E9B;
+  border-radius: 5px;
+  color: #AD0019;
+}
+
+.custom-card .ant-card-head-title {
+  color: #AD0019;
+}
+
+.card-container {
+  display: grid;
+  grid-template-columns: repeat(3, 300px); /* Tres columnas de 300px cada una */
+  gap: 20px; /* Espacio entre las tarjetas */
+  justify-content: center; /* Centra las tarjetas horizontalmente */
+}
