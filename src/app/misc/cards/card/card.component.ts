@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
-import { NzModalService } from 'ng-zorro-antd/modal';
+import { NzModalService, NzModalRef } from 'ng-zorro-antd/modal';
 import { DetailsComponent } from '../../../layout/dasboard/details/details.component';
 import { CommonModule } from '@angular/common';
 import { ProgressBarComponent } from '../progress-bar/progress-bar.component';
 import { NzCardModule } from 'ng-zorro-antd/card';
-import { NzModalModule, NzModalRef } from 'ng-zorro-antd/modal'; 
+import { NzModalModule } from 'ng-zorro-antd/modal';
 
 @Component({
   selector: 'app-card',
@@ -80,14 +80,15 @@ export class CardComponent {
       anualIncome: 100000
     },
   ];
-  
+
   constructor(private modal: NzModalService) {}
 
   showDetails(solicitud: any): void {
     const modalRef: NzModalRef = this.modal.create({
       nzTitle: 'Detalles de la solicitud',
       nzContent: DetailsComponent,
-      nzFooter: null
+      nzFooter: null,
+      nzWrapClassName: 'custom-modal'  // Apply custom class
     });
 
     if (modalRef.componentInstance) {

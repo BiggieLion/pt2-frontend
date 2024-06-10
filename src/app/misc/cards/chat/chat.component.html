@@ -1,0 +1,14 @@
+<div class="chat-container">
+    <div class="messages">
+      <ng-container *ngFor="let message of messages">
+        <div [ngClass]="{'message-sent': message.sender === 'user', 'message-received': message.sender === 'admin'}">
+          <p>{{ message.text }}</p>
+        </div>
+      </ng-container>
+    </div>
+    <div class="chat-input">
+      <input nz-input [(ngModel)]="newMessage" placeholder="Escirbe el mensaje" />
+      <button nz-button nzType="primary" (click)="sendMessage()">Enviar</button>
+    </div>
+  </div>
+  

@@ -17,7 +17,17 @@
 
 .card-container {
   display: grid;
-  grid-template-columns: repeat(3, 300px); /* Tres columnas de 300px cada una */
-  gap: 20px; /* Espacio entre las tarjetas */
-  justify-content: center; /* Centra las tarjetas horizontalmente */
+  grid-template-columns: repeat(3, 300px); 
+  gap: 20px; 
+  justify-content: center; 
+}
+
+.custom-modal {
+  min-width: 2000px;
+  width: 100%;
+}
+
+.custom-modal .ant-modal-content {
+  min-width: 2000px;
+  width: 100%;
 }

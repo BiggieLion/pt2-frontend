@@ -19,8 +19,8 @@
   .segment-1 {
     width: 33%;
     background-color: #6CB3DD;
-    border-top-left-radius: 5px; /* Ajuste para el lado izquierdo del segmento 1 */
-    border-bottom-left-radius: 5px; /* Ajuste para el lado izquierdo del segmento 1 */
+    border-top-left-radius: 5px; 
+    border-bottom-left-radius: 5px; 
   }
   
   .segment-2 {

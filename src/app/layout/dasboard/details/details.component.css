@@ -1,6 +1,23 @@
-.section{
+.custom-container {
     display: flex;
-}
-.section p {
+  }
+  
+  .section {
+    display: flex;
+    width: 200px;
+  }
+  
+  .section p {
     margin-right: 20px;
-}
+  }
+  
+  .custom-modal {
+    min-width: 2000px;
+    width: 100%;
+  }
+  
+  .custom-modal .ant-modal-content {
+    min-width: 2000px;
+    width: 100%;
+  }
+  
