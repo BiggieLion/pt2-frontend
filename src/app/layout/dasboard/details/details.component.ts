@@ -6,7 +6,7 @@ import { ChatComponent } from '../../../misc/cards/chat/chat.component';
 @Component({
   selector: 'app-details',
   standalone: true,
-  imports: [CommonModule, ChatComponent], // Importa ChatComponent aquí
+  imports: [CommonModule, ChatComponent],
   templateUrl: './details.component.html',
   styleUrls: ['./details.component.css']
 })

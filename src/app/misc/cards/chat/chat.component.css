@@ -12,12 +12,13 @@
     flex: 1;
     padding: 10px;
     overflow-y: auto;
-    max-width: 150px;
+    max-width: 300px;
   }
   
   .message-sent {
     text-align: right;
     margin-bottom: 10px;
+    margin-left: 50px;
     background-color: #6CB3DD;
     border-radius: 10px;
     max-width: 150px;

@@ -1,31 +1,31 @@
 <div class="custom-container">
   <div>
     <div class="section">
-      <p>Credito con Id: {{ solicitud.id }}</p>
-      <p>Estatus: {{ solicitud.status }}</p>
+      <p>Credito con Id: <strong>{{ solicitud.id }}</strong></p>
+      <p>Estatus:; <strong>{{ solicitud.status }}</strong> </p>
     </div>
     <div class="section">
-      <p>Tipo de credito: {{ solicitud.creditType }}</p>
-      <p>Plazo: {{ solicitud.term }}</p>
+      <p>Tipo de credito: <strong>{{ solicitud.creditType }}</strong></p>
+      <p>Plazo(meses): <strong>{{ solicitud.term }}</strong></p>
     </div>
     <div>
-      <p>Tipo de garantía: {{ solicitud.guarantee }}</p>
-      <p>Valor de la garantía: {{ solicitud.guaranteeValue }}</p>
+      <p>Tipo de garantía: <strong>{{ solicitud.guarantee }}</strong> </p>
+      <p>Valor de la garantía: <strong>{{ solicitud.guaranteeValue }}</strong></p>
     </div>
     <div *ngIf="isAdmin" class="section">
-      <p>No. hijos: {{ solicitud.children }}</p>
-      <p>No. dependientes: {{ solicitud.dependents }}</p>
+      <p>No. hijos: <strong>{{ solicitud.children }}</strong></p>
+      <p>No. dependientes: <strong>{{ solicitud.dependents }}</strong></p>
     </div>
     <div *ngIf="isAdmin" class="section">
-      <p>Propiedades: {{ solicitud.properties }}</p>
-      <p>Tipo de vivienda: {{ solicitud.housingType }}</p>
+      <p>Propiedades: <strong>{{ solicitud.properties }}</strong></p>
+      <p>Tipo de vivienda: <strong>{{ solicitud.housingType }}</strong></p>
     </div>
     <div *ngIf="isAdmin" class="section">
-      <p>Estatus de trabajo: {{ solicitud.position }}</p>
-      <p>Ocupación: {{ solicitud.ocupation }}</p>
+      <p>Estatus de trabajo: <strong>{{ solicitud.position }}</strong></p>
+      <p>Ocupación: <strong>{{ solicitud.ocupation }}</strong></p>
     </div>
     <div>
-      <p>Ingreso anual: {{ solicitud.anualIncome }}</p>
+      <p>Ingreso anual: <strong>{{ solicitud.anualIncome }}</strong></p>
     </div>
   </div>
   <div>
