@@ -41,7 +41,11 @@ export class SignUpComponent {
       gender: ['', [Validators.required]],
       age: [18, [Validators.required]],
       email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required]],
+      password: ['', [
+        Validators.required,
+        Validators.minLength(8), 
+        Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).*$/) 
+      ]],
       confirmPassword: ['', [Validators.required]],
       civilStatus: ['', [Validators.required]],
       educationLevel: ['', [Validators.required]],

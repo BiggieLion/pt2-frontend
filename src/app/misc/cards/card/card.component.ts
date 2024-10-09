@@ -35,7 +35,7 @@ export class CardComponent {
       id: 2850495, 
       title: 'Informacion de solicitud 2', 
       status: 'Aprobada', 
-      creditType: 'Hipotecario',
+      creditType: 'Personal',
       term: 24,
       guarantee: 'noGuarantee',
       guaranteeValue: null,
@@ -51,7 +51,7 @@ export class CardComponent {
       id: 2850496, 
       title: 'Informacion de solicitud 3', 
       status: 'Rechazada', 
-      creditType: 'Automotriz',
+      creditType: 'Prendario',
       term: 36,
       guarantee: 'noGuarantee',
       guaranteeValue: null,
@@ -67,7 +67,7 @@ export class CardComponent {
       id: 2850497, 
       title: 'Informacion de solicitud 4', 
       status: 'Enviada', 
-      creditType: 'Comercial',
+      creditType: 'Personal',
       term: 48,
       guarantee: 'propertie',
       guaranteeValue: 100000,
@@ -82,18 +82,21 @@ export class CardComponent {
   ];
 
   constructor(private modal: NzModalService) {}
+  modalRef?: NzModalRef;
 
   showDetails(solicitud: any): void {
-    const modalRef: NzModalRef = this.modal.create({
+    this.modalRef = this.modal.create({
       nzTitle: 'Detalles de la solicitud',
       nzContent: DetailsComponent,
       nzFooter: null,
-      nzWrapClassName: 'custom-modal'  // Apply custom class
+      nzWrapClassName: 'custom-modal'
     });
-
-    if (modalRef.componentInstance) {
-      modalRef.componentInstance.solicitud = solicitud;
-    }
+    this.modalRef.componentInstance!.solicitud = solicitud;
+    this.modalRef.componentInstance!.modalRef = this.modalRef;
+  }
+  
+  destroyModal(): void {
+    this.modalRef?.destroy();
   }
 
   calculateProgress(status: string): number {
