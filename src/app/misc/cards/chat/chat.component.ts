@@ -22,7 +22,6 @@ export class ChatComponent {
   newMessage: string = '';
 
   constructor() {
-    // Mensajes de ejemplo
     this.messages = [
       { sender: 'user', text: 'Hola, ¿cómo estás?' },
       { sender: 'admin', text: 'Estoy bien, gracias. ¿En qué puedo ayudarte?' },

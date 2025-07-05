@@ -29,7 +29,54 @@ export class DetailsPageComponent implements OnInit {
       const ingresoMensual = this.solicitud.anualIncome / 12;
       const mensualidad = this.solicitud.requestedAmount / this.solicitud.term;
       this.esfuerzo = +(mensualidad / ingresoMensual * 100).toFixed(2);
-      this.esfuerzoAlto = this.esfuerzo > 35;
+      console.log('Ingreso mensual:', ingresoMensual);
+      console.log('Mensualidad:', mensualidad);
+      console.log('Relación de esfuerzo calculada:', this.esfuerzo);
+
+      const tipo = this.solicitud.creditType?.toLowerCase(); 
+      const tieneGarantia = this.solicitud.guarantee !== 'noGuarantee';
+      const valorGarantia = this.solicitud.guaranteeValue || 0;
+      const montoSolicitado = this.solicitud.requestedAmount;
+
+      console.log('Tipo de crédito:', tipo);
+      console.log('¿Tiene garantía?:', tieneGarantia);
+      console.log('Valor de garantía:', valorGarantia);
+      console.log('Monto solicitado:', montoSolicitado);
+
+      let limite: number;
+
+      if (!tieneGarantia) {
+        if (tipo === 'hipotecario') {
+          limite = 28;
+          console.log('Sin garantía - Hipotecario: límite = 28%');
+        } else {
+          limite = 35;
+          console.log('Sin garantía - Personal o Prendario: límite = 35%');
+        }
+      } else {
+        if (tipo === 'hipotecario') {
+          if (valorGarantia >= montoSolicitado) {
+            limite = 40;
+            console.log('Con garantía - Hipotecario (garantía suficiente): límite = 40%');
+          } else {
+            limite = 28;
+            console.log('Con garantía - Hipotecario (garantía insuficiente): límite = 28%');
+          }
+        } else if (tipo === 'personal') {
+          limite = 40;
+          console.log('Con garantía - Personal: límite = 40%');
+        } else if (tipo === 'prendario') {
+          limite = 45;
+          console.log('Con garantía - Prendario: límite = 45%');
+        } else {
+          limite = 35;
+          console.log('Tipo desconocido con garantía: límite por defecto = 35%');
+        }
+      }
+
+      console.log('Límite aplicado:', limite);
+      this.esfuerzoAlto = this.esfuerzo > limite;
+      console.log('¿Relación de esfuerzo alta?:', this.esfuerzoAlto);
     }
   }
 
