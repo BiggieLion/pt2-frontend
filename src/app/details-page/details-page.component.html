@@ -1,2 +1,75 @@
 <app-nav-bar></app-nav-bar>
-<p>details-page works!</p>
+
+<div class="solicitud-details" *ngIf="solicitud" style="padding: 24px;">
+  <h2>{{ solicitud.title }}</h2>
+
+  <section>
+    <h3>Información general</h3>
+    <p><strong>ID:</strong> {{ solicitud.id }}</p>
+    <p><strong>Estatus:</strong> {{ solicitud.status }}</p>
+    <p><strong>Tipo de crédito:</strong> {{ solicitud.creditType }}</p>
+    <p><strong>Monto solicitado:</strong> ${{ solicitud.requestedAmount }}</p>
+    <p><strong>Plazo:</strong> {{ solicitud.term }} meses</p>
+  </section>
+
+  <section>
+    <h3>Información laboral</h3>
+    <p><strong>Ocupación:</strong> {{ solicitud.ocupation }}</p>
+    <p><strong>Puesto:</strong> {{ solicitud.position }}</p>
+    <p><strong>Ingreso anual:</strong> ${{ solicitud.anualIncome }}</p>
+    <p><strong>Ingreso mensual estimado:</strong> ${{ (solicitud.anualIncome / 12) | number:'1.0-2' }}</p>
+  </section>
+
+  <section>
+    <h3>Relación de esfuerzo</h3>
+    <p><strong>Mensualidad estimada:</strong> ${{ (solicitud.requestedAmount / solicitud.term) | number:'1.2-2' }}</p>
+    <p [ngStyle]="{ color: esfuerzoAlto ? '#b98c00' : 'inherit' }">
+      <strong>Relación de esfuerzo:</strong> {{ esfuerzo }}%
+      <span *ngIf="esfuerzoAlto"> ⚠️</span>
+    </p>
+    <p *ngIf="esfuerzoAlto" style="color: #b98c00; font-size: 0.85rem; margin-top: -8px;">Relación de esfuerzo alta</p>
+  </section>
+
+  <section>
+    <h3>Información familiar y patrimonial</h3>
+    <p><strong>Hijos:</strong> {{ solicitud.children }}</p>
+    <p><strong>Dependientes:</strong> {{ solicitud.dependents }}</p>
+    <p><strong>Tipo de vivienda:</strong> {{ solicitud.housingType }}</p>
+    <p><strong>Propiedades:</strong> {{ solicitud.properties }}</p>
+    <p><strong>Garantía:</strong> {{ solicitud.guarantee }}</p>
+    <p *ngIf="solicitud.guaranteeValue"><strong>Valor de la garantía:</strong> {{ solicitud.guaranteeValue }}</p>
+  </section>
+
+    <button (click)="procesarIA()" style="margin-top: 16px; padding: 10px 20px; background-color: #333; color: white; border: none; border-radius: 8px;">
+        Procesar con IA
+    </button>
+
+    <div
+        *ngIf="iaResultado !== null"
+        style="
+            margin-top: 30px;
+            text-align: center;
+            border: 2px solid #ccc;
+            border-radius: 12px;
+            padding: 20px;
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
+            background-color: white;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        "
+        >
+        <p style="font-size: 20px; margin-bottom: 10px;">
+            <strong>Resultado IA:</strong>
+            <span [style.color]="iaColor">{{ iaResultado }}%</span>
+        </p>
+        <p [style.color]="iaColor" style="font-weight: bold; font-size: 18px;">
+            {{ iaMensaje }}
+        </p>
+    </div>
+
+</div>
+
+<div *ngIf="!solicitud" style="padding: 24px;">
+  <p>No se recibió ninguna solicitud.</p>
+</div>

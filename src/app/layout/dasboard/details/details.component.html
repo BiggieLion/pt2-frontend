@@ -5,11 +5,23 @@
       <p>Estatus: <strong>{{ solicitud?.status }}</strong></p>
     </div>
     <div class="section">
-      <p>Tipo de credito: <strong>{{ solicitud?.creditType }}</strong></p>
-      <p>Plazo(meses): <strong>{{ solicitud?.term }}</strong></p>
+      <p>Tipo de crédito: <strong>{{ solicitud?.creditType }}</strong></p>
+      <p>Plazo (meses): <strong>{{ solicitud?.term }}</strong></p>
     </div>
-    <button (click)="details()" nz-button nzType="primary">Análisis</button>
+
+    <div *ngIf="isAdmin">
+      <button (click)="details()" nz-button nzType="primary">Análisis</button>
+
+      <div style="margin-top: 10px;">
+        <label for="analyst">Asignar a analista:</label>
+        <select id="analyst" [(ngModel)]="selectedAnalyst" (change)="assignAnalyst()">
+          <option value="" disabled selected>Selecciona un analista</option>
+          <option *ngFor="let analyst of analysts" [value]="analyst">{{ analyst }}</option>
+        </select>
+      </div>
+    </div>
   </div>
+
   <div>
     <app-chat [userType]="isAdmin ? 'admin' : 'user'"></app-chat>
   </div>

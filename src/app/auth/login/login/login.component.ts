@@ -8,7 +8,7 @@ import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { Router, RouterModule } from '@angular/router';
 import { TopMenuComponent } from '../../../misc/topMenu/top-menu/top-menu.component';
-import { LocalStorageService } from 'angular-web-storage'; // Importa el servicio de almacenamiento local
+import { LocalStorageService } from 'angular-web-storage'; 
 import axios from 'axios';
 import { HttpClient } from '@angular/common/http';
 import { catchError } from 'rxjs/operators';
@@ -37,15 +37,15 @@ export class LoginComponent {
   submitForm(): void {
     if (this.validateForm.valid) {
       const { userName, password } = this.validateForm.value;
-      this.login(userName, password)
+      //this.login(userName, password)
       if (userName === 'risky@mail.com' && password === 'test123') {
         console.log('submit', this.validateForm.value);
         this.localStorage.set('typeUser', 'normal'); 
-        //this.router.navigate(['/dashboard']);
+        this.router.navigate(['/dashboard']);
       } else if (userName === 'radmin@mail.com' && password === 'admin123') {
         console.log('submit', this.validateForm.value);
         this.localStorage.set('typeUser', 'admin'); 
-        //this.router.navigate(['/dashboard']);
+        this.router.navigate(['/dashboard']);
       } else {
         console.log('Datos erróneos');
       }
