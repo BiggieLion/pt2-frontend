@@ -1,86 +1,109 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { ReactiveFormsModule } from '@angular/forms';
 import { NavBarComponent } from '../../../misc/navBar/nav-bar/nav-bar.component';
+
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzSelectModule } from 'ng-zorro-antd/select';
-import { ReactiveFormsModule } from '@angular/forms';
-import { CommonModule } from '@angular/common';
+import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzUploadModule } from 'ng-zorro-antd/upload';
-import { NzUploadFile } from 'ng-zorro-antd/upload';
-import { NzModalService } from 'ng-zorro-antd/modal';
 import { NzModalModule } from 'ng-zorro-antd/modal';
 
 @Component({
   selector: 'app-credit-form',
   standalone: true,
-  imports: [CommonModule, NzFormModule, NzInputModule, NzSelectModule, ReactiveFormsModule, NavBarComponent, NzUploadModule, NzModalModule],
   templateUrl: './credit-form.component.html',
-  styleUrls: ['./credit-form.component.css']
+  styleUrls: ['./credit-form.component.css'],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    NzFormModule,
+    NzInputModule,
+    NzSelectModule,
+    NzButtonModule,
+    NzUploadModule,
+    NzModalModule,
+    NavBarComponent
+  ]
 })
 export class CreditFormComponent {
   validateForm: FormGroup;
   opciones0a99: number[] = Array.from({ length: 100 }, (_, i) => i);
-  fileList: NzUploadFile[] = [];
-  uploading = false;
-  previewImage: string | undefined = '';
-  previewVisible = false;
-    previewTitle: string | undefined;
+  showGuaranteeDoc = false;
 
-  constructor(private fb: FormBuilder, private modal: NzModalService) {
+  documentFiles: { [key: string]: File | null } = {
+    ine: null,
+    birth: null,
+    address: null,
+    guaranteeDoc: null
+  };
+
+  constructor(private fb: FormBuilder) {
     this.validateForm = this.fb.group({
-      credit: ['', [Validators.required]],
-      term: [0, [Validators.required]],
-      guarantee: ['', [Validators.required]],
-      guaranteeValue: [''],
-      children: [0, [Validators.required]],
-      dependents: [0, [Validators.required]],
-      properties: ['', [Validators.required]],
-      housingType: ['', [Validators.required]],
-      position: ['', [Validators.required]],
-      anualIncome: [0, [Validators.required]],
-      ocupation: ['', [Validators.required]],
+      credit: ['', Validators.required],
+      term: [0, Validators.required],
+      amount: [null, Validators.required],
+      guarantee: ['', Validators.required],
+      guaranteeValue: ['']
     });
   }
 
-  submitForm(): void {
-    if (this.validateForm.valid) {
-      console.log('submit', this.validateForm.value); 
-    } else {
-      Object.values(this.validateForm.controls).forEach(control => {
-        if (control.invalid) {
-          control.markAsDirty();
-          control.updateValueAndValidity({ onlySelf: true });
-        }
-      });
+  onGuaranteeChange(): void {
+    const value = this.validateForm.get('guarantee')?.value;
+    this.showGuaranteeDoc = value !== 'noGuarantee';
+  }
+
+  handleFileChange(event: Event, type: string): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      this.documentFiles[type] = input.files[0];
     }
   }
 
-  beforeUpload = (file: NzUploadFile): boolean => {
-    this.fileList = [file];
-    return false;
-  };
+submitForm(): void {
+  if (this.validateForm.valid) {
+    const formValues = this.validateForm.value;
 
-  handleChange(info: { file: NzUploadFile }): void {
-    if (info.file.status === 'uploading') {
-      this.uploading = true;
-      return;
-    }
-    if (info.file.status === 'done') {
-      this.modal.success({
-        nzTitle: 'Archivo subido exitosamente',
-        nzContent: `${info.file.name}`
-      });
-      this.uploading = false;
-    }
+    const creditMap: Record<string, number> = {
+      personal: 1,
+      hipotecario: 2,
+      prendario: 3
+    };
+
+    const guaranteeMap: Record<string, number> = {
+      mueble: 1,
+      inmueble: 2,
+      noGuarantee: 0
+    };
+
+    const result = {
+      credit_id: creditMap[formValues.credit] || 0,
+      amount: formValues.amount,
+      term: formValues.term,
+      guarantee_id: guaranteeMap[formValues.guarantee] || 0,
+      guarantee_value: formValues.guaranteeValue,
+      documents: {
+        ine: this.documentFiles['ine']?.name || 'No cargado',
+        birth_certificate: this.documentFiles['birth']?.name || 'No cargado',
+        address_proof: this.documentFiles['address']?.name || 'No cargado',
+        guarantee_proof: this.showGuaranteeDoc
+          ? this.documentFiles['guaranteeDoc']?.name || 'No cargado'
+          : 'No aplica'
+      },
+      token: localStorage.getItem('accessToken') || ''
+    };
+
+    console.log('Datos para enviar:', result);
+  } else {
+    Object.values(this.validateForm.controls).forEach(control => {
+      if (control.invalid) {
+        control.markAsDirty();
+        control.updateValueAndValidity({ onlySelf: true });
+      }
+    });
   }
+}
 
-  handlePreview = (file: NzUploadFile) => {
-    this.previewImage = file.url || file.thumbUrl;
-    this.previewVisible = true;
-  };
-
-  handleCancel(): void {
-    this.previewVisible = false;
-  }
 }

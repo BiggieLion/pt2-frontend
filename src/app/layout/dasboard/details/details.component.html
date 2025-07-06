@@ -9,20 +9,20 @@
       <p>Plazo (meses): <strong>{{ solicitud?.term }}</strong></p>
     </div>
 
-    <div *ngIf="isAdmin">
+    <div *ngIf="isAnalyst || isSupervisor">
       <button (click)="details()" nz-button nzType="primary">Análisis</button>
+    </div>
 
-      <div style="margin-top: 10px;">
-        <label for="analyst">Asignar a analista:</label>
-        <select id="analyst" [(ngModel)]="selectedAnalyst" (change)="assignAnalyst()">
-          <option value="" disabled selected>Selecciona un analista</option>
-          <option *ngFor="let analyst of analysts" [value]="analyst">{{ analyst }}</option>
-        </select>
-      </div>
+    <div *ngIf="isSupervisor" style="margin-top: 10px;">
+      <label for="analyst">Asignar a analista:</label>
+      <select id="analyst" [(ngModel)]="selectedAnalyst" (change)="assignAnalyst()">
+        <option value="" disabled selected>Selecciona un analista</option>
+        <option *ngFor="let analyst of analysts" [value]="analyst">{{ analyst }}</option>
+      </select>
     </div>
   </div>
 
   <div>
-    <app-chat [userType]="isAdmin ? 'admin' : 'user'"></app-chat>
+    <app-chat [userType]="isSupervisor || isAnalyst ? 'admin' : 'user'"></app-chat>
   </div>
 </div>

@@ -1,144 +1,99 @@
 <app-nav-bar></app-nav-bar>
-<div class="container">        
-    <h2>Solicitud de crédito</h2>
-    <div class="form-container">
-        <form nz-form [formGroup]="validateForm" (ngSubmit)="submitForm()">
-            <p>Datos del credito</p>
-            <div class="personal">
-                <nz-form-item>
-                    <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="credit">Tipo de credito</nz-form-label>
-                    <nz-form-control [nzSm]="14" [nzXs]="24">
-                        <select nz-select formControlName="credit" id="credit">
-                            <option value="casa">Personal</option>
-                            <option value="terreno">Hipotecario</option>
-                            <option value="ambos">Prestario</option>
-                        </select>
-                    </nz-form-control>
-                </nz-form-item>
-                <nz-form-item>
-                    <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="term">Plazo</nz-form-label>
-                    <nz-form-control [nzSm]="14" [nzXs]="24">
-                        <select nz-select formControlName="term" id="term">
-                            <option *ngFor="let i of opciones0a99" [ngValue]="i">{{ i }}</option>
-                        </select>
-                    </nz-form-control>
-                </nz-form-item>
-            </div>
-            <div class="personal">
-                <nz-form-item>
-                    <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="guarantee">Tipo de credito</nz-form-label>
-                    <nz-form-control [nzSm]="14" [nzXs]="24">
-                        <select nz-select formControlName="guarantee" id="guarantee">
-                            <option value="propertie">Propiedad</option>
-                            <option value="noGuarantee">Sin garantia</option>                        
-                        </select>
-                    </nz-form-control>
-                </nz-form-item>
-                <nz-form-item>
-                    <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="guaranteeValue">Valor de la garantia</nz-form-label>
-                    <nz-form-control [nzSm]="14" [nzXs]="24">
-                        <input nz-input formControlName="guaranteeValue" id="guaranteeValue" type="number" />
-                    </nz-form-control>
-                </nz-form-item>
-            </div>
-            <p>Datos personales</p>
-            <div class="personal">
-                <nz-form-item>
-                    <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="children">No. hijos</nz-form-label>
-                    <nz-form-control [nzSm]="14" [nzXs]="24">
-                        <select nz-select formControlName="children" id="children">
-                            <option *ngFor="let i of opciones0a99" [ngValue]="i">{{ i }}</option>
-                        </select>
-                    </nz-form-control>
-                </nz-form-item>
-                <nz-form-item>
-                    <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="dependents">No. dependendientes</nz-form-label>
-                    <nz-form-control [nzSm]="14" [nzXs]="24">
-                        <select nz-select formControlName="dependents" id="dependents">
-                            <option *ngFor="let i of opciones0a99" [ngValue]="i">{{ i }}</option>
-                        </select>
-                    </nz-form-control>
-                </nz-form-item>
-            </div>
-            <p>Datos de vivienda</p>
-            <div class="house">
-                <nz-form-item>
-                    <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="properties">Propiedades</nz-form-label>
-                    <nz-form-control [nzSm]="14" [nzXs]="24">
-                        <select nz-select formControlName="properties" id="properties">
-                            <option value="casa">Casa propia</option>
-                            <option value="terreno">Terreno propio</option>
-                            <option value="ambos">Ambos</option>
-                        </select>
-                    </nz-form-control>
-                </nz-form-item>   
-                <nz-form-item>
-                    <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="housingType">Tipo de vivienda en la que habita</nz-form-label>
-                    <nz-form-control [nzSm]="14" [nzXs]="24">
-                        <select nz-select formControlName="housingType" id="housingType">
-                            <option value="propia">Propia</option>
-                            <option value="rentada">Rentada</option>
-                            <option value="prestada">Prestada</option>
-                        </select>
-                    </nz-form-control>
-                </nz-form-item>         
-            </div>
-            <p>Información profesional</p>
-            <div class="professional">
-                <nz-form-item>
-                    <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="position">Cual es su estatus de trabajo?</nz-form-label>
-                    <nz-form-control [nzSm]="14" [nzXs]="24">
-                        <select nz-select formControlName="position" id="position">
-                            <option value="asalariado">Asalariado</option>
-                            <option value="manager">Manager</option>
-                        </select>
-                    </nz-form-control>
-                </nz-form-item>
-                <nz-form-item>
-                    <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="ocupation">Ocupación</nz-form-label>
-                    <nz-form-control [nzSm]="14" [nzXs]="24">
-                        <input nz-input formControlName="ocupation" id="ocupation" />
-                    </nz-form-control>
-                </nz-form-item>
-                <nz-form-item>
-                    <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="anualIncome">Cual es su ingreso anual?</nz-form-label>
-                    <nz-form-control [nzSm]="14" [nzXs]="24">
-                        <input nz-input formControlName="anualIncome" id="anualIncome" type="number" />
-                    </nz-form-control>
-                </nz-form-item>
-            </div>
-            <h2>Documentacion</h2>
-            <p>Para darle validez a su solicitud y a su perfil, por favor, cargue la documentacion requerida.</p> 
-            <p><strong>IMPORTANTE... Subir una sola carpta comprimida (rar. zip, etc).</strong></p>  
-            <ul>
-                <li>INE</li>
-                <li>Acta de nacimiento</li>
-                <li>Comprobante de domicilio</li>
-                <li>*De ser el caso, comprobante de su garantía</li>
-            </ul>     
-            <div>
-                <nz-upload
-                    nzAction="https://www.mocky.io/v2/5cc8019d300000980a055e76"
-                    nzListType="picture-card"
-                    [(nzFileList)]="fileList"
-                    [nzShowButton]="!uploading"
-                    [nzPreview]="handlePreview"
-                    [nzBeforeUpload]="beforeUpload"
-                    (nzChange)="handleChange($event)">
-                    <div>
-                        <i nz-icon nzType="plus"></i>
-                        <div style="margin-top: 8px;">Subir archivo</div>
-                    </div>
-                </nz-upload>
-                <nz-modal [nzVisible]="previewVisible" [nzFooter]="null" (nzOnCancel)="handleCancel()">
-                    <img [src]="previewImage" [alt]="previewTitle" style="width: 100%;">
-                </nz-modal>
-            </div>      
-            <nz-form-item nz-row class="register-area">
-                <nz-form-control [nzSpan]="14" [nzOffset]="6">
-                    <button nz-button nzType="primary" type="submit">Solicitar</button>
-                </nz-form-control>
-            </nz-form-item>
-        </form>
-    </div>
+<div class="container">
+  <h2>Solicitud de crédito</h2>
+  <div class="form-container">
+    <form nz-form [formGroup]="validateForm" (ngSubmit)="submitForm()">
+      <h3 class="form-section-title">Datos del crédito</h3>
+      <div class="personal">
+        <nz-form-item>
+          <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="credit">Tipo de crédito</nz-form-label>
+          <nz-form-control [nzSm]="14" [nzXs]="24">
+            <select nz-select formControlName="credit" id="credit">
+              <option value="personal">Personal</option>
+              <option value="hipotecario">Hipotecario</option>
+              <option value="prendario">Prendario</option>
+            </select>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="term">Plazo</nz-form-label>
+          <nz-form-control [nzSm]="14" [nzXs]="24">
+            <select nz-select formControlName="term" id="term">
+              <option *ngFor="let i of opciones0a99" [ngValue]="i">{{ i }}</option>
+            </select>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="amount">Monto del crédito</nz-form-label>
+          <nz-form-control [nzSm]="14" [nzXs]="24">
+            <input nz-input formControlName="amount" id="amount" type="number" />
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+
+      <h3 class="form-section-title">Datos de garantía</h3>
+      <div class="personal">
+        <nz-form-item>
+          <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="guarantee">Tipo de garantía</nz-form-label>
+          <nz-form-control [nzSm]="14" [nzXs]="24">
+            <select nz-select formControlName="guarantee" id="guarantee" (ngModelChange)="onGuaranteeChange()">
+              <option value="mueble">Mueble (Bien movible)</option>
+              <option value="inmueble">Inmueble (Bien inamovible)</option>
+              <option value="noGuarantee">Sin garantía</option>
+            </select>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="guaranteeValue">Valor de la garantía</nz-form-label>
+          <nz-form-control [nzSm]="14" [nzXs]="24">
+            <input nz-input formControlName="guaranteeValue" id="guaranteeValue" type="number" />
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+
+      <h2 class="form-section-title">Documentación</h2>
+      <p>Por favor, cargue los siguientes documentos:</p>
+      <ul>
+        <li>INE</li>
+        <li>Acta de nacimiento</li>
+        <li>Comprobante de domicilio</li>
+        <li *ngIf="showGuaranteeDoc">*Comprobante de su garantía</li>
+      </ul>
+
+      <!-- Uploads -->
+      <nz-form-item>
+        <nz-form-label [nzSm]="6">INE</nz-form-label>
+        <nz-form-control [nzSm]="14">
+          <input type="file" (change)="handleFileChange($event, 'ine')" />
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item>
+        <nz-form-label [nzSm]="6">Acta de nacimiento</nz-form-label>
+        <nz-form-control [nzSm]="14">
+          <input type="file" (change)="handleFileChange($event, 'birth')" />
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item>
+        <nz-form-label [nzSm]="6">Comprobante de domicilio</nz-form-label>
+        <nz-form-control [nzSm]="14">
+          <input type="file" (change)="handleFileChange($event, 'address')" />
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item *ngIf="showGuaranteeDoc">
+        <nz-form-label [nzSm]="6">Comprobante de garantía</nz-form-label>
+        <nz-form-control [nzSm]="14">
+          <input type="file" (change)="handleFileChange($event, 'guaranteeDoc')" />
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item nz-row class="register-area">
+        <nz-form-control [nzSpan]="14" [nzOffset]="6">
+          <button nz-button nzType="primary" type="submit">Solicitar</button>
+        </nz-form-control>
+      </nz-form-item>
+    </form>
+  </div>
 </div>

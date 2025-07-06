@@ -21,6 +21,9 @@ export class DetailsComponent implements OnInit {
   @Output() closeDrawer: EventEmitter<boolean> = new EventEmitter<boolean>();
 
   isAdmin: boolean = false;
+  isAnalyst: boolean = false;
+  isSupervisor: boolean = false;
+
   selectedAnalyst: string = '';
   analysts: string[] = ['Analista 1', 'Analista 2', 'Analista 3'];
 
@@ -34,18 +37,25 @@ export class DetailsComponent implements OnInit {
     console.log('Solicitud recibida en DetailsComponent:', this.solicitud);
     this.checkUserType();
 
-    if (this.isAdmin) {
-      const adminName = this.localStorage.get('nameUser') || 'Administrador';
-      if (!this.analysts.includes(adminName)) {
-        this.analysts.unshift(adminName);
+    if (this.isSupervisor) {
+      const name = this.localStorage.get('nameUser') || 'Supervisor';
+      if (!this.analysts.includes(name)) {
+        this.analysts.unshift(name);
       }
     }
   }
 
   checkUserType(): void {
     const userType = this.localStorage.get('typeUser');
-    this.isAdmin = userType === 'admin';
-    console.log('User type:', userType, '¿Es admin?', this.isAdmin);
+    this.isAnalyst = userType === 'analyst';
+    this.isSupervisor = userType === 'supervisor';
+    this.isAdmin = userType === 'admin'; 
+
+    console.log('User type:', userType, {
+      isAnalyst: this.isAnalyst,
+      isSupervisor: this.isSupervisor,
+      isAdmin: this.isAdmin
+    });
   }
 
   assignAnalyst(): void {

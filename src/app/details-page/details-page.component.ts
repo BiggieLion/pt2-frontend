@@ -121,6 +121,7 @@ export class DetailsPageComponent implements OnInit {
     const AMT_INCOME_PER_FAM_MEMBER = +(AMT_INCOME_TOTAL / CNT_FAM_MEMBERS).toFixed(2);
 
     const output = {
+      relation: [this.esfuerzoAlto ? 1 : 0], 
       FLAG_OWN_CAR: [ownCar],
       FLAG_OWN_REALTY: [ownRealty],
       CNT_CHILDREN: [CNT_CHILDREN],
