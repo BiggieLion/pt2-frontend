@@ -1,17 +1,45 @@
 <div class="custom-container">
   <div class="card-container">
     <div class="progress-bar-wrapper" *ngFor="let solicitud of solicitudes">
-      <app-progress-bar class="progress-bar" [progress]="calculateProgress(solicitud.status)" [status]="solicitud.status"></app-progress-bar>
-      <nz-card class="custom-card" [nzBordered]="false" [nzTitle]="solicitud.title" [nzExtra]="extraTemplate">
+      <app-progress-bar
+        class="progress-bar"
+        [progress]="calculateProgress(solicitud.status)"
+        [status]="solicitud.status">
+      </app-progress-bar>
+
+      <nz-card
+        class="custom-card"
+        [nzBordered]="false"
+        [nzTitle]="solicitud.title">
+
         <div class="card-content">
-          <p>Credito con Id: {{ solicitud.id }}</p>
+          <p>Crédito con Id: {{ solicitud.id }}</p>
           <p>Estatus: {{ solicitud.status }}</p>
-          <p>Tipo de credito: {{ solicitud.creditType }}</p>
+          <p>Tipo de crédito: {{ solicitud.creditType }}</p>
+          <div class="detalle-container">
+            <a (click)="showDetails(solicitud)">Detalle</a>
+          </div>
         </div>
-        <ng-template #extraTemplate>
-          <a (click)="showDetails(solicitud)">Detalle</a>
-        </ng-template>
+
       </nz-card>
     </div>
   </div>
+
+    <div class="charts-container" *ngIf="isBrowser">
+      <div>
+        <h3 style="text-align: center;">Distribución por Estatus</h3>
+        <canvas baseChart
+                [data]="pieData"
+                [type]="'pie'">
+        </canvas>
+      </div>
+
+      <div>
+        <h3 style="text-align: center;">Solicitudes por Tipo de Crédito</h3>
+        <canvas baseChart
+                [data]="barData"
+                [type]="'bar'">
+        </canvas>
+      </div>
+    </div>
 </div>

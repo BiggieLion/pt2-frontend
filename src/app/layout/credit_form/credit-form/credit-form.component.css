@@ -56,3 +56,6 @@ nz-form-control input {
   border-bottom: 1px solid #ccc;
   color: #444;
 }
+.credit-group nz-form-item:not(:last-child) {
+  margin-bottom: 16px;
+}

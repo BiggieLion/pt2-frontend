@@ -1,19 +1,23 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, Inject, PLATFORM_ID } from '@angular/core';
 import { NzModalService, NzModalRef } from 'ng-zorro-antd/modal';
 import { DetailsComponent } from '../../../layout/dasboard/details/details.component';
-import { CommonModule } from '@angular/common';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { ProgressBarComponent } from '../progress-bar/progress-bar.component';
 import { NzCardModule } from 'ng-zorro-antd/card';
 import { NzModalModule } from 'ng-zorro-antd/modal';
+import { NgChartsModule } from 'ng2-charts';
+import { ChartData } from 'chart.js';
+
+type Estado = 'Enviada' | 'En revisión' | 'Aprobada' | 'Rechazada';
 
 @Component({
   selector: 'app-card',
   standalone: true,
-  imports: [NzCardModule, DetailsComponent, CommonModule, NzModalModule, ProgressBarComponent],
+  imports: [NzCardModule, DetailsComponent, CommonModule, NzModalModule, ProgressBarComponent, NgChartsModule],
   templateUrl: './card.component.html',
   styleUrls: ['./card.component.css']
 })
-export class CardComponent {
+export class CardComponent implements OnInit {
   solicitudes: any[] = [
     { 
       id: 2850494, 
@@ -85,8 +89,76 @@ export class CardComponent {
     },
   ];
 
-  constructor(private modal: NzModalService) {}
+  pieLabels: Estado[] = ['Enviada', 'En revisión', 'Aprobada', 'Rechazada'];
+
+  pieData: ChartData<'pie', number[], Estado> = {
+    labels: this.pieLabels,
+    datasets: [{ data: [] }]
+  };
+
+  barData: ChartData<'bar'> = {
+    labels: [],
+    datasets: [{ data: [], label: 'Solicitudes' }]
+  };
+
   modalRef?: NzModalRef;
+
+  isBrowser = false;
+
+  constructor(private modal: NzModalService, @Inject(PLATFORM_ID) private platformId: Object) {}
+
+  ngOnInit(): void {
+    this.isBrowser = isPlatformBrowser(this.platformId);
+
+    if (this.isBrowser) {
+      this.generarDatosGraficas();
+    }
+  }
+
+generarDatosGraficas(): void {
+  const estados: Record<Estado, number> = {
+    'Enviada': 0,
+    'En revisión': 0,
+    'Aprobada': 0,
+    'Rechazada': 0
+  };
+  const creditos: { [tipo: string]: number } = {};
+
+  this.solicitudes.forEach(s => {
+    const status = s.status as Estado;
+    if (this.pieLabels.includes(status)) {
+      estados[status]++;
+    }
+    if (s.creditType) {
+      creditos[s.creditType] = (creditos[s.creditType] || 0) + 1;
+    }
+  });
+
+  this.pieData = {
+    labels: this.pieLabels,
+    datasets: [{
+      data: Object.values(estados),
+      backgroundColor: [
+        '#6CB3DD', 
+        '#527C96', 
+        '#619100', 
+        '#AD0019'  
+      ],
+      borderColor: '#fff',
+      borderWidth: 1
+    }]
+  };
+
+  this.barData = {
+    labels: Object.keys(creditos),
+    datasets: [{
+      data: Object.values(creditos),
+      label: 'Solicitudes',
+      backgroundColor: '#FF9E9B' 
+    }]
+  };
+}
+
 
   showDetails(solicitud: any): void {
     this.modalRef = this.modal.create({
@@ -98,7 +170,7 @@ export class CardComponent {
     this.modalRef.componentInstance!.solicitud = solicitud;
     this.modalRef.componentInstance!.modalRef = this.modalRef;
   }
-  
+
   destroyModal(): void {
     this.modalRef?.destroy();
   }

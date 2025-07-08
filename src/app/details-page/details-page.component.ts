@@ -146,6 +146,7 @@ export class DetailsPageComponent implements OnInit {
     console.log('Datos para IA:', output);
 
     const resultadoIA = Math.floor(Math.random() * 101);
+    //const resultadoIA = 21;
     this.iaResultado = resultadoIA;
 
     if (resultadoIA < 40) {

@@ -10,6 +10,7 @@ import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzUploadModule } from 'ng-zorro-antd/upload';
 import { NzModalModule } from 'ng-zorro-antd/modal';
+import { NzMessageModule, NzMessageService } from 'ng-zorro-antd/message';
 
 @Component({
   selector: 'app-credit-form',
@@ -25,6 +26,7 @@ import { NzModalModule } from 'ng-zorro-antd/modal';
     NzButtonModule,
     NzUploadModule,
     NzModalModule,
+    NzMessageModule,
     NavBarComponent
   ]
 })
@@ -40,19 +42,22 @@ export class CreditFormComponent {
     guaranteeDoc: null
   };
 
-  constructor(private fb: FormBuilder) {
+  constructor(
+    private fb: FormBuilder,
+    private message: NzMessageService
+  ) {
     this.validateForm = this.fb.group({
       credit: ['', Validators.required],
       term: [0, Validators.required],
       amount: [null, Validators.required],
-      guarantee: ['', Validators.required],
-      guaranteeValue: ['']
+      guarantee: [''], // garantía opcional
+      guaranteeValue: [''] // valor también opcional
     });
   }
 
   onGuaranteeChange(): void {
     const value = this.validateForm.get('guarantee')?.value;
-    this.showGuaranteeDoc = value !== 'noGuarantee';
+    this.showGuaranteeDoc = value !== 'noGuarantee' && value !== '';
   }
 
   handleFileChange(event: Event, type: string): void {
@@ -62,48 +67,48 @@ export class CreditFormComponent {
     }
   }
 
-submitForm(): void {
-  if (this.validateForm.valid) {
-    const formValues = this.validateForm.value;
+  submitForm(): void {
+    if (this.validateForm.valid) {
+      const formValues = this.validateForm.value;
 
-    const creditMap: Record<string, number> = {
-      personal: 1,
-      hipotecario: 2,
-      prendario: 3
-    };
+      const creditMap: Record<string, number> = {
+        personal: 1,
+        hipotecario: 2,
+        prendario: 3
+      };
 
-    const guaranteeMap: Record<string, number> = {
-      mueble: 1,
-      inmueble: 2,
-      noGuarantee: 0
-    };
+      const guaranteeMap: Record<string, number> = {
+        mueble: 1,
+        inmueble: 2,
+        noGuarantee: 0
+      };
 
-    const result = {
-      credit_id: creditMap[formValues.credit] || 0,
-      amount: formValues.amount,
-      term: formValues.term,
-      guarantee_id: guaranteeMap[formValues.guarantee] || 0,
-      guarantee_value: formValues.guaranteeValue,
-      documents: {
-        ine: this.documentFiles['ine']?.name || 'No cargado',
-        birth_certificate: this.documentFiles['birth']?.name || 'No cargado',
-        address_proof: this.documentFiles['address']?.name || 'No cargado',
-        guarantee_proof: this.showGuaranteeDoc
-          ? this.documentFiles['guaranteeDoc']?.name || 'No cargado'
-          : 'No aplica'
-      },
-      token: localStorage.getItem('accessToken') || ''
-    };
+      const result = {
+        credit_id: creditMap[formValues.credit] || 0,
+        amount: formValues.amount,
+        term: formValues.term,
+        guarantee_id: guaranteeMap[formValues.guarantee] || 0,
+        guarantee_value: formValues.guaranteeValue || null,
+        documents: {
+          ine: this.documentFiles['ine']?.name || 'No cargado',
+          birth_certificate: this.documentFiles['birth']?.name || 'No cargado',
+          address_proof: this.documentFiles['address']?.name || 'No cargado',
+          guarantee_proof: this.showGuaranteeDoc
+            ? this.documentFiles['guaranteeDoc']?.name || 'No cargado'
+            : 'No aplica'
+        },
+        token: localStorage.getItem('accessToken') || ''
+      };
 
-    console.log('Datos para enviar:', result);
-  } else {
-    Object.values(this.validateForm.controls).forEach(control => {
-      if (control.invalid) {
-        control.markAsDirty();
-        control.updateValueAndValidity({ onlySelf: true });
-      }
-    });
+      console.log('Datos para enviar:', result);
+      this.message.success('Solicitud creada');
+    } else {
+      Object.values(this.validateForm.controls).forEach(control => {
+        if (control.invalid) {
+          control.markAsDirty();
+          control.updateValueAndValidity({ onlySelf: true });
+        }
+      });
+    }
   }
-}
-
 }
