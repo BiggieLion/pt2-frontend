@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { NavBarComponent } from '../misc/navBar/nav-bar/nav-bar.component';
 import { CommonModule } from '@angular/common';
 import { SolicitudService } from '../services/solicitud.service';
+import axios from 'axios';
 
 @Component({
   selector: 'app-details-page',
@@ -34,6 +35,7 @@ export class DetailsPageComponent implements OnInit {
       console.log('Relación de esfuerzo calculada:', this.esfuerzo);
 
       const tipo = this.solicitud.creditType?.toLowerCase(); 
+      const id = this.solicitud.id;
       const tieneGarantia = this.solicitud.guarantee !== 'noGuarantee';
       const valorGarantia = this.solicitud.guaranteeValue || 0;
       const montoSolicitado = this.solicitud.requestedAmount;
@@ -83,6 +85,74 @@ export class DetailsPageComponent implements OnInit {
   getValorCatalogo<T extends Record<string, number>>(catalogo: T, clave: any, fallback: number): number {
     const key = (clave?.toLowerCase() ?? '') as keyof T;
     return catalogo[key] ?? fallback;
+  }
+
+  async aprobarSolicitud(): Promise<void> {
+    console.log('Solicitud aprobada manualmente');
+
+    const rawToken = localStorage.getItem('accessToken');
+    let token = '';
+
+    if (rawToken) {
+      try {
+        const parsed = JSON.parse(rawToken);
+        token = parsed._value || '';
+      } catch (e) {
+        token = rawToken;
+      }
+    }
+
+    const id = this.solicitud.id;
+    const url = `http://localhost:3002/api/v1/requests/${id}`;
+
+    try {
+      const response = await axios.patch(
+        url,
+        { is_approved: 1 },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
+      console.log('Respuesta de aprobación:', response.data);
+    } catch (error) {
+      console.error('Error al aprobar solicitud:', error);
+    }
+  }
+
+  async rechazarSolicitud(): Promise<void> {
+    console.log('Solicitud rechazada manualmente');
+
+    const rawToken = localStorage.getItem('accessToken');
+    let token = '';
+
+    if (rawToken) {
+      try {
+        const parsed = JSON.parse(rawToken);
+        token = parsed._value || '';
+      } catch (e) {
+        token = rawToken;
+      }
+    }
+
+    const id = this.solicitud.id;
+    const url = `http://localhost:3002/api/v1/requests/${id}`;
+
+    try {
+      const response = await axios.patch(
+        url,
+        { is_approved: 4 },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
+      console.log('Respuesta de rechazo:', response.data);
+    } catch (error) {
+      console.error('Error al rechazar solicitud:', error);
+    }
   }
 
   procesarIA(): void {

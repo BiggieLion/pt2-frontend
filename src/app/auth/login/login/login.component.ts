@@ -108,7 +108,7 @@ async login(email: string, password: string) {
 
     this.router.navigate(['/dashboard']);
   } catch (error) {
-    console.error('❌ Error durante login:', error);
+    console.error('Error durante login:', error);
   }
 }
 }

@@ -3,13 +3,14 @@
     <div class="section">
       <p>Credito con Id: <strong>{{ solicitud?.id }}</strong></p>
       <p>Estatus: <strong>{{ solicitud?.status }}</strong></p>
+      <p>Fecha de solicitud: <strong>{{ solicitud.created_at | date:'dd/MM/yyyy' }}</strong></p>
     </div>
     <div class="section">
       <p>Tipo de crédito: <strong>{{ solicitud?.creditType }}</strong></p>
       <p>Plazo (meses): <strong>{{ solicitud?.term }}</strong></p>
     </div>
 
-    <div *ngIf="isAnalyst || isSupervisor">
+    <div>
       <button (click)="details()" nz-button nzType="primary">Análisis</button>
     </div>
 

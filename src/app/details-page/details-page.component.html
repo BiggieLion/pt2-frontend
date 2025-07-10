@@ -73,3 +73,24 @@
 <div *ngIf="!solicitud" style="padding: 24px;">
   <p>No se recibió ninguna solicitud.</p>
 </div>
+<div
+  *ngIf="iaResultado !== null && iaResultado > 40"
+  style="display: flex; justify-content: center; gap: 20px; margin-top: 20px; margin-bottom: 20px;"
+>
+  <button
+    *ngIf="iaResultado <= 60"
+    (click)="rechazarSolicitud()"
+    style="padding: 10px 20px; border: 2px solid #cc0000; background: transparent; color: #cc0000; border-radius: 8px;"
+  >
+    Rechazar solicitud
+  </button>
+
+  <button
+    (click)="aprobarSolicitud()"
+    style="padding: 10px 20px; border: 2px solid #2a8f2a; background: transparent; color: #2a8f2a; border-radius: 8px;"
+  >
+    Aprobar solicitud
+  </button>
+</div>
+
+<div style="height: 20px;"></div>

@@ -7,6 +7,7 @@ import { NzCardModule } from 'ng-zorro-antd/card';
 import { NzModalModule } from 'ng-zorro-antd/modal';
 import { NgChartsModule } from 'ng2-charts';
 import { ChartData } from 'chart.js';
+import axios from 'axios';
 
 type Estado = 'Enviada' | 'En revisión' | 'Aprobada' | 'Rechazada';
 
@@ -18,76 +19,7 @@ type Estado = 'Enviada' | 'En revisión' | 'Aprobada' | 'Rechazada';
   styleUrls: ['./card.component.css']
 })
 export class CardComponent implements OnInit {
-  solicitudes: any[] = [
-    { 
-      id: 2850494, 
-      title: 'Informacion de solicitud 1', 
-      status: 'En revisión', 
-      creditType: 'Personal',
-      term: 12,
-      requestedAmount: 30000,
-      guarantee: 'propertie',
-      guaranteeValue: 50000,
-      children: 2,
-      dependents: 1,
-      properties: 'casa',
-      housingType: 'propia',
-      position: 'asalariado',
-      ocupation: 'Ingeniero',
-      anualIncome: 60000
-    },
-    { 
-      id: 2850495, 
-      title: 'Informacion de solicitud 2', 
-      status: 'Aprobada', 
-      creditType: 'Personal',
-      term: 24,
-      requestedAmount: 40000,
-      guarantee: 'noGuarantee',
-      guaranteeValue: null,
-      children: 0,
-      dependents: 0,
-      properties: 'terreno',
-      housingType: 'rentada',
-      position: 'manager',
-      ocupation: 'Gerente de ventas',
-      anualIncome: 80000
-    },
-    { 
-      id: 2850496, 
-      title: 'Informacion de solicitud 3', 
-      status: 'Rechazada', 
-      creditType: 'Prendario',
-      term: 36,
-      requestedAmount: 15000,
-      guarantee: 'noGuarantee',
-      guaranteeValue: null,
-      children: 1,
-      dependents: 2,
-      properties: 'ambos',
-      housingType: 'prestada',
-      position: 'asalariado',
-      ocupation: 'Mecánico',
-      anualIncome: 35000
-    },
-    { 
-      id: 2850497, 
-      title: 'Informacion de solicitud 4', 
-      status: 'Enviada', 
-      creditType: 'Personal',
-      term: 48,
-      requestedAmount: 75000,
-      guarantee: 'propertie',
-      guaranteeValue: 100000,
-      children: 3,
-      dependents: 4,
-      properties: 'terreno',
-      housingType: 'propia',
-      position: 'manager',
-      ocupation: 'Administrador de empresas',
-      anualIncome: 100000
-    },
-  ];
+  solicitudes: any[] = [];
 
   pieLabels: Estado[] = ['Enviada', 'En revisión', 'Aprobada', 'Rechazada'];
 
@@ -102,65 +34,120 @@ export class CardComponent implements OnInit {
   };
 
   modalRef?: NzModalRef;
-
   isBrowser = false;
 
   constructor(private modal: NzModalService, @Inject(PLATFORM_ID) private platformId: Object) {}
 
   ngOnInit(): void {
     this.isBrowser = isPlatformBrowser(this.platformId);
-
     if (this.isBrowser) {
-      this.generarDatosGraficas();
+      this.fetchSolicitudes();
     }
   }
 
-generarDatosGraficas(): void {
-  const estados: Record<Estado, number> = {
-    'Enviada': 0,
-    'En revisión': 0,
-    'Aprobada': 0,
-    'Rechazada': 0
-  };
-  const creditos: { [tipo: string]: number } = {};
+  async fetchSolicitudes(): Promise<void> {
+    try {
+      const rawToken = localStorage.getItem('accessToken');
+      let token = '';
 
-  this.solicitudes.forEach(s => {
-    const status = s.status as Estado;
-    if (this.pieLabels.includes(status)) {
-      estados[status]++;
+      if (rawToken) {
+        try {
+          const parsed = JSON.parse(rawToken);
+          token = parsed._value || '';
+        } catch (e) {
+          token = rawToken;
+        }
+      }
+
+      const response = await axios.get('http://localhost:3002/api/v1/requests/requester', {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+
+      const solicitudesCrudas = response.data.data;
+
+      // ✅ Convertir is_approved a status legible
+      this.solicitudes = solicitudesCrudas.map((s: any) => ({
+        ...s,
+        status: this.convertirEstado(s.is_approved),
+        creditType: this.convertirTipoCredito(s.credit_id)
+      }));
+
+      this.generarDatosGraficas();
+      console.log('Solicitudes obtenidas:', this.solicitudes);
+    } catch (error) {
+      console.error('Error al obtener solicitudes:', error);
     }
-    if (s.creditType) {
-      creditos[s.creditType] = (creditos[s.creditType] || 0) + 1;
+  }
+
+  convertirEstado(valor: any): Estado {
+    if (valor === 4 || valor === null) return 'Rechazada';
+    if (valor === 1 || valor === false) return 'Enviada';
+    if (valor === 2) return 'En revisión';
+    if (valor === 3 || valor === true) return 'Aprobada';
+    return 'Enviada'; 
+  }
+
+  convertirTipoCredito(id: number): string {
+    switch (id) {
+      case 1:
+        return 'Personal';
+      case 2:
+        return 'Hipotecario';
+      case 3:
+        return 'Prendario';
+      default:
+        return 'Desconocido';
     }
-  });
+  }
 
-  this.pieData = {
-    labels: this.pieLabels,
-    datasets: [{
-      data: Object.values(estados),
-      backgroundColor: [
-        '#6CB3DD', 
-        '#527C96', 
-        '#619100', 
-        '#AD0019'  
-      ],
-      borderColor: '#fff',
-      borderWidth: 1
-    }]
-  };
+  generarDatosGraficas(): void {
+    const estados: Record<Estado, number> = {
+      'Enviada': 0,
+      'En revisión': 0,
+      'Aprobada': 0,
+      'Rechazada': 0
+    };
+    const creditos: { [tipo: string]: number } = {};
 
-  this.barData = {
-    labels: Object.keys(creditos),
-    datasets: [{
-      data: Object.values(creditos),
-      label: 'Solicitudes',
-      backgroundColor: '#FF9E9B' 
-    }]
-  };
-}
+    this.solicitudes.forEach(s => {
+      const status = s.status as Estado;
+      if (this.pieLabels.includes(status)) {
+        estados[status]++;
+      }
+      if (s.creditType) {
+        creditos[s.creditType] = (creditos[s.creditType] || 0) + 1;
+      }
+    });
 
+    this.pieData = {
+      labels: this.pieLabels,
+      datasets: [{
+        data: Object.values(estados),
+        backgroundColor: [
+          '#6CB3DD', 
+          '#527C96', 
+          '#619100', 
+          '#AD0019'  
+        ],
+        borderColor: '#fff',
+        borderWidth: 1
+      }]
+    };
+
+    this.barData = {
+      labels: Object.keys(creditos),
+      datasets: [{
+        data: Object.values(creditos),
+        label: 'Solicitudes',
+        backgroundColor: '#FF9E9B' 
+      }]
+    };
+  }
 
   showDetails(solicitud: any): void {
+    console.log(solicitud)
     this.modalRef = this.modal.create({
       nzTitle: 'Detalles de la solicitud',
       nzContent: DetailsComponent,
