@@ -8,9 +8,62 @@
     <p><strong>ID:</strong> {{ solicitud.id }}</p>
     <p><strong>Estatus:</strong> {{ solicitud.status }}</p>
     <p><strong>Tipo de crédito:</strong> {{ solicitud.creditType }}</p>
-    <p><strong>Monto solicitado:</strong> ${{ solicitud.requestedAmount }}</p>
-    <p><strong>Plazo:</strong> {{ solicitud.term }} meses</p>
+    <p><strong>Monto solicitado:</strong> ${{ solicitud.amount }}</p>
+    <p><strong>Plazo:</strong> {{ solicitud.loan_term }} meses</p>
   </section>
+
+<section>
+  <h3>Documentos</h3>
+  <div style="display: flex; gap: 24px;">
+    <div *ngIf="solicitud?.url_address" style="display: flex; flex-direction: column; align-items: center;">
+      <img
+        src="assets/pdf.png"
+        alt="PDF"
+        width="40"
+        height="40"
+        style="cursor: pointer;"
+        (click)="openInNewTab(solicitud.url_address)"
+      />
+      <span>Domicilio</span>
+    </div>
+
+    <div *ngIf="solicitud?.url_birth_certificate" style="display: flex; flex-direction: column; align-items: center;">
+      <img
+        src="assets/pdf.png"
+        alt="PDF"
+        width="40"
+        height="40"
+        style="cursor: pointer;"
+        (click)="openInNewTab(solicitud.url_birth_certificate)"
+      />
+      <span>Acta</span>
+    </div>
+
+    <div *ngIf="solicitud?.url_ine" style="display: flex; flex-direction: column; align-items: center;">
+      <img
+        src="assets/pdf.png"
+        alt="PDF"
+        width="40"
+        height="40"
+        style="cursor: pointer;"
+        (click)="openInNewTab(solicitud.url_ine)"
+      />
+      <span>INE</span>
+    </div>
+
+    <div *ngIf="solicitud?.url_guarantee" style="display: flex; flex-direction: column; align-items: center;">
+      <img
+        src="assets/pdf.png"
+        alt="PDF"
+        width="40"
+        height="40"
+        style="cursor: pointer;"
+        (click)="openInNewTab(solicitud.url_guarantee)"
+      />
+      <span>Garantía</span>
+    </div>
+  </div>
+</section>
 
   <section>
     <h3>Información laboral</h3>
@@ -22,7 +75,7 @@
 
   <section>
     <h3>Relación de esfuerzo</h3>
-    <p><strong>Mensualidad estimada:</strong> ${{ (solicitud.requestedAmount / solicitud.term) | number:'1.2-2' }}</p>
+    <p><strong>Mensualidad estimada:</strong> ${{ (solicitud.amount / solicitud.loan_term) | number:'1.2-2' }}</p>
     <p [ngStyle]="{ color: esfuerzoAlto ? '#b98c00' : 'inherit' }">
       <strong>Relación de esfuerzo:</strong> {{ esfuerzo }}%
       <span *ngIf="esfuerzoAlto"> ⚠️</span>

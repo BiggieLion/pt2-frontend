@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { NavBarComponent } from '../misc/navBar/nav-bar/nav-bar.component';
 import { CommonModule } from '@angular/common';
 import { SolicitudService } from '../services/solicitud.service';
+import { NzMessageModule, NzMessageService } from 'ng-zorro-antd/message';
 import axios from 'axios';
 
 @Component({
@@ -20,7 +21,9 @@ export class DetailsPageComponent implements OnInit {
   iaMensaje: string = '';
   iaColor: string = '';
 
-  constructor(private solicitudService: SolicitudService) {}
+  constructor(
+    private solicitudService: SolicitudService,
+      private message: NzMessageService) {}
 
   ngOnInit(): void {
     this.solicitud = this.solicitudService.getSolicitud();
@@ -28,22 +31,16 @@ export class DetailsPageComponent implements OnInit {
 
     if (this.solicitud) {
       const ingresoMensual = this.solicitud.anualIncome / 12;
-      const mensualidad = this.solicitud.requestedAmount / this.solicitud.term;
+      const mensualidad = this.solicitud.amount / this.solicitud.term;
       this.esfuerzo = +(mensualidad / ingresoMensual * 100).toFixed(2);
-      console.log('Ingreso mensual:', ingresoMensual);
-      console.log('Mensualidad:', mensualidad);
       console.log('Relación de esfuerzo calculada:', this.esfuerzo);
 
       const tipo = this.solicitud.creditType?.toLowerCase(); 
       const id = this.solicitud.id;
-      const tieneGarantia = this.solicitud.guarantee !== 'noGuarantee';
+      console.log(this.solicitud.guarantee)
+      const tieneGarantia = this.solicitud.guarantee_type != 3;
       const valorGarantia = this.solicitud.guaranteeValue || 0;
-      const montoSolicitado = this.solicitud.requestedAmount;
-
-      console.log('Tipo de crédito:', tipo);
-      console.log('¿Tiene garantía?:', tieneGarantia);
-      console.log('Valor de garantía:', valorGarantia);
-      console.log('Monto solicitado:', montoSolicitado);
+      const montoSolicitado = this.solicitud.amount;
 
       let limite: number;
 
@@ -108,13 +105,14 @@ export class DetailsPageComponent implements OnInit {
     try {
       const response = await axios.patch(
         url,
-        { is_approved: 1 },
+        { status: 3 },
         {
           headers: {
             Authorization: `Bearer ${token}`
           }
         }
       );
+      this.message.success('Solicitud aprobada');
       console.log('Respuesta de aprobación:', response.data);
     } catch (error) {
       console.error('Error al aprobar solicitud:', error);
@@ -142,7 +140,7 @@ export class DetailsPageComponent implements OnInit {
     try {
       const response = await axios.patch(
         url,
-        { is_approved: 4 },
+        { status: 4 },
         {
           headers: {
             Authorization: `Bearer ${token}`
@@ -150,9 +148,13 @@ export class DetailsPageComponent implements OnInit {
         }
       );
       console.log('Respuesta de rechazo:', response.data);
+      this.message.success('Solicitud rechazada');
     } catch (error) {
       console.error('Error al rechazar solicitud:', error);
     }
+  }
+  openInNewTab(url: string): void {
+    window.open(url, '_blank');
   }
 
   procesarIA(): void {
@@ -216,7 +218,6 @@ export class DetailsPageComponent implements OnInit {
     console.log('Datos para IA:', output);
 
     const resultadoIA = Math.floor(Math.random() * 101);
-    //const resultadoIA = 21;
     this.iaResultado = resultadoIA;
 
     if (resultadoIA < 40) {

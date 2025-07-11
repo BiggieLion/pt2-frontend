@@ -11,6 +11,7 @@ import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzUploadModule } from 'ng-zorro-antd/upload';
 import { NzModalModule } from 'ng-zorro-antd/modal';
 import { NzMessageModule, NzMessageService } from 'ng-zorro-antd/message';
+import axios from 'axios';
 
 @Component({
   selector: 'app-credit-form',
@@ -50,8 +51,8 @@ export class CreditFormComponent {
       credit: ['', Validators.required],
       term: [0, Validators.required],
       amount: [null, Validators.required],
-      guarantee: [''], // garantía opcional
-      guaranteeValue: [''] // valor también opcional
+      guarantee: [''], 
+      guaranteeValue: [''] 
     });
   }
 
@@ -67,7 +68,7 @@ export class CreditFormComponent {
     }
   }
 
-  submitForm(): void {
+  async submitForm(): Promise<void> {
     if (this.validateForm.valid) {
       const formValues = this.validateForm.value;
 
@@ -84,22 +85,52 @@ export class CreditFormComponent {
       };
 
       const result = {
-        credit_id: creditMap[formValues.credit] || 0,
+        credit_type: creditMap[formValues.credit] || 0,
         amount: formValues.amount,
-        term: formValues.term,
-        guarantee_id: guaranteeMap[formValues.guarantee] || 0,
-        guarantee_value: formValues.guaranteeValue || null,
-        documents: {
-          ine: this.documentFiles['ine']?.name || 'No cargado',
-          birth_certificate: this.documentFiles['birth']?.name || 'No cargado',
-          address_proof: this.documentFiles['address']?.name || 'No cargado',
-          guarantee_proof: this.showGuaranteeDoc
-            ? this.documentFiles['guaranteeDoc']?.name || 'No cargado'
-            : 'No aplica'
-        },
-        token: localStorage.getItem('accessToken') || ''
-      };
+        loan_term: formValues.term,
+        guarantee_type: guaranteeMap[formValues.guarantee] || 0,
+        guarantee_value: formValues.guaranteeValue || 0,
 
+        url_ine: this.documentFiles['ine']
+          ? URL.createObjectURL(this.documentFiles['ine'])
+          : null,
+        url_birth_certificate: this.documentFiles['birth']
+          ? URL.createObjectURL(this.documentFiles['birth'])
+          : null,
+        url_address: this.documentFiles['address']
+          ? URL.createObjectURL(this.documentFiles['address'])
+          : null,
+        url_guarantee: this.showGuaranteeDoc && this.documentFiles['guaranteeDoc']
+          ? URL.createObjectURL(this.documentFiles['guaranteeDoc'])
+          : null,
+      };
+      const rawToken = localStorage.getItem('accessToken');
+      let token = '';
+
+      if (rawToken) {
+        try {
+          const parsed = JSON.parse(rawToken);
+          token = parsed._value || '';
+        } catch (e) {
+          token = rawToken;
+        }
+      }
+
+      const url = `http://localhost:3002/api/v1/requests`;
+      
+    try {
+      const response = await axios.post(
+        url, result,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
+      console.log('Respuesta de rechazo:', response.data);
+    } catch (error) {
+      console.error('Error al rechazar solicitud:', error);
+    }
       console.log('Datos para enviar:', result);
       this.message.success('Solicitud creada');
     } else {

@@ -48,7 +48,9 @@ export class CardComponent implements OnInit {
   async fetchSolicitudes(): Promise<void> {
     try {
       const rawToken = localStorage.getItem('accessToken');
+      const type = localStorage.getItem('typeUser');
       let token = '';
+      let userType = '';
 
       if (rawToken) {
         try {
@@ -59,19 +61,35 @@ export class CardComponent implements OnInit {
         }
       }
 
-      const response = await axios.get('http://localhost:3002/api/v1/requests/requester', {
+      if (type) {
+        try {
+          const parsed = JSON.parse(type);
+          console.log(parsed);
+          userType = parsed._value || '';
+        } catch (e) {}
+      }
+
+      let endpoint = 'http://localhost:3002/api/v1/requests/requester';
+      if (userType === 'supervisor') {
+        endpoint = 'http://localhost:3002/api/v1/requests/all';
+      } else if (userType === 'analyst') {
+        endpoint = 'http://localhost:3002/api/v1/requests/analyst';
+      }
+
+      const response = await axios.get(endpoint, {
         headers: {
           Authorization: `Bearer ${token}`
         }
       });
 
       const solicitudesCrudas = response.data.data;
+      console.log(response.data.data)
 
-      // ✅ Convertir is_approved a status legible
       this.solicitudes = solicitudesCrudas.map((s: any) => ({
         ...s,
-        status: this.convertirEstado(s.is_approved),
-        creditType: this.convertirTipoCredito(s.credit_id)
+        statusInt: s.status,
+        status: this.convertirEstado(s.status),
+        creditType: this.convertirTipoCredito(s.credit_type)
       }));
 
       this.generarDatosGraficas();
@@ -141,7 +159,12 @@ export class CardComponent implements OnInit {
       datasets: [{
         data: Object.values(creditos),
         label: 'Solicitudes',
-        backgroundColor: '#FF9E9B' 
+        backgroundColor: [
+          '#FF9E9B',
+          '#936366',
+          '#E84F59'
+
+        ] 
       }]
     };
   }

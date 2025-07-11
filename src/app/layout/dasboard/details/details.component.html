@@ -7,23 +7,42 @@
     </div>
     <div class="section">
       <p>Tipo de crédito: <strong>{{ solicitud?.creditType }}</strong></p>
-      <p>Plazo (meses): <strong>{{ solicitud?.term }}</strong></p>
+      <p>Plazo (meses): <strong>{{ solicitud?.loan_term }}</strong></p>
     </div>
 
-    <div>
-      <button (click)="details()" nz-button nzType="primary">Análisis</button>
+    <div *ngIf="isSupervisor || isAnalyst">
+      <button 
+        (click)="details()" 
+        style="
+          background-color: #FF9E9B;
+          border: none;
+          border-radius: 8px;
+          padding: 6px 16px;
+          font-weight: bold;
+          cursor: pointer;
+        "
+      >
+        Análisis
+      </button>
     </div>
 
     <div *ngIf="isSupervisor" style="margin-top: 10px;">
       <label for="analyst">Asignar a analista:</label>
-      <select id="analyst" [(ngModel)]="selectedAnalyst" (change)="assignAnalyst()">
+      <select
+        id="analyst"
+        [(ngModel)]="selectedAnalystId"
+        (change)="assignAnalyst()"
+        style="border-radius: 8px; padding: 6px; width: 100%; margin-top: 5px;"
+      >
         <option value="" disabled selected>Selecciona un analista</option>
-        <option *ngFor="let analyst of analysts" [value]="analyst">{{ analyst }}</option>
+        <option *ngFor="let analyst of analysts" [value]="analyst.sub">
+          {{ analyst.name }}
+        </option>
       </select>
     </div>
   </div>
 
   <div>
-    <app-chat [userType]="isSupervisor || isAnalyst ? 'admin' : 'user'"></app-chat>
+    <app-chat [userType]="userTypeFromStorage"></app-chat>
   </div>
 </div>

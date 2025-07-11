@@ -7,6 +7,7 @@ import { DetailsPageComponent } from '../../../details-page/details-page.compone
 import { Router } from '@angular/router';
 import { NzModalRef } from 'ng-zorro-antd/modal';
 import { SolicitudService } from '../../../services/solicitud.service';
+import axios from 'axios';
 
 @Component({
   selector: 'app-details',
@@ -25,7 +26,10 @@ export class DetailsComponent implements OnInit {
   isSupervisor: boolean = false;
 
   selectedAnalyst: string = '';
-  analysts: string[] = ['Analista 1', 'Analista 2', 'Analista 3'];
+  analysts: { sub: string; name: string; type:string }[] = [];
+  selectedAnalystId: string = '';
+
+  userTypeFromStorage: 'requester' | 'analyst' | 'supervisor' = 'requester';
 
   constructor(
     private localStorage: LocalStorageService,
@@ -35,13 +39,118 @@ export class DetailsComponent implements OnInit {
 
   ngOnInit(): void {
     console.log('Solicitud recibida en DetailsComponent:', this.solicitud);
+
+    this.userTypeFromStorage = this.getUserTypeFromStorage();
     this.checkUserType();
 
     if (this.isSupervisor) {
-      const name = this.localStorage.get('nameUser') || 'Supervisor';
-      if (!this.analysts.includes(name)) {
-        this.analysts.unshift(name);
+      this.fetchAnalistas().then(() => {
+        this.selectedAnalystId = this.solicitud?.supervisor_id || this.solicitud?.analyst_id || '';
+      });
+    }
+  }
+
+  getUserTypeFromStorage(): 'requester' | 'analyst' | 'supervisor' {
+    const rawType = localStorage.getItem('typeUser');
+    if (!rawType) return 'requester';
+
+    try {
+      const parsed = JSON.parse(rawType);
+      const userType = parsed._value || parsed || 'requester';
+      if (userType === 'analyst' || userType === 'supervisor' || userType === 'requester') {
+        return userType;
+      } else {
+        return 'requester';
       }
+    } catch {
+      if (rawType === 'analyst' || rawType === 'supervisor' || rawType === 'requester') {
+        return rawType;
+      }
+      return 'requester';
+    }
+  }
+
+  async fetchAnalistas(): Promise<void> {
+    try {
+      const rawToken = localStorage.getItem('accessToken');
+      let token = '';
+      let decoded: any = null;
+
+      if (rawToken) {
+        try {
+          const parsed = JSON.parse(rawToken);
+          token = parsed._value || '';
+        } catch (e) {
+          token = rawToken;
+        }
+        const payload = token.split('.')[1];
+        decoded = JSON.parse(atob(payload));
+      }
+
+      const response = await axios.get('http://localhost:3006/api/v1/staff/analyst/all', {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      const data = response.data.data || [];
+      this.analysts = data.map((analyst: any) => ({
+        sub: analyst.sub || '',
+        name: analyst.name || analyst.full_name || 'Analista',
+        type: 'analyst'
+      }));
+      if (decoded?.sub && decoded['name']) {
+        const yaExiste = this.analysts.some(a => a.sub === decoded.sub);
+        if (!yaExiste) {
+          this.analysts.unshift({
+            sub: decoded.sub,
+            name: decoded['name'],
+            type: 'supervisor'
+          });
+        }
+      }
+
+      console.log('Analistas cargados:', this.analysts);
+    } catch (error) {
+      console.error('Error al obtener analistas:', error);
+    }
+  }
+
+  async assignAnalyst(): Promise<void> {
+    const seleccionado = this.analysts.find(a => a.sub === this.selectedAnalystId);
+    if (!seleccionado) {
+      console.warn('Analista no encontrado');
+      return;
+    }
+
+    const rawToken = localStorage.getItem('accessToken');
+    let token = '';
+
+    if (rawToken) {
+      try {
+        const parsed = JSON.parse(rawToken);
+        token = parsed._value || '';
+      } catch (e) {
+        token = rawToken;
+      }
+    }
+
+    const id = this.solicitud?.id;
+    const url = `http://localhost:3002/api/v1/requests/${id}`;
+
+    const body =
+      seleccionado.type === 'supervisor'
+        ? { supervisor_id: seleccionado.sub, status: 2 }
+        : { analyst_id: seleccionado.sub };
+
+    try {
+      const response = await axios.patch(url, body, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      console.log('Asignación exitosa:', response.data);
+    } catch (error) {
+      console.error('Error al asignar analista/supervisor:', error);
     }
   }
 
@@ -56,10 +165,6 @@ export class DetailsComponent implements OnInit {
       isSupervisor: this.isSupervisor,
       isAdmin: this.isAdmin
     });
-  }
-
-  assignAnalyst(): void {
-    console.log(`Solicitud ${this.solicitud?.id} asignada a: ${this.selectedAnalyst}`);
   }
 
   details(): void {

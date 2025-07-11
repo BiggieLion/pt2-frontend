@@ -77,11 +77,13 @@
 }
 
 .custom-modal {
+  border-radius: 12px !important;
   min-width: 2000px;
   width: 100%;
 }
 
 .custom-modal .ant-modal-content {
+  border-radius: 12px !important;
   min-width: 2000px;
   width: 100%;
 }
