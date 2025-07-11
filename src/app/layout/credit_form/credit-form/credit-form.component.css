@@ -1,0 +1,61 @@
+.container {
+  background-color: #f43a49;
+  justify-content: center;
+  align-items: center;
+  padding-bottom: 20px;
+  padding-top: 20px;
+  padding-left: 50px;
+  padding-right: 50px;
+}
+
+.form-container {
+  display: flex;
+  background-color: white;
+  border-radius: 10px; 
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+.personal {
+  display: flex;
+}
+
+.house {
+  display: flex;
+}
+.proffesional {
+  display: flex;
+}
+
+[nz-form] {
+  max-width: 1000px; 
+  min-width: 1000px;
+  padding: 20px;
+}
+
+.register-area {
+  margin-top: 20px; 
+}
+
+nz-form-label {
+  margin-right: 5px; 
+  width: 250px; 
+  min-width: 250px;
+}
+
+nz-form-control {
+  flex: 1; 
+}
+
+nz-form-control input {
+  width: 150px;
+}
+.form-section-title {
+  grid-column: 1 / -1;
+  font-size: 18px;
+  margin: 32px 0 10px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid #ccc;
+  color: #444;
+}
+.credit-group nz-form-item:not(:last-child) {
+  margin-bottom: 16px;
+}

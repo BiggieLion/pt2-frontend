@@ -1,0 +1,85 @@
+.chat-container {
+  display: flex;
+  flex-direction: column;
+  height: 350px;
+  border: 1px solid #d9d9d9;
+  border-radius: 4px;
+  max-width: 300px;
+  margin-left: 20px;
+  font-family: Arial, sans-serif;
+}
+
+.messages {
+  flex: 1;
+  padding: 10px;
+  overflow-y: auto;
+}
+
+.message {
+  position: relative;
+  padding: 8px 12px;
+  margin-bottom: 10px;
+  border-radius: 10px;
+  max-width: 75%;
+  word-wrap: break-word;
+  color: black;
+  font-size: 14px;
+}
+
+/* REQUESTER */
+.sent-requester {
+  background-color: #6CB4DC;  /* verde claro */
+  margin-left: auto;
+  text-align: right;
+}
+
+.received-requester {
+  background-color: #6CB4DC;  /* verde oscuro */
+  margin-right: auto;
+  text-align: left;
+}
+
+/* ANALYST */
+.sent-analyst {
+  background-color: #A86368; /* azul claro */
+  margin-left: auto;
+  text-align: right;
+}
+
+.received-analyst {
+  background-color: #A86368; /* azul oscuro */
+  margin-right: auto;
+  text-align: left;
+}
+
+/* SUPERVISOR */
+.sent-supervisor {
+  background-color: #E84F59; /* naranja claro */
+  margin-left: auto;
+  text-align: right;
+}
+
+.received-supervisor {
+  background-color: #E84F59; /* naranja oscuro */
+  margin-right: auto;
+  text-align: left;
+}
+
+.timestamp {
+  position: absolute;
+  bottom: 4px;
+  right: 8px;
+  font-size: 10px;
+  color: black;
+}
+
+.chat-input {
+  display: flex;
+  padding: 10px;
+  border-top: 1px solid #d9d9d9;
+}
+
+.chat-input input {
+  flex: 1;
+  margin-right: 10px;
+}

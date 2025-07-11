@@ -1,0 +1,40 @@
+<app-top-menu></app-top-menu>
+<div class="container">
+  <form nz-form [formGroup]="validateForm" class="login-form" (ngSubmit)="submitForm()">
+  <h1> Bienvenido!</h1>
+    <nz-form-item>
+      <nz-form-control nzErrorTip="Ingresa tu correo!">
+        <nz-input-group nzPrefixIcon="user">
+          <input type="text" nz-input formControlName="userName" placeholder="Correo" />
+        </nz-input-group>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-control nzErrorTip="Ingresa contraseña!">
+        <nz-input-group nzPrefixIcon="lock">
+          <input type="password" nz-input formControlName="password" placeholder="Contraseña" />
+        </nz-input-group>
+      </nz-form-control>
+    </nz-form-item>
+    <div nz-row class="login-form-margin">
+      <div nz-col [nzSpan]="12">
+        <label nz-checkbox formControlName="remember">
+          <span>Recuerdame</span>
+        </label>
+      </div>
+      <div nz-col [nzSpan]="12">
+        <a class="login-form-forgot">Contraseña olvidada</a>
+      </div>
+    </div>
+    <button nz-button class="login-form-button login-form-margin" [nzType]="'primary'">Ingresar</button>
+    O
+    <a class="login-form-forgot" (click)="navigateToSignUp()">Regístrate ahora!</a>
+  </form>
+  <div class="content">
+    <h1>
+      Que gusto verte!<br>
+      La manera más sencilla y eficiente de solicitar un crédito.<br>
+      Respuesta en minutos. 
+    </h1>
+  </div>
+</div>

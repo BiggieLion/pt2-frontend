@@ -1,0 +1,24 @@
+<ul nz-menu nzMode="horizontal">
+  <li nz-submenu nzTitle="Menu de Navegacion" nzIcon="menu-unfold">
+    <ul>
+      <li nz-menu-group nzTitle="Usuario">
+        <ul>
+          <li nz-menu-item>        
+            <a (click)="navigateTo('/dashboard')">Inicio</a>
+          </li>
+          <li nz-menu-item>        
+            <a (click)="navigateTo('/form')">Solicitud de crédito</a>
+          </li>
+        </ul>
+      </li>
+      <li nz-menu-group nzTitle="Aplicacion">
+        <ul>
+          <li nz-menu-item>
+            <a (click)="navigateTo('/login')">Salir</a>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <a (click)="navigateTo('/dashboard')" style="color: white; margin-left: 19px;">Inicio</a>
+</ul>

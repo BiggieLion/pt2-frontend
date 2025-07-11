@@ -1,0 +1,50 @@
+<app-top-menu></app-top-menu>
+<div class="outer-container">
+    <div class="inner-container">
+      <div class="custom-container">
+        <nz-card class="custom-card" [nzBordered]="false" nzTitle="Resumen del proyecto" [nzExtra]="extraTemplate">
+            <p>A lo largo de este documento se describe una propuesta de solución enfocada al desarrollo de un sistema web de análisis de riesgos crediticios. Este sistema tiene como objetivo principal el automatizar el proceso de análisis las variables contenidas en una solicitud de crédito financiero a través de una herramienta de inteligencia artificial considerando un patrón de riesgo que valide los resultados obtenidos, tomando en cuenta las garantías que ofrece el prestatario para cubrir dicho crédito, y cotejando la solicitud ingresada con solicitudes pasadas que servirán como modelo para entrenamiento de la herramienta.</p>
+        </nz-card>
+      </div>
+      <ng-template #extraTemplate>
+        <button nz-button [nzType]="'primary'" (click)="showModal()"><span>Detalles</span></button>
+        <nz-modal [(nzVisible)]="isVisible" nzTitle="The first Modal" (nzOnCancel)="handleCancel()" (nzOnOk)="handleOk()">
+          <ng-container *nzModalContent>
+            <p>Mas detalles</p>
+          </ng-container>
+        </nz-modal>
+      </ng-template>
+      <div class="custom-container">
+        <nz-card class="custom-card" [nzBordered]="false" nzTitle="Modulos del proyecto" [nzExtra]="extraTemplate">
+            <p>Sesiones</p>
+            <p>Carga de documentos</p>
+            <p>Solicitud de crédito</p>
+            <p>Modelo de prediccion de riesgos</p>
+        </nz-card>
+      </div>
+      <ng-template #extraTemplate>
+        <button nz-button [nzType]="'primary'" (click)="showModal()"><span>Detalles</span></button>
+        <nz-modal [(nzVisible)]="isVisible" nzTitle="The first Modal" (nzOnCancel)="handleCancel()" (nzOnOk)="handleOk()">
+          <ng-container *nzModalContent>
+            <p>Sesiones</p>
+            <p>Carga de documentos</p>
+            <p>Solicitud de cr[edito</p>
+            <p>Modelo de prediccion de riesgos</p>
+          </ng-container>
+        </nz-modal>
+      </ng-template>
+      <div class="custom-container">
+        <nz-card class="custom-card" [nzBordered]="false" nzTitle="Resultados" [nzExtra]="extraTemplate">
+            <p>Resumen de resultados</p>
+        </nz-card>
+      </div>
+      <ng-template #extraTemplate>
+        <button nz-button [nzType]="'primary'" (click)="showModal()"><span>Detalles</span></button>
+        <nz-modal [(nzVisible)]="isVisible" nzTitle="The first Modal" (nzOnCancel)="handleCancel()" (nzOnOk)="handleOk()">
+          <ng-container *nzModalContent>
+            <p>Content one</p>
+          </ng-container>
+        </nz-modal>
+      </ng-template>
+    </div>
+</div>
