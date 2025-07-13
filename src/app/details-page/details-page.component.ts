@@ -25,59 +25,124 @@ export class DetailsPageComponent implements OnInit {
     private solicitudService: SolicitudService,
       private message: NzMessageService) {}
 
-  ngOnInit(): void {
-    this.solicitud = this.solicitudService.getSolicitud();
-    console.log('Solicitud recibida en details-page:', this.solicitud);
+async ngOnInit(): Promise<void> {
+  this.solicitud = this.solicitudService.getSolicitud();
+  console.log('Solicitud recibida en details-page:', this.solicitud);
 
-    if (this.solicitud) {
-      const ingresoMensual = this.solicitud.anualIncome / 12;
-      const mensualidad = this.solicitud.amount / this.solicitud.term;
-      this.esfuerzo = +(mensualidad / ingresoMensual * 100).toFixed(2);
-      console.log('Relación de esfuerzo calculada:', this.esfuerzo);
+  if (this.solicitud) {
+    const ingresoMensual = this.solicitud.monthly_income;
+    const mensualidad = this.solicitud.amount / this.solicitud.loan_term;
+    this.esfuerzo = +(mensualidad / ingresoMensual * 100).toFixed(2);
+    console.log('Relación de esfuerzo calculada:', this.esfuerzo);
 
-      const tipo = this.solicitud.creditType?.toLowerCase(); 
-      const id = this.solicitud.id;
-      console.log(this.solicitud.guarantee)
-      const tieneGarantia = this.solicitud.guarantee_type != 3;
-      const valorGarantia = this.solicitud.guaranteeValue || 0;
-      const montoSolicitado = this.solicitud.amount;
+    const tipo = this.solicitud.creditType?.toLowerCase();
+    const id = this.solicitud.id;
 
-      let limite: number;
-
-      if (!tieneGarantia) {
-        if (tipo === 'hipotecario') {
-          limite = 28;
-          console.log('Sin garantía - Hipotecario: límite = 28%');
-        } else {
-          limite = 35;
-          console.log('Sin garantía - Personal o Prendario: límite = 35%');
-        }
-      } else {
-        if (tipo === 'hipotecario') {
-          if (valorGarantia >= montoSolicitado) {
-            limite = 40;
-            console.log('Con garantía - Hipotecario (garantía suficiente): límite = 40%');
-          } else {
-            limite = 28;
-            console.log('Con garantía - Hipotecario (garantía insuficiente): límite = 28%');
-          }
-        } else if (tipo === 'personal') {
-          limite = 40;
-          console.log('Con garantía - Personal: límite = 40%');
-        } else if (tipo === 'prendario') {
-          limite = 45;
-          console.log('Con garantía - Prendario: límite = 45%');
-        } else {
-          limite = 35;
-          console.log('Tipo desconocido con garantía: límite por defecto = 35%');
-        }
-      }
-
-      console.log('Límite aplicado:', limite);
-      this.esfuerzoAlto = this.esfuerzo > limite;
-      console.log('¿Relación de esfuerzo alta?:', this.esfuerzoAlto);
+    if (!this.solicitud.guarantee_type) {
+      this.solicitud.guarantee_type = 3;
     }
+
+    const hasDomicile = this.solicitud.has_domicile ? 'Casa' : 'Departamento';
+
+    let occupationType: string;
+    switch (this.solicitud.occupation_type) {
+      case 0:
+        occupationType = 'Empleado';
+        break;
+      case 1:
+        occupationType = 'Estudiante';
+        break;
+      case 2:
+        occupationType = 'Desempleado';
+        break;
+      default:
+        occupationType = 'Ocupación desconocida';
+        break;
+    }
+
+    this.solicitud = {
+      ...this.solicitud,
+      hasDomicile,
+      occupationType,
+    };
+
+    // Obtener token
+    const rawToken = localStorage.getItem('accessToken');
+    let token = '';
+    if (rawToken) {
+      try {
+        const parsed = JSON.parse(rawToken);
+        token = parsed._value || '';
+      } catch (e) {
+        token = rawToken;
+      }
+    }
+
+    // Consultar documentos ine, birth, domicile
+    const docEndpoints = ['ine', 'birth', 'domicile'];
+    for (const doc of docEndpoints) {
+      try {
+        const res = await axios.get(`http://localhost:3010/api/v1/documents/${this.solicitud.requester_id}/${doc}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        const url = res.data?.data?.url || null;
+        if (url) {
+          this.solicitud[`url_${doc}`] = url;
+          console.log(`Documento ${doc} cargado:`, url);
+        } else {
+          console.warn(`No se encontró URL para documento ${doc}`);
+        }
+      } catch (error) {
+        console.error(`Error al consultar documento ${doc}:`, error);
+      }
+    }
+
+    // Consultar documento de garantía
+    try {
+      const res = await axios.get(`http://localhost:3010/api/v1/documents/guarantee/${this.solicitud.id}/${this.solicitud.requester_id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const url = res.data?.data?.url || null;
+      if (url) {
+        this.solicitud.url_guarantee = url;
+        console.log('Documento guarantee cargado:', url);
+      } else {
+        console.warn('No se encontró URL para documento guarantee');
+      }
+    } catch (error) {
+      console.error('Error al consultar documento guarantee:', error);
+    }
+
+    // Evaluar límite de relación de esfuerzo
+    const tieneGarantia = this.solicitud.guarantee_type != 3;
+    const valorGarantia = this.solicitud.guarantee_value || 0;
+    const montoSolicitado = this.solicitud.amount;
+    let limite: number;
+
+    if (!tieneGarantia) {
+      limite = tipo === 'hipotecario' ? 28 : 35;
+    } else {
+      if (tipo === 'hipotecario') {
+        limite = valorGarantia >= montoSolicitado ? 40 : 28;
+      } else if (tipo === 'personal') {
+        limite = 40;
+      } else if (tipo === 'prendario') {
+        limite = 45;
+      } else {
+        limite = 35;
+      }
+    }
+
+    this.esfuerzoAlto = this.esfuerzo > limite;
+    console.log('¿Relación de esfuerzo alta?:', this.esfuerzoAlto);
   }
+}
 
   getValorCatalogo<T extends Record<string, number>>(catalogo: T, clave: any, fallback: number): number {
     const key = (clave?.toLowerCase() ?? '') as keyof T;
@@ -85,7 +150,6 @@ export class DetailsPageComponent implements OnInit {
   }
 
   async aprobarSolicitud(): Promise<void> {
-    console.log('Solicitud aprobada manualmente');
 
     const rawToken = localStorage.getItem('accessToken');
     let token = '';
@@ -113,14 +177,12 @@ export class DetailsPageComponent implements OnInit {
         }
       );
       this.message.success('Solicitud aprobada');
-      console.log('Respuesta de aprobación:', response.data);
     } catch (error) {
       console.error('Error al aprobar solicitud:', error);
     }
   }
 
   async rechazarSolicitud(): Promise<void> {
-    console.log('Solicitud rechazada manualmente');
 
     const rawToken = localStorage.getItem('accessToken');
     let token = '';
@@ -147,7 +209,6 @@ export class DetailsPageComponent implements OnInit {
           }
         }
       );
-      console.log('Respuesta de rechazo:', response.data);
       this.message.success('Solicitud rechazada');
     } catch (error) {
       console.error('Error al rechazar solicitud:', error);
@@ -157,8 +218,20 @@ export class DetailsPageComponent implements OnInit {
     window.open(url, '_blank');
   }
 
-  procesarIA(): void {
+async procesarIA(): Promise<void>{
     if (!this.solicitud) return;
+
+    const rawToken = localStorage.getItem('accessToken');
+    let token = '';
+
+    if (rawToken) {
+      try {
+        const parsed = JSON.parse(rawToken);
+        token = parsed._value || '';
+      } catch (e) {
+        token = rawToken;
+      }
+    }
 
     const catalogos = {
       housingType: {
@@ -167,68 +240,107 @@ export class DetailsPageComponent implements OnInit {
         'hipotecada': 2,
         'otro': 3
       },
-      ocupation: {
-        'gerente de ventas': 0,
-        'ingeniero': 1,
-        'docente': 2,
-        'otros': 3
+      education: {
+        'Licenciatura': 0,
+        'Maestría': 0,
+        'Preparatoria': 1,
+        'Otro': 2
       },
-      position: {
+      ocupation: {
         'manager': 0,
         'junior': 1,
         'senior': 2,
-        'otros': 3
+        'Otro': 3
+      },
+      family: {
+        'Soltero': 0,
+        'Casado': 0,
+        'Divorciado': 1,
+        'Otro': 3
       }
     };
 
-    const ownRealty = this.solicitud.properties?.toLowerCase().includes('casa') ? 1 : 0;
-    const ownCar = this.solicitud.properties?.toLowerCase().includes('auto') ? 1 : 0;
+    const ownRealty = this.solicitud.has_own_realty ? 1 : 0;
+    const ownCar = this.solicitud.has_own_car ? 1 : 0;
+    const houseType = this.solicitud.has_domicile ? 1 :0;
+    const amountType = this.solicitud.days_employed > 0 ? 1 : 0;
 
-    const CNT_CHILDREN = Number(this.solicitud.children);
-    const AMT_INCOME_TOTAL = Number(this.solicitud.anualIncome);
-    const CNT_ADULTS = 2;
-    const CNT_FAM_MEMBERS = CNT_CHILDREN + CNT_ADULTS;
+    const CNT_CHILDREN = Number(this.solicitud.count_children);
+    const AMT_INCOME_TOTAL = Number(this.solicitud.monthly_income*12);
+    const CNT_ADULTS = this.solicitud.count_family_members - this.solicitud.count_children;
 
     const AMT_INCOME_PER_CHILDREN = CNT_CHILDREN > 0 ? +(AMT_INCOME_TOTAL / CNT_CHILDREN).toFixed(2) : 0;
-    const AMT_INCOME_PER_FAM_MEMBER = +(AMT_INCOME_TOTAL / CNT_FAM_MEMBERS).toFixed(2);
+    const AMT_INCOME_PER_FAM_MEMBER = +(AMT_INCOME_TOTAL /  this.solicitud.count_family_members).toFixed(2);
 
     const output = {
-      relation: [this.esfuerzoAlto ? 1 : 0], 
+      relation: [this.esfuerzoAlto], 
       FLAG_OWN_CAR: [ownCar],
       FLAG_OWN_REALTY: [ownRealty],
       CNT_CHILDREN: [CNT_CHILDREN],
       AMT_INCOME_TOTAL: [AMT_INCOME_TOTAL],
-      NAME_INCOME_TYPE: [0],
-      NAME_EDUCATION_TYPE: [0],
-      NAME_FAMILY_STATUS: [0],
-      NAME_HOUSING_TYPE: [
-        this.getValorCatalogo(catalogos.housingType, this.solicitud.housingType, 3)
+      NAME_INCOME_TYPE: [amountType],
+      NAME_EDUCATION_TYPE: [
+        this.getValorCatalogo(catalogos.education, this.solicitud.education, 3)
       ],
+      NAME_FAMILY_STATUS: [
+        this.getValorCatalogo(catalogos.family, this.solicitud.civil_status, 1)
+      ],
+      NAME_HOUSING_TYPE: [houseType],
       DAYS_BIRTH: [12005],
       DAYS_EMPLOYED: [4542],
       OCCUPATION_TYPE: [
         this.getValorCatalogo(catalogos.ocupation, this.solicitud.ocupation, 3)
       ],
-      CNT_FAM_MEMBERS: [CNT_FAM_MEMBERS],
+      CNT_FAM_MEMBERS: [ this.solicitud.count_family_members],
       CNT_ADULTS: [CNT_ADULTS],
       AMT_INCOME_PER_CHILDREN: [AMT_INCOME_PER_CHILDREN],
       AMT_INCOME_PER_FAM_MEMBER: [AMT_INCOME_PER_FAM_MEMBER]
     };
 
     console.log('Datos para IA:', output);
+    let resultadoIA :number = 50;
+    try {
+      const response = await axios.post(`http://127.0.0.1:5001/predict`, output, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      
+      resultadoIA = response.data.score
+    } catch (error) {
+      console.error('Error al obtener solicitud por ID:', error);
+    }
 
-    const resultadoIA = Math.floor(Math.random() * 101);
+    console.log("Resultado de la IA",resultadoIA)
+        const id = this.solicitud.id;
+    const url = `http://localhost:3002/api/v1/requests/${id}`;
+        try {
+      const response = await axios.patch(
+        url,
+        { score: resultadoIA },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
+      this.message.success('Solicitud evaluada correctamente');
+    } catch (error) {
+      console.error('Error al rechazar solicitud:', error);
+    }
     this.iaResultado = resultadoIA;
 
     if (resultadoIA < 40) {
-      this.iaMensaje = 'Solicitud Rechazada';
+      this.iaMensaje = 'Solicitud Rechazada por IA';
       this.iaColor = '#cc0000';
+      this.rechazarSolicitud()
     } else if (resultadoIA < 60) {
       this.iaMensaje = 'Solicitud a revisión manual, por favor tome las medidas necesarias...';
       this.iaColor = '#b97800';
     } else {
-      this.iaMensaje = 'Solicitud Aprobada';
+      this.iaMensaje = 'Solicitud Aprobada por IA';
       this.iaColor = '#2a8f2a';
     }
   }
+
 }

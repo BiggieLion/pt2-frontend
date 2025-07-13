@@ -43,6 +43,6 @@
   </div>
 
   <div>
-    <app-chat [userType]="userTypeFromStorage"></app-chat>
+    <app-chat [userType]="userTypeFromStorage" [chat]="solicitud?.chat" [id]="solicitud?.id" (messageSent)="onMessageSent()"></app-chat>
   </div>
 </div>

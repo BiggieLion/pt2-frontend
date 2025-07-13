@@ -53,9 +53,7 @@
           <select nz-select formControlName="civil_status" id="civil_status">
             <option value="soltero">Soltero</option>
             <option value="casado">Casado</option>
-            <option value="unionLibre">Unión libre</option>
             <option value="divorciado">Divorciado</option>
-            <option value="viudo">Viudo</option>
           </select>
         </nz-form-control>
       </nz-form-item>
@@ -64,12 +62,10 @@
         <nz-form-label nzRequired nzFor="education_level">Nivel educativo</nz-form-label>
         <nz-form-control>
           <select nz-select formControlName="education_level" id="education_level">
-            <option value="primaria">Primaria</option>
             <option value="secundaria">Secundaria</option>
             <option value="preparatoria">Preparatoria</option>
             <option value="licenciatura">Licenciatura</option>
             <option value="maestria">Maestría</option>
-            <option value="ingeniero">Ingeniero</option>
           </select>
         </nz-form-control>
       </nz-form-item>
@@ -97,7 +93,17 @@
           <nz-input-number formControlName="days_employed" [nzMin]="0" style="width: 100%;" id="days_employed" />
         </nz-form-control>
       </nz-form-item>
-
+      <nz-form-item>
+        <nz-form-label nzRequired nzFor="occupation_type">Ocupación</nz-form-label>
+        <nz-form-control>
+          <select nz-select formControlName="occupation_type" id="occupation_type">
+            <option [ngValue]="0">Empleado</option>
+            <option [ngValue]="0">Independiente</option>
+            <option [ngValue]="1">Estudiante</option>
+            <option [ngValue]="2">Desempleado</option>
+          </select>
+        </nz-form-control>
+      </nz-form-item>
       <h3 class="form-section-title">Inmueble</h3>
 
       <nz-form-item>

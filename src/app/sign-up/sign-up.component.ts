@@ -43,6 +43,7 @@ export class SignUpComponent {
       birthdate: ['', [Validators.required, this.birthdateValidator]],
       civil_status: ['', Validators.required],
       education_level: ['', Validators.required],
+      occupation_type: ['', Validators.required],
       gender: ['', Validators.required],
       monthly_income: [null, [Validators.required, Validators.min(0)]],
       has_own_car: [false],

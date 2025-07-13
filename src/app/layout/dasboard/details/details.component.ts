@@ -38,15 +38,69 @@ export class DetailsComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    console.log('Solicitud recibida en DetailsComponent:', this.solicitud);
-
     this.userTypeFromStorage = this.getUserTypeFromStorage();
     this.checkUserType();
 
-    if (this.isSupervisor) {
-      this.fetchAnalistas().then(() => {
-        this.selectedAnalystId = this.solicitud?.supervisor_id || this.solicitud?.analyst_id || '';
+    const id = this.solicitud?.id;
+    if (id) {
+      this.fetchSolicitudById(id).then(() => {
+        if (this.isSupervisor) {
+          this.fetchAnalistas().then(() => {
+            this.selectedAnalystId = this.solicitud?.supervisor_id || this.solicitud?.analyst_id || '';
+          });
+        }
       });
+    }
+  }
+async fetchSolicitudById(id: string): Promise<void> {
+  const rawToken = localStorage.getItem('accessToken');
+  let token = '';
+
+  if (rawToken) {
+    try {
+      const parsed = JSON.parse(rawToken);
+      token = parsed._value || '';
+    } catch (e) {
+      token = rawToken;
+    }
+  }
+
+  try {
+    const response = await axios.get(`http://localhost:3002/api/v1/requests/id/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+
+    const data = response.data?.data || {};
+
+    let creditTypeText = 'Desconocido';
+    switch (data.credit_type) {
+      case 1:
+        creditTypeText = 'Personal';
+        break;
+      case 2:
+        creditTypeText = 'Hipotecario';
+        break;
+      case 3:
+        creditTypeText = 'Prendario';
+        break;
+    }
+
+    this.solicitud = {
+      ...data,
+      creditType: creditTypeText,
+      chat: Array.isArray(data.chat) ? [...data.chat] : [] 
+    };
+  } catch (error) {
+    console.error('Error al obtener solicitud por ID:', error);
+  }
+}
+
+  onMessageSent(): void {
+    const id = this.solicitud?.id;
+    if (id) {
+      this.fetchSolicitudById(id);
     }
   }
 
@@ -108,8 +162,6 @@ export class DetailsComponent implements OnInit {
           });
         }
       }
-
-      console.log('Analistas cargados:', this.analysts);
     } catch (error) {
       console.error('Error al obtener analistas:', error);
     }
@@ -159,12 +211,6 @@ export class DetailsComponent implements OnInit {
     this.isAnalyst = userType === 'analyst';
     this.isSupervisor = userType === 'supervisor';
     this.isAdmin = userType === 'admin'; 
-
-    console.log('User type:', userType, {
-      isAnalyst: this.isAnalyst,
-      isSupervisor: this.isSupervisor,
-      isAdmin: this.isAdmin
-    });
   }
 
   details(): void {

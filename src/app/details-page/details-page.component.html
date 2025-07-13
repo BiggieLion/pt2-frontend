@@ -9,13 +9,13 @@
     <p><strong>Estatus:</strong> {{ solicitud.status }}</p>
     <p><strong>Tipo de crédito:</strong> {{ solicitud.creditType }}</p>
     <p><strong>Monto solicitado:</strong> ${{ solicitud.amount }}</p>
-    <p><strong>Plazo:</strong> {{ solicitud.loan_term }} meses</p>
+    <p><strong>Plazo (Meses):</strong> {{ solicitud.loan_term }} meses</p>
   </section>
 
 <section>
   <h3>Documentos</h3>
   <div style="display: flex; gap: 24px;">
-    <div *ngIf="solicitud?.url_address" style="display: flex; flex-direction: column; align-items: center;">
+    <div *ngIf="solicitud?.url_domicile" style="display: flex; flex-direction: column; align-items: center;">
       <img
         src="assets/pdf.png"
         alt="PDF"
@@ -27,7 +27,7 @@
       <span>Domicilio</span>
     </div>
 
-    <div *ngIf="solicitud?.url_birth_certificate" style="display: flex; flex-direction: column; align-items: center;">
+    <div *ngIf="solicitud?.url_birth" style="display: flex; flex-direction: column; align-items: center;">
       <img
         src="assets/pdf.png"
         alt="PDF"
@@ -67,10 +67,9 @@
 
   <section>
     <h3>Información laboral</h3>
-    <p><strong>Ocupación:</strong> {{ solicitud.ocupation }}</p>
-    <p><strong>Puesto:</strong> {{ solicitud.position }}</p>
-    <p><strong>Ingreso anual:</strong> ${{ solicitud.anualIncome }}</p>
-    <p><strong>Ingreso mensual estimado:</strong> ${{ (solicitud.anualIncome / 12) | number:'1.0-2' }}</p>
+    <p><strong>Ocupación:</strong> {{ solicitud.occupationType }}</p>
+    <p><strong>Escolaridad:</strong> {{ solicitud.education_level }}</p>
+    <p><strong>Ingreso mensual:</strong> ${{ solicitud.monthly_income }}</p>
   </section>
 
   <section>
@@ -85,12 +84,12 @@
 
   <section>
     <h3>Información familiar y patrimonial</h3>
-    <p><strong>Hijos:</strong> {{ solicitud.children }}</p>
-    <p><strong>Dependientes:</strong> {{ solicitud.dependents }}</p>
-    <p><strong>Tipo de vivienda:</strong> {{ solicitud.housingType }}</p>
-    <p><strong>Propiedades:</strong> {{ solicitud.properties }}</p>
-    <p><strong>Garantía:</strong> {{ solicitud.guarantee }}</p>
-    <p *ngIf="solicitud.guaranteeValue"><strong>Valor de la garantía:</strong> {{ solicitud.guaranteeValue }}</p>
+    <p><strong>Hijos:</strong> {{ solicitud.count_children }}</p>
+    <p><strong>Miembros de la familia:</strong> {{ solicitud.count_family_members }}</p>
+    <p><strong>Tipo de vivienda:</strong> {{ solicitud.hasDomicile }}</p>
+    <p><strong>Vivienda propia:</strong> {{ solicitud.has_own_realty ? 'Sí' : 'No' }}</p>
+    <p><strong>Garantía:</strong> {{ solicitud.has_guarantee ? 'Sí' : 'No' }}</p>
+    <p><strong>Valor de la garantía:</strong> {{ solicitud.guarantee_value != null ? solicitud.guarantee_value : 0 }}</p>
   </section>
 
     <button (click)="procesarIA()" style="margin-top: 16px; padding: 10px 20px; background-color: #333; color: white; border: none; border-radius: 8px;">
@@ -113,7 +112,7 @@
         "
         >
         <p style="font-size: 20px; margin-bottom: 10px;">
-            <strong>Resultado IA:</strong>
+            <strong>Resultado IA: </strong>
             <span [style.color]="iaColor">{{ iaResultado }}%</span>
         </p>
         <p [style.color]="iaColor" style="font-weight: bold; font-size: 18px;">
