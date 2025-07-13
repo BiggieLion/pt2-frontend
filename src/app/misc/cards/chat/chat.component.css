@@ -16,7 +16,6 @@
 }
 
 .message {
-  position: relative;
   padding: 8px 12px;
   margin-bottom: 10px;
   border-radius: 10px;
@@ -24,53 +23,54 @@
   word-wrap: break-word;
   color: black;
   font-size: 14px;
+  background-clip: padding-box;
+  display: block;
+  position: relative;
 }
 
-/* REQUESTER */
 .sent-requester {
-  background-color: #6CB4DC;  /* verde claro */
+  background-color: #6CB4DC;
   margin-left: auto;
-  text-align: right;
+  text-align: left;
 }
 
 .received-requester {
-  background-color: #6CB4DC;  /* verde oscuro */
+  background-color: #6CB4DC;
   margin-right: auto;
   text-align: left;
 }
 
-/* ANALYST */
 .sent-analyst {
-  background-color: #A86368; /* azul claro */
+  background-color: #A86368;
   margin-left: auto;
-  text-align: right;
+  text-align: left;
 }
 
 .received-analyst {
-  background-color: #A86368; /* azul oscuro */
+  background-color: #A86368;
   margin-right: auto;
   text-align: left;
 }
 
-/* SUPERVISOR */
 .sent-supervisor {
-  background-color: #E84F59; /* naranja claro */
+  background-color: #E84F59;
   margin-left: auto;
-  text-align: right;
+  text-align: left;
 }
 
 .received-supervisor {
-  background-color: #E84F59; /* naranja oscuro */
+  background-color: #E84F59;
   margin-right: auto;
   text-align: left;
 }
 
 .timestamp {
-  position: absolute;
-  bottom: 4px;
-  right: 8px;
+  display: block;
   font-size: 10px;
   color: black;
+  text-align: right;
+  margin-top: 4px;
+  margin-right: 4px;
 }
 
 .chat-input {
@@ -82,4 +82,37 @@
 .chat-input input {
   flex: 1;
   margin-right: 10px;
+}
+
+/* Responsivo */
+@media (max-width: 480px) {
+  .chat-container {
+    max-width: 100%;
+    margin-left: 0;
+    height: 400px;
+    border-radius: 0;
+  }
+
+  .message {
+    max-width: 90%;
+    font-size: 16px;
+    padding: 10px 14px;
+  }
+
+  .timestamp {
+    font-size: 8px;
+    margin-top: 2px;
+    margin-right: 2px;
+    color: rgba(0, 0, 0, 0.6);
+  }
+
+  .chat-input {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .chat-input input {
+    margin-right: 0;
+    width: 100%;
+  }
 }
