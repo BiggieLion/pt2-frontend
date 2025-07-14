@@ -61,3 +61,12 @@
     color: white; 
   }
   
+  @media (max-width: 768px) {
+  .content {
+    display: none;
+  }
+
+  .login-form {
+    max-width: 100% !important;
+  }
+}

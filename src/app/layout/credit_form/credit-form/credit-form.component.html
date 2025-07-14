@@ -14,7 +14,7 @@
             <option value="prendario">Prendario</option>
             </select>
         </nz-form-control>
-        <nz-form-label [nzSpan]="6" nzRequired nzFor="term">Plazo</nz-form-label>
+        <nz-form-label [nzSpan]="6" nzRequired nzFor="term">Plazo (Meses)</nz-form-label>
         <nz-form-control [nzSpan]="6">
             <select nz-select formControlName="term" id="term">
             <option *ngFor="let i of opciones0a99" [ngValue]="i">{{ i }}</option>
@@ -60,28 +60,28 @@
       <nz-form-item>
         <nz-form-label [nzSm]="6">INE</nz-form-label>
         <nz-form-control [nzSm]="14">
-          <input type="file" (change)="handleFileChange($event, 'ine')" />
+          <input type="file" style="width: 100%" (change)="handleFileChange($event, 'ine')" />
         </nz-form-control>
       </nz-form-item>
 
       <nz-form-item>
         <nz-form-label [nzSm]="6">Acta de nacimiento</nz-form-label>
         <nz-form-control [nzSm]="14">
-          <input type="file" (change)="handleFileChange($event, 'birth')" />
+          <input type="file" style="width: 100%" (change)="handleFileChange($event, 'birth')" />
         </nz-form-control>
       </nz-form-item>
 
       <nz-form-item>
         <nz-form-label [nzSm]="6">Comprobante de domicilio</nz-form-label>
         <nz-form-control [nzSm]="14">
-          <input type="file" (change)="handleFileChange($event, 'address')" />
+          <input type="file" style="width: 100%" (change)="handleFileChange($event, 'address')" />
         </nz-form-control>
       </nz-form-item>
 
       <nz-form-item *ngIf="showGuaranteeDoc">
         <nz-form-label [nzSm]="6">Comprobante de garantía</nz-form-label>
         <nz-form-control [nzSm]="14">
-          <input type="file" (change)="handleFileChange($event, 'guaranteeDoc')" />
+          <input type="file" style="width: 100%" (change)="handleFileChange($event, 'guaranteeDoc')" />
         </nz-form-control>
       </nz-form-item>
 

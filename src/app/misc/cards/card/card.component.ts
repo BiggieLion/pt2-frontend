@@ -170,7 +170,6 @@ export class CardComponent implements OnInit {
   }
 
   showDetails(solicitud: any): void {
-    console.log(solicitud)
     this.modalRef = this.modal.create({
       nzTitle: 'Detalles de la solicitud',
       nzContent: DetailsComponent,

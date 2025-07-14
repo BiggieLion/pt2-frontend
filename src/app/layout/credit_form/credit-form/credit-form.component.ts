@@ -43,6 +43,13 @@ export class CreditFormComponent {
     guaranteeDoc: null
   };
 
+  documentUrls: { [key: string]: string | null } = {
+    ine: null,
+    birth: null,
+    address: null,
+    guaranteeDoc: null
+  };
+
   constructor(
     private fb: FormBuilder,
     private message: NzMessageService
@@ -56,15 +63,105 @@ export class CreditFormComponent {
     });
   }
 
-  onGuaranteeChange(): void {
+lastRequestId: string = ''; // Declarar en tu clase
+
+  async onGuaranteeChange(): Promise<void> {
     const value = this.validateForm.get('guarantee')?.value;
     this.showGuaranteeDoc = value !== 'noGuarantee' && value !== '';
+
+    if (this.showGuaranteeDoc) {
+      const rawToken = localStorage.getItem('accessToken');
+      let token = '';
+
+      if (rawToken) {
+        try {
+          const parsed = JSON.parse(rawToken);
+          token = parsed._value || '';
+        } catch (e) {
+          token = rawToken;
+        }
+      }
+
+      try {
+        const response = await axios.get('http://localhost:3002/api/v1/requests/last', {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+        this.lastRequestId = response.data?.data?.lastId + 1 || '';
+      } catch (error) {
+        console.error('Error al consultar la última solicitud:', error);
+      }
+    }
   }
 
-  handleFileChange(event: Event, type: string): void {
+  async handleFileChange(event: Event, type: string): Promise<void> {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files.length > 0) {
-      this.documentFiles[type] = input.files[0];
+      const file = input.files[0];
+      this.documentFiles[type] = file;
+
+      const rawToken = localStorage.getItem('accessToken');
+      let token = '';
+      if (rawToken) {
+        try {
+          const parsed = JSON.parse(rawToken);
+          token = parsed._value || '';
+        } catch (e) {
+          token = rawToken;
+        }
+      }
+
+      // Construir endpoint con base en tipo
+      let uploadUrl = '';
+      let getUrl = '';
+
+      if (type === 'guaranteeDoc') {
+        if (!this.lastRequestId) {
+          this.message.error('No se ha obtenido el ID de la última solicitud.');
+          return;
+        }
+        uploadUrl = `http://localhost:3010/api/v1/documents/${this.lastRequestId}/guarantee`;
+        getUrl = `http://localhost:3010/api/v1/documents/guarantee/file/${this.lastRequestId}`;
+      } else {
+        const endpoints: Record<string, string> = {
+          ine: 'http://localhost:3010/api/v1/documents/ine',
+          birth: 'http://localhost:3010/api/v1/documents/birth',
+          address: 'http://localhost:3010/api/v1/documents/domicile'
+        };
+        uploadUrl = endpoints[type];
+        getUrl = endpoints[type];
+      }
+
+      try {
+        // subir archivo
+        const formData = new FormData();
+        formData.append('file', file);
+
+        await axios.post(uploadUrl, formData, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'multipart/form-data'
+          }
+        });
+        this.message.success(`Documento ${type} subido correctamente`);
+
+        // obtener link
+        const response = await axios.get(getUrl, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+
+        const url = response.data?.data?.url || null;
+        if (url) {
+          this.documentUrls[type] = url;
+          console.log(`URL del documento ${type}:`, url);
+        } else {
+          this.message.warning(`No se obtuvo URL para el documento ${type}`);
+        }
+      } catch (error) {
+        console.error(`Error al subir u obtener URL del documento ${type}:`, error);
+        this.message.error(`Error al subir documento ${type}`);
+      }
     }
   }
 
@@ -91,18 +188,10 @@ export class CreditFormComponent {
         guarantee_type: guaranteeMap[formValues.guarantee] || 0,
         guarantee_value: formValues.guaranteeValue || 0,
 
-        url_ine: this.documentFiles['ine']
-          ? URL.createObjectURL(this.documentFiles['ine'])
-          : null,
-        url_birth_certificate: this.documentFiles['birth']
-          ? URL.createObjectURL(this.documentFiles['birth'])
-          : null,
-        url_address: this.documentFiles['address']
-          ? URL.createObjectURL(this.documentFiles['address'])
-          : null,
-        url_guarantee: this.showGuaranteeDoc && this.documentFiles['guaranteeDoc']
-          ? URL.createObjectURL(this.documentFiles['guaranteeDoc'])
-          : null,
+        url_ine: this.documentUrls['ine'],
+        url_birth_certificate: this.documentUrls['birth'],
+        url_address: this.documentUrls['address'],
+        url_guarantee: this.showGuaranteeDoc ? this.documentUrls['guaranteeDoc'] : null
       };
       const rawToken = localStorage.getItem('accessToken');
       let token = '';
@@ -127,9 +216,9 @@ export class CreditFormComponent {
           }
         }
       );
-      console.log('Respuesta de rechazo:', response.data);
+      console.log('Respuesta:', response.data);
     } catch (error) {
-      console.error('Error al rechazar solicitud:', error);
+      console.error('Error:', error);
     }
       console.log('Datos para enviar:', result);
       this.message.success('Solicitud creada');

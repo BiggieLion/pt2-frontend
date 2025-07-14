@@ -14,6 +14,7 @@
   border-radius: 10px; 
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
+
 .personal {
   display: flex;
 }
@@ -21,6 +22,7 @@
 .house {
   display: flex;
 }
+
 .proffesional {
   display: flex;
 }
@@ -48,6 +50,7 @@ nz-form-control {
 nz-form-control input {
   width: 150px;
 }
+
 .form-section-title {
   grid-column: 1 / -1;
   font-size: 18px;
@@ -56,6 +59,57 @@ nz-form-control input {
   border-bottom: 1px solid #ccc;
   color: #444;
 }
+
 .credit-group nz-form-item:not(:last-child) {
   margin-bottom: 16px;
+}
+
+/* Estilos responsivos */
+@media (max-width: 768px) {
+  .container {
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+
+  [nz-form] {
+    max-width: 100%;
+    min-width: auto;
+    padding: 15px;
+  }
+
+  .form-container {
+    flex-direction: column;
+    padding: 15px;
+  }
+
+  .personal,
+  .house,
+  .proffesional {
+    flex-direction: column;
+  }
+
+  nz-form-label {
+    width: 100% !important;
+    min-width: auto !important;
+    margin-bottom: 6px;
+  }
+
+  nz-form-control {
+    width: 100%;
+    flex: none;
+  }
+
+  nz-form-control input {
+    width: 100% !important;
+    min-width: auto;
+  }
+
+  nz-form-item[nz-row] {
+    flex-direction: column !important;
+  }
+
+  .register-area nz-form-control {
+    width: 100% !important;
+    margin-top: 20px;
+  }
 }
