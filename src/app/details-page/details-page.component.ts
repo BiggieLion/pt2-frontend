@@ -286,7 +286,7 @@ export class DetailsPageComponent implements OnInit {
     ).toFixed(2);
 
     const output = {
-      relation: [this.esfuerzoAlto],
+      relation: this.esfuerzoAlto,
       FLAG_OWN_CAR: [ownCar],
       FLAG_OWN_REALTY: [ownRealty],
       CNT_CHILDREN: [CNT_CHILDREN],
@@ -314,7 +314,7 @@ export class DetailsPageComponent implements OnInit {
     let resultadoIA: number = 50;
     try {
       const response = await axios.post(
-        `http://127.0.0.1:5001/predict`,
+        `http://localhost:3002/api/v1/requests/evaluate/${this.solicitud?.id}`,
         output,
         {
           headers: {
@@ -322,8 +322,7 @@ export class DetailsPageComponent implements OnInit {
           },
         }
       );
-
-      resultadoIA = response.data.score;
+      resultadoIA = response.data?.data?.score;
     } catch (error) {
       console.error('Error al obtener solicitud por ID:', error);
     }
