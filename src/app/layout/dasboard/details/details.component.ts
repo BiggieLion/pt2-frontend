@@ -6,13 +6,14 @@ import { ChatComponent } from '../../../misc/cards/chat/chat.component';
 import { DetailsPageComponent } from '../../../details-page/details-page.component';
 import { Router } from '@angular/router';
 import { NzModalRef } from 'ng-zorro-antd/modal';
+import { NzSpinModule } from 'ng-zorro-antd/spin';
 import { SolicitudService } from '../../../services/solicitud.service';
 import axios from 'axios';
 
 @Component({
   selector: 'app-details',
   standalone: true,
-  imports: [CommonModule, FormsModule, ChatComponent, DetailsPageComponent],
+  imports: [CommonModule, FormsModule, ChatComponent, DetailsPageComponent, NzSpinModule],
   templateUrl: './details.component.html',
   styleUrls: ['./details.component.css']
 })
@@ -37,65 +38,91 @@ export class DetailsComponent implements OnInit {
     private solicitudService: SolicitudService
   ) {}
 
-  ngOnInit(): void {
-    this.userTypeFromStorage = this.getUserTypeFromStorage();
-    this.checkUserType();
+  loading: boolean = true;
 
-    const id = this.solicitud?.id;
-    if (id) {
-      this.fetchSolicitudById(id).then(() => {
+  async ngOnInit(): Promise<void> {
+    this.loading = true;
+
+    try {
+      this.userTypeFromStorage = this.getUserTypeFromStorage();
+      this.checkUserType();
+
+      const id = this.solicitud?.id;
+      if (id) {
+        await this.fetchSolicitudById(id);
         if (this.isSupervisor) {
-          this.fetchAnalistas().then(() => {
-            this.selectedAnalystId = this.solicitud?.supervisor_id || this.solicitud?.analyst_id || '';
-          });
+          await this.fetchAnalistas();
+          this.selectedAnalystId = this.solicitud?.supervisor_id || this.solicitud?.analyst_id || '';
+        }
+      }
+    } finally {
+      this.loading = false;
+    }
+  }
+
+  async fetchSolicitudById(id: string): Promise<void> {
+    const rawToken = localStorage.getItem('accessToken');
+    let token = '';
+
+    if (rawToken) {
+      try {
+        const parsed = JSON.parse(rawToken);
+        token = parsed._value || '';
+      } catch (e) {
+        token = rawToken;
+      }
+    }
+
+    try {
+      const response = await axios.get(`http://localhost:3002/api/v1/requests/id/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`
         }
       });
-    }
-  }
-async fetchSolicitudById(id: string): Promise<void> {
-  const rawToken = localStorage.getItem('accessToken');
-  let token = '';
 
-  if (rawToken) {
-    try {
-      const parsed = JSON.parse(rawToken);
-      token = parsed._value || '';
-    } catch (e) {
-      token = rawToken;
-    }
-  }
+      const data = response.data?.data || {};
+      console.log(data)
 
-  try {
-    const response = await axios.get(`http://localhost:3002/api/v1/requests/id/${id}`, {
-      headers: {
-        Authorization: `Bearer ${token}`
+      let creditStatus = 'Desconocido';
+      switch (data.status) {
+        case 1:
+          creditStatus = 'Enviada';
+          break;
+        case 2:
+          creditStatus = 'En revisión';
+          break;
+        case 3:
+          creditStatus = 'Aprobada';
+          break;
+        case 4:
+          creditStatus = 'Rechazada';
+          break;
       }
-    });
 
-    const data = response.data?.data || {};
+      let creditTypeText = 'Desconocido';
+      switch (data.credit_type) {
+        case 1:
+          creditTypeText = 'Personal';
+          break;
+        case 2:
+          creditTypeText = 'Hipotecario';
+          break;
+        case 3:
+          creditTypeText = 'Prendario';
+          break;
+      }
 
-    let creditTypeText = 'Desconocido';
-    switch (data.credit_type) {
-      case 1:
-        creditTypeText = 'Personal';
-        break;
-      case 2:
-        creditTypeText = 'Hipotecario';
-        break;
-      case 3:
-        creditTypeText = 'Prendario';
-        break;
+      this.solicitud = {
+        ...data,
+        creditType: creditTypeText,
+        creditStatus: creditStatus,
+        chat: Array.isArray(data.chat) ? [...data.chat] : [] 
+      };
+      console.log("Solicitud",this.solicitud)
+    } catch (error) {
+      console.error('Error al obtener solicitud por ID:', error);
     }
-
-    this.solicitud = {
-      ...data,
-      creditType: creditTypeText,
-      chat: Array.isArray(data.chat) ? [...data.chat] : [] 
-    };
-  } catch (error) {
-    console.error('Error al obtener solicitud por ID:', error);
   }
-}
 
   onMessageSent(): void {
     const id = this.solicitud?.id;

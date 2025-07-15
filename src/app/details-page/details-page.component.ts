@@ -61,8 +61,25 @@ export class DetailsPageComponent implements OnInit {
           break;
       }
 
+      let creditStatus = 'Desconocido';
+      switch (this.solicitud.status) {
+        case 1:
+          creditStatus = 'Enviada';
+          break;
+        case 2:
+          creditStatus = 'En revisión';
+          break;
+        case 3:
+          creditStatus = 'Aprobada';
+          break;
+        case 4:
+          creditStatus = 'Rechazada';
+          break;
+      }
+
       this.solicitud = {
         ...this.solicitud,
+        creditStatus,
         hasDomicile,
         occupationType,
       };

@@ -1,5 +1,9 @@
 <div class="custom-container">
   <div class="card-container">
+    <div *ngIf="!solicitudes || solicitudes.length === 0" class="no-solicitudes">
+      <p style="text-align: center; font-weight: bold;">Sin solicitudes a mostrar...</p>
+    </div>
+
     <div class="progress-bar-wrapper" *ngFor="let solicitud of solicitudes">
       <app-progress-bar
         class="progress-bar"

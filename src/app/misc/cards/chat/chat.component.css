@@ -84,6 +84,13 @@
   margin-right: 10px;
 }
 
+.sender-name {
+  font-weight: bold;
+  font-size: 9px;
+  margin-bottom: 2px;
+}
+
+
 /* Responsivo */
 @media (max-width: 480px) {
   .chat-container {
