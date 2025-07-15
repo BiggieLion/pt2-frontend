@@ -110,8 +110,8 @@ export class StaffSignComponent {
 
     const url =
       formValue.rol === 'supervisor'
-        ? 'http://localhost:3006/api/v1/staff/supervisor'
-        : 'http://localhost:3006/api/v1/staff/analyst';
+        ? 'http://13.221.39.214:3006/api/v1/staff/supervisor'
+        : 'http://13.221.39.214:3006/api/v1/staff/analyst';
 
     // 🔐 Obtener Bearer Token
     const rawToken = localStorage.getItem('accessToken');
@@ -127,6 +127,7 @@ export class StaffSignComponent {
     }
 
     try {
+      console.log('Enviando datos:', url);
       const response = await axios.post(url, formValue, {
         headers: {
           Authorization: `Bearer ${token}`,
