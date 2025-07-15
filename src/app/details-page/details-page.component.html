@@ -6,7 +6,13 @@
   <section>
     <h3>Información general</h3>
     <p><strong>ID:</strong> {{ solicitud.id }}</p>
-    <p><strong>Estatus:</strong> {{ solicitud.status }}</p>
+    <p><strong>Estatus:</strong> {{ solicitud.creditStatus }}</p>
+          <p><strong>Nombre del solicitante: </strong> 
+          {{
+            solicitud?.firstname?.split(' ')[0] + ' ' +
+            solicitud?.lastname?.split(' ')[0]
+          }}
+      </p>
     <p><strong>Tipo de crédito:</strong> {{ solicitud.creditType }}</p>
     <p><strong>Monto solicitado:</strong> ${{ solicitud.amount }}</p>
     <p><strong>Plazo (Meses):</strong> {{ solicitud.loan_term }} meses</p>

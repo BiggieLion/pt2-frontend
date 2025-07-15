@@ -70,3 +70,67 @@
     max-width: 100% !important;
   }
 }
+
+.custom-recover-btn {
+  color: white;
+  border: 2px solid white;
+  border-radius: 20px;
+  background-color: transparent;
+  transition: all 0.3s ease;
+}
+
+.custom-recover-btn:hover {
+  background-color: white;
+  color: #1890ff; /* color de texto al hacer hover */
+  border-color: white;
+}
+
+/* Formularios del modal */
+.modal-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+/* Inputs redondeados y con padding */
+.modal-input {
+  border-radius: 12px !important;
+  padding: 10px 14px;
+  border: 1px solid #d9d9d9;
+  transition: border-color 0.3s ease;
+  width: 100%;
+  box-sizing: border-box;
+  margin-bottom: 8px;
+}
+
+.modal-input:focus {
+  border-color: #f43a49 !important;
+  box-shadow: 0 0 5px rgba(244, 58, 73, 0.5);
+  outline: none;
+}
+
+.modal-button {
+  border-radius: 20px !important;
+  background-color: #f43a49 !important;
+  border: none !important;
+  color: white !important;
+  font-weight: 600;
+  padding: 5px 0;
+  width: 100%;
+  transition: background-color 0.3s ease;
+  cursor: pointer;
+}
+
+.modal-button:disabled {
+  background-color: #f43a49 !important;
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.modal-button:not(:disabled):hover {
+  background-color: #d7313f !important;
+  color: white !important;
+}

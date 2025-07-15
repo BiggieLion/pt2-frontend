@@ -56,14 +56,14 @@ export class CreditFormComponent {
   ) {
     this.validateForm = this.fb.group({
       credit: ['', Validators.required],
-      term: [0, Validators.required],
-      amount: [null, Validators.required],
-      guarantee: [''], 
-      guaranteeValue: [''] 
+      term: [null, [Validators.required, Validators.min(1)]], 
+      amount: [null, [Validators.required, Validators.min(1000)]], 
+      guarantee: [''],
+      guaranteeValue: ['']
     });
   }
 
-lastRequestId: string = ''; // Declarar en tu clase
+  lastRequestId: string = ''; 
 
   async onGuaranteeChange(): Promise<void> {
     const value = this.validateForm.get('guarantee')?.value;
@@ -99,6 +99,19 @@ lastRequestId: string = ''; // Declarar en tu clase
     const input = event.target as HTMLInputElement;
     if (input.files && input.files.length > 0) {
       const file = input.files[0];
+
+      const maxSizeInBytes = 1.5 * 1024 * 1024; 
+
+      if (file.type !== 'application/pdf') {
+        this.message.error('Solo se permiten archivos en formato PDF.');
+        return;
+      }
+
+      if (file.size > maxSizeInBytes) {
+        this.message.error('El archivo excede el tamaño máximo de 1.5 MB.');
+        return;
+      }
+
       this.documentFiles[type] = file;
 
       const rawToken = localStorage.getItem('accessToken');
@@ -112,7 +125,6 @@ lastRequestId: string = ''; // Declarar en tu clase
         }
       }
 
-      // Construir endpoint con base en tipo
       let uploadUrl = '';
       let getUrl = '';
 
@@ -134,7 +146,6 @@ lastRequestId: string = ''; // Declarar en tu clase
       }
 
       try {
-        // subir archivo
         const formData = new FormData();
         formData.append('file', file);
 
@@ -146,7 +157,6 @@ lastRequestId: string = ''; // Declarar en tu clase
         });
         this.message.success(`Documento ${type} subido correctamente`);
 
-        // obtener link
         const response = await axios.get(getUrl, {
           headers: { Authorization: `Bearer ${token}` }
         });
@@ -166,69 +176,144 @@ lastRequestId: string = ''; // Declarar en tu clase
   }
 
   async submitForm(): Promise<void> {
-    if (this.validateForm.valid) {
-      const formValues = this.validateForm.value;
+    if (!this.validateForm.valid) {
+      const errores: string[] = [];
 
-      const creditMap: Record<string, number> = {
-        personal: 1,
-        hipotecario: 2,
-        prendario: 3
-      };
-
-      const guaranteeMap: Record<string, number> = {
-        mueble: 1,
-        inmueble: 2,
-        noGuarantee: 0
-      };
-
-      const result = {
-        credit_type: creditMap[formValues.credit] || 0,
-        amount: formValues.amount,
-        loan_term: formValues.term,
-        guarantee_type: guaranteeMap[formValues.guarantee] || 0,
-        guarantee_value: formValues.guaranteeValue || 0,
-
-        url_ine: this.documentUrls['ine'],
-        url_birth_certificate: this.documentUrls['birth'],
-        url_address: this.documentUrls['address'],
-        url_guarantee: this.showGuaranteeDoc ? this.documentUrls['guaranteeDoc'] : null
-      };
-      const rawToken = localStorage.getItem('accessToken');
-      let token = '';
-
-      if (rawToken) {
-        try {
-          const parsed = JSON.parse(rawToken);
-          token = parsed._value || '';
-        } catch (e) {
-          token = rawToken;
-        }
-      }
-
-      const url = `http://localhost:3002/api/v1/requests`;
-      
-    try {
-      const response = await axios.post(
-        url, result,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        }
-      );
-      console.log('Respuesta:', response.data);
-    } catch (error) {
-      console.error('Error:', error);
-    }
-      console.log('Datos para enviar:', result);
-      this.message.success('Solicitud creada');
-    } else {
-      Object.values(this.validateForm.controls).forEach(control => {
+      Object.entries(this.validateForm.controls).forEach(([key, control]) => {
         if (control.invalid) {
           control.markAsDirty();
           control.updateValueAndValidity({ onlySelf: true });
+
+          switch (key) {
+            case 'credit':
+              errores.push('Tipo de crédito es obligatorio.');
+              break;
+            case 'term':
+              errores.push('Plazo inválido. Debe estar entre 1 y 120 meses.');
+              break;
+            case 'amount':
+              errores.push('Monto del crédito inválido. Debe ser mayor o igual a $1,000.');
+              break;
+            case 'guarantee':
+              errores.push('Tipo de garantía es obligatorio.');
+              break;
+            case 'guaranteeValue':
+              errores.push('Valor de la garantía no puede ser negativo.');
+              break;
+          }
         }
       });
+
+      errores.forEach(msg => this.message.error(msg));
+      return;
     }
+
+    const { amount, term, guaranteeValue } = this.validateForm.value;
+
+    if (amount < 1000) {
+      this.message.error('El monto del crédito debe ser mayor o igual a $1,000.');
+      return;
+    }
+
+    if (term < 1 ) {
+      this.message.error('Ingrese un plazo válido.');
+      return;
+    }
+
+    if (this.showGuaranteeDoc && guaranteeValue !== null && guaranteeValue < 0) {
+      this.message.error('El valor de la garantía no puede ser negativo.');
+      return;
+    }
+    const documentosRequeridos = ['ine', 'birth', 'address'];
+    if (this.showGuaranteeDoc) {
+      documentosRequeridos.push('guaranteeDoc');
+    }
+
+    const documentosFaltantes = documentosRequeridos.filter(doc => !this.documentUrls[doc]);
+
+    if (documentosFaltantes.length > 0) {
+      const nombresDocumentos: Record<string, string> = {
+        ine: 'INE',
+        birth: 'Acta de nacimiento',
+        address: 'Comprobante de domicilio',
+        guaranteeDoc: 'Comprobante de garantía'
+      };
+
+      documentosFaltantes.forEach(doc => {
+        this.message.error(`Falta subir el documento: ${nombresDocumentos[doc]}`);
+      });
+
+      return;
+    }
+
+
+    const formValues = this.validateForm.value;
+
+    const creditMap: Record<string, number> = {
+      personal: 1,
+      hipotecario: 2,
+      prendario: 3
+    };
+
+    const guaranteeMap: Record<string, number> = {
+      mueble: 1,
+      inmueble: 2,
+      noGuarantee: 0
+    };
+
+    const result = {
+      credit_type: creditMap[formValues.credit] || 0,
+      amount: formValues.amount,
+      loan_term: formValues.term,
+      guarantee_type: guaranteeMap[formValues.guarantee] || 0,
+      guarantee_value: formValues.guaranteeValue || 0,
+      url_ine: this.documentUrls['ine'],
+      url_birth_certificate: this.documentUrls['birth'],
+      url_address: this.documentUrls['address'],
+      url_guarantee: this.showGuaranteeDoc ? this.documentUrls['guaranteeDoc'] : null
+    };
+
+    const rawToken = localStorage.getItem('accessToken');
+    let token = '';
+    if (rawToken) {
+      try {
+        const parsed = JSON.parse(rawToken);
+        token = parsed._value || '';
+      } catch (e) {
+        token = rawToken;
+      }
+    }
+
+    const url = `http://localhost:3002/api/v1/requests`;
+
+    try {
+      const response = await axios.post(url, result, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      this.message.success('Solicitud creada correctamente.');
+      console.log('Respuesta:', response.data);
+
+      this.validateForm.reset();
+      this.documentFiles = {
+        ine: null,
+        birth: null,
+        address: null,
+        guaranteeDoc: null
+      };
+      this.documentUrls = {
+        ine: null,
+        birth: null,
+        address: null,
+        guaranteeDoc: null
+      };
+      this.showGuaranteeDoc = false;
+      this.lastRequestId = '';
+    } catch (error) {
+      console.error('Error:', error);
+      this.message.error('Hubo un error al crear la solicitud.');
+    }
+    console.log('Datos para enviar:', result);
   }
 }

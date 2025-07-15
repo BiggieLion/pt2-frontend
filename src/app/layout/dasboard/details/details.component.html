@@ -1,48 +1,65 @@
-<div class="custom-container">
-  <div>
-    <div class="section">
-      <p>Credito con Id: <strong>{{ solicitud?.id }}</strong></p>
-      <p>Estatus: <strong>{{ solicitud?.status }}</strong></p>
-      <p>Fecha de solicitud: <strong>{{ solicitud.created_at | date:'dd/MM/yyyy' }}</strong></p>
-    </div>
-    <div class="section">
-      <p>Tipo de crédito: <strong>{{ solicitud?.creditType }}</strong></p>
-      <p>Plazo (meses): <strong>{{ solicitud?.loan_term }}</strong></p>
-    </div>
+<nz-spin [nzSpinning]="loading">
+  <div *ngIf="!loading">
+    <div class="custom-container">
+      <div>
+        <div class="section">
+          <p>Credito con Id: <strong>{{ solicitud?.id }}</strong></p>
+          <p>Estatus: <strong>{{ solicitud?.creditStatus }}</strong></p>
+          <p>Nombre del solicitante: 
+            <strong>
+              {{
+                solicitud?.firstname?.split(' ')[0] + ' ' +
+                solicitud?.lastname?.split(' ')[0]
+              }}
+            </strong>
+          </p>
+          <p>Fecha de solicitud: <strong>{{ solicitud.created_at | date:'dd/MM/yyyy' }}</strong></p>
+        </div>
+        <div class="section">
+          <p>Tipo de crédito: <strong>{{ solicitud?.creditType }}</strong></p>
+          <p>Plazo (meses): <strong>{{ solicitud?.loan_term }}</strong></p>
+        </div>
 
-    <div *ngIf="isSupervisor || isAnalyst">
-      <button 
-        (click)="details()" 
-        style="
-          background-color: #FF9E9B;
-          border: none;
-          border-radius: 8px;
-          padding: 6px 16px;
-          font-weight: bold;
-          cursor: pointer;
-        "
-      >
-        Análisis
-      </button>
-    </div>
+        <div *ngIf="isSupervisor || isAnalyst">
+          <button 
+            (click)="details()" 
+            style="
+              background-color: #FF9E9B;
+              border: none;
+              border-radius: 8px;
+              padding: 6px 16px;
+              font-weight: bold;
+              cursor: pointer;
+            "
+          >
+            Análisis
+          </button>
+        </div>
 
-    <div *ngIf="isSupervisor" style="margin-top: 10px;">
-      <label for="analyst">Asignar a analista:</label>
-      <select
-        id="analyst"
-        [(ngModel)]="selectedAnalystId"
-        (change)="assignAnalyst()"
-        style="border-radius: 8px; padding: 6px; width: 100%; margin-top: 5px;"
-      >
-        <option value="" disabled selected>Selecciona un analista</option>
-        <option *ngFor="let analyst of analysts" [value]="analyst.sub">
-          {{ analyst.name }}
-        </option>
-      </select>
+        <div *ngIf="isSupervisor" style="margin-top: 10px;">
+          <label for="analyst">Asignar a analista:</label>
+          <select
+            id="analyst"
+            [(ngModel)]="selectedAnalystId"
+            (change)="assignAnalyst()"
+            style="border-radius: 8px; padding: 6px; width: 100%; margin-top: 5px;"
+          >
+            <option value="" disabled selected>Selecciona un analista</option>
+            <option *ngFor="let analyst of analysts" [value]="analyst.sub">
+              {{ analyst.name }}
+            </option>
+          </select>
+        </div>
+      </div>
+
+      <div>
+        <app-chat [userType]="userTypeFromStorage"
+        [chat]="solicitud?.chat" 
+        [id]="solicitud?.id"
+        [nombreCorto]="solicitud?.firstname?.split(' ')[0] + ' ' + solicitud?.lastname?.split(' ')[0]"
+          (messageSent)="onMessageSent()">
+        </app-chat>
+      </div>
     </div>
   </div>
-
-  <div>
-    <app-chat [userType]="userTypeFromStorage" [chat]="solicitud?.chat" [id]="solicitud?.id" (messageSent)="onMessageSent()"></app-chat>
-  </div>
-</div>
+</nz-spin>

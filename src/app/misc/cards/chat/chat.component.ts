@@ -9,8 +9,8 @@ interface Message {
   time: string;
   sender: 'requester' | 'analyst' | 'supervisor';
   text: string;
+  nombreCorto?: string; 
 }
-// ... imports iguales
 
 @Component({
   selector: 'app-chat',
@@ -23,6 +23,7 @@ export class ChatComponent implements OnInit, OnChanges {
   @Input() userType: 'requester' | 'analyst' | 'supervisor' = 'requester';
   @Input() chat: Message[] = []; 
   @Input() id: number = 0;
+  @Input() nombreCorto: string = "Usuario";
   @Output() messageSent = new EventEmitter<void>();
 
   localMessages: Message[] = []; 
@@ -39,55 +40,49 @@ export class ChatComponent implements OnInit, OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['chat'] && changes['chat'].currentValue) {
       this.localMessages = [...this.chat]; 
-      console.log('🟡 ngOnChanges - Chat actualizado desde padre:', this.localMessages);
+      console.log('ngOnChanges - Chat actualizado desde padre:', this.localMessages);
     }
   }
 
-async sendMessage(): Promise<void> {
-  if (this.newMessage.trim()) {
-    const newMsg: Message = {
-      sender: this.userType,
-      text: this.newMessage,
-      time: this.formatTime(new Date())
-    };
+  async sendMessage(): Promise<void> {
+    if (this.newMessage.trim()) {
+      const newMsg: Message = {
+        sender: this.userType,
+        text: this.newMessage,
+        time: this.formatTime(new Date()),
+        nombreCorto: this.nombreCorto 
+      };
 
-    const rawToken = localStorage.getItem('accessToken');
-    let token = '';
+      const rawToken = localStorage.getItem('accessToken');
+      let token = '';
 
-    if (rawToken) {
+      if (rawToken) {
+        try {
+          const parsed = JSON.parse(rawToken);
+          token = parsed._value || '';
+        } catch (e) {
+          token = rawToken;
+        }
+      }
+
+      const url = `http://localhost:3002/api/v1/requests/${this.id}`;
+
       try {
-        const parsed = JSON.parse(rawToken);
-        token = parsed._value || '';
-      } catch (e) {
-        token = rawToken;
+        const updatedChat = [...this.chat, newMsg];
+
+        await axios.patch(url, { chat: updatedChat }, {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+
+        this.messageSent.emit();
+        this.newMessage = '';
+      } catch (error) {
+        console.error('Error al enviar mensaje:', error);
       }
     }
-
-    const url = `http://localhost:3002/api/v1/requests/${this.id}`;
-
-    try {
-      await axios.patch(url, { chat: [] }, {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      });
-
-      const updatedChat = [...this.chat, newMsg];
-
-      await axios.patch(url, { chat: updatedChat }, {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      });
-
-      this.messageSent.emit();
-      this.newMessage = '';
-    } catch (error) {
-      console.error('Error al enviar mensaje:', error);
-    }
   }
-}
-
 
   formatTime(date: Date): string {
     const pad = (n: number) => n.toString().padStart(2, '0');
@@ -101,6 +96,19 @@ async sendMessage(): Promise<void> {
       return parsed._value || rawType || 'requester';
     } catch {
       return (rawType as any) || 'requester';
+    }
+  }
+
+  getLabel(sender: string): string {
+    switch (sender) {
+      case 'requester':
+        return 'Solicitante';
+      case 'analyst':
+        return 'Analista';
+      case 'supervisor':
+        return 'Supervisor';
+      default:
+        return 'Usuario';
     }
   }
 }
