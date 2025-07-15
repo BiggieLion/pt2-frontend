@@ -239,7 +239,7 @@ export class DetailsComponent implements OnInit {
     }
 
     const id = this.solicitud?.id;
-    const url = `http://localhost:3002/api/v1/requests/${id}`;
+    const url = `http://ec2-34-207-55-72.compute-1.amazonaws.com:3002/api/v1/requests/${id}`;
 
     const body =
       seleccionado.type === 'supervisor'

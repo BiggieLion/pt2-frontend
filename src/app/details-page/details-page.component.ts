@@ -101,7 +101,7 @@ export class DetailsPageComponent implements OnInit {
       for (const doc of docEndpoints) {
         try {
           const res = await axios.get(
-            `http://localhost:3010/api/v1/documents/${this.solicitud.requester_id}/${doc}`,
+            `http://ec2-34-207-55-72.compute-1.amazonaws.com:3010/api/v1/documents/${this.solicitud.requester_id}/${doc}`,
             {
               headers: {
                 Authorization: `Bearer ${token}`,
@@ -124,7 +124,7 @@ export class DetailsPageComponent implements OnInit {
       // Consultar documento de garantía
       try {
         const res = await axios.get(
-          `http://localhost:3010/api/v1/documents/guarantee/${this.solicitud.id}/${this.solicitud.requester_id}`,
+          `http://ec2-34-207-55-72.compute-1.amazonaws.com:3010/api/v1/documents/guarantee/${this.solicitud.id}/${this.solicitud.requester_id}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -191,7 +191,7 @@ export class DetailsPageComponent implements OnInit {
     }
 
     const id = this.solicitud.id;
-    const url = `http://localhost:3002/api/v1/requests/${id}`;
+    const url = `http://ec2-34-207-55-72.compute-1.amazonaws.com:3002/api/v1/requests/${id}`;
 
     try {
       const response = await axios.patch(
@@ -223,7 +223,7 @@ export class DetailsPageComponent implements OnInit {
     }
 
     const id = this.solicitud.id;
-    const url = `http://localhost:3002/api/v1/requests/${id}`;
+    const url = `http://ec2-34-207-55-72.compute-1.amazonaws.com:3002/api/v1/requests/${id}`;
 
     try {
       const response = await axios.patch(
@@ -339,7 +339,6 @@ export class DetailsPageComponent implements OnInit {
           },
         }
       );
-
       resultadoIA = response.data?.data?.score;
     } catch (error) {
       console.error('Error al obtener solicitud por ID:', error);
@@ -347,7 +346,7 @@ export class DetailsPageComponent implements OnInit {
 
     console.log('Resultado de la IA', resultadoIA);
     const id = this.solicitud.id;
-    const url = `http://localhost:3002/api/v1/requests/${id}`;
+    const url = `http://ec2-34-207-55-72.compute-1.amazonaws.com:3002/api/v1/requests/${id}`;
     try {
       const response = await axios.patch(
         url,
