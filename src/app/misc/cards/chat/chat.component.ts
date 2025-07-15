@@ -82,7 +82,7 @@ export class ChatComponent implements OnInit, OnChanges {
         }
       }
 
-      const url = `http://ec2-34-207-55-72.compute-1.amazonaws.com:3002/api/v1/requests/${this.id}`;
+      const url = `http://localhost:3002/api/v1/requests/${this.id}`;
 
       try {
         const updatedChat = [newMsg];

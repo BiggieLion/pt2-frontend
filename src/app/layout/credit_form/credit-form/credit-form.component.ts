@@ -81,7 +81,7 @@ export class CreditFormComponent {
 
       try {
         const response = await axios.get(
-          'http://ec2-34-207-55-72.compute-1.amazonaws.com:3002/api/v1/requests/last',
+          'http://localhost:3002/api/v1/requests/last',
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -133,15 +133,13 @@ export class CreditFormComponent {
           this.message.error('No se ha obtenido el ID de la última solicitud.');
           return;
         }
-        uploadUrl = `http://ec2-34-207-55-72.compute-1.amazonaws.com:3010/api/v1/documents/${this.lastRequestId}/guarantee`;
-        getUrl = `http://ec2-34-207-55-72.compute-1.amazonaws.com:3010/api/v1/documents/guarantee/file/${this.lastRequestId}`;
+        uploadUrl = `http://localhost:3010/api/v1/documents/${this.lastRequestId}/guarantee`;
+        getUrl = `http://localhost:3010/api/v1/documents/guarantee/file/${this.lastRequestId}`;
       } else {
         const endpoints: Record<string, string> = {
-          ine: 'http://ec2-34-207-55-72.compute-1.amazonaws.com:3010/api/v1/documents/ine',
-          birth:
-            'http://ec2-34-207-55-72.compute-1.amazonaws.com:3010/api/v1/documents/birth',
-          address:
-            'http://ec2-34-207-55-72.compute-1.amazonaws.com:3010/api/v1/documents/domicile',
+          ine: 'http://localhost:3010/api/v1/documents/ine',
+          birth: 'http://localhost:3010/api/v1/documents/birth',
+          address: 'http://localhost:3010/api/v1/documents/domicile',
         };
         uploadUrl = endpoints[type];
         getUrl = endpoints[type];
@@ -302,7 +300,7 @@ export class CreditFormComponent {
       }
     }
 
-    const url = `http://ec2-34-207-55-72.compute-1.amazonaws.com:3002/api/v1/requests`;
+    const url = `http://localhost:3002/api/v1/requests`;
 
     try {
       const response = await axios.post(url, result, {

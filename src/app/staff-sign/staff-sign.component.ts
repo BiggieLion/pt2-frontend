@@ -110,8 +110,8 @@ export class StaffSignComponent {
 
     const url =
       formValue.rol === 'supervisor'
-        ? 'http://ec2-34-207-55-72.compute-1.amazonaws.com:3006/api/v1/staff/supervisor'
-        : 'http://ec2-34-207-55-72.compute-1.amazonaws.com:3006/api/v1/staff/analyst';
+        ? 'http://localhost:3006/api/v1/staff/supervisor'
+        : 'http://localhost:3006/api/v1/staff/analyst';
 
     // 🔐 Obtener Bearer Token
     const rawToken = localStorage.getItem('accessToken');

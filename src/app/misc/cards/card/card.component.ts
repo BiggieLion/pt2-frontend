@@ -79,14 +79,11 @@ export class CardComponent implements OnInit {
         } catch (e) {}
       }
 
-      let endpoint =
-        'http://ec2-34-207-55-72.compute-1.amazonaws.com:3002/api/v1/requests/requester';
+      let endpoint = 'http://localhost:3002/api/v1/requests/requester';
       if (userType === 'supervisor') {
-        endpoint =
-          'http://ec2-34-207-55-72.compute-1.amazonaws.com:3002/api/v1/requests/all';
+        endpoint = 'http://localhost:3002/api/v1/requests/all';
       } else if (userType === 'analyst') {
-        endpoint =
-          'http://ec2-34-207-55-72.compute-1.amazonaws.com:3002/api/v1/requests/analyst';
+        endpoint = 'http://localhost:3002/api/v1/requests/analyst';
       }
 
       const response = await axios.get(endpoint, {
