@@ -79,7 +79,7 @@ export class RequesterEditComponent implements OnInit {
         }
       }
 
-      const endpoint = 'http://localhost:3004/api/v1/requester';
+      const endpoint = 'http://13.221.39.214:3004/api/v1/requester';
       const response = await axios.get(endpoint, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -141,7 +141,7 @@ export class RequesterEditComponent implements OnInit {
           return;
         }
 
-        const url = `http://localhost:3004/api/v1/requester/${this.userId}`;
+        const url = `http://13.221.39.214:3004/api/v1/requester/${this.userId}`;
         await axios.patch(url, formValue, {
           headers: { Authorization: `Bearer ${token}` },
         });

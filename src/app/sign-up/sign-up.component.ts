@@ -134,7 +134,7 @@ export class SignUpComponent {
       formValue.birthdate = new Date(year, month - 1, day);
 
       try {
-        const url = 'http://localhost:3004/api/v1/requester';
+        const url = 'http://13.221.39.214:3004/api/v1/requester';
         await axios.post(url, formValue);
         this.message.success('Formulario enviado correctamente');
         this.validateForm.reset();

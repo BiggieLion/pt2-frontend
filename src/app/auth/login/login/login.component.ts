@@ -116,7 +116,9 @@ export class LoginComponent {
 
     try {
       await this.http
-        .post('http://localhost:3000/api/v1/auth/forgot-password', { email })
+        .post('http://13.221.39.214:3000/api/v1/auth/forgot-password', {
+          email,
+        })
         .toPromise();
       this.message.success('Correo enviado con éxito');
       this.emailSent = true;
@@ -135,7 +137,7 @@ export class LoginComponent {
 
     try {
       await this.http
-        .post('http://localhost:3000/api/v1/auth/confirm-password', body)
+        .post('http://13.221.39.214:3000/api/v1/auth/confirm-password', body)
         .toPromise();
       this.message.success('Contraseña actualizada');
       this.isRecoverModalVisible = false;
@@ -174,7 +176,7 @@ export class LoginComponent {
 
   async login(email: string, password: string) {
     try {
-      const url = 'http://localhost:3000/api/v1/auth/login';
+      const url = 'http://13.221.39.214:3000/api/v1/auth/login';
       const response = await axios.post(url, { email, password });
       const token = response.data.data.accessToken;
 

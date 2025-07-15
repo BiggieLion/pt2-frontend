@@ -84,7 +84,7 @@ export class DetailsComponent implements OnInit {
 
     try {
       const response = await axios.get(
-        `http://localhost:3002/api/v1/requests/id/${id}`,
+        `http://13.221.39.214:3002/api/v1/requests/id/${id}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -189,7 +189,7 @@ export class DetailsComponent implements OnInit {
       }
 
       const response = await axios.get(
-        'http://localhost:3006/api/v1/staff/analyst/all',
+        'http://13.221.39.214:3006/api/v1/staff/analyst/all',
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -239,7 +239,7 @@ export class DetailsComponent implements OnInit {
     }
 
     const id = this.solicitud?.id;
-    const url = `http://localhost:3002/api/v1/requests/${id}`;
+    const url = `http://13.221.39.214:3002/api/v1/requests/${id}`;
 
     const body =
       seleccionado.type === 'supervisor'

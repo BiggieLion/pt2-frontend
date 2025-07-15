@@ -82,7 +82,7 @@ export class ChatComponent implements OnInit, OnChanges {
         }
       }
 
-      const url = `http://localhost:3002/api/v1/requests/${this.id}`;
+      const url = `http://13.221.39.214:3002/api/v1/requests/${this.id}`;
 
       try {
         const updatedChat = [newMsg];
