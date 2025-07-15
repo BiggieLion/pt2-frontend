@@ -13,9 +13,15 @@ import axios from 'axios';
 @Component({
   selector: 'app-details',
   standalone: true,
-  imports: [CommonModule, FormsModule, ChatComponent, DetailsPageComponent, NzSpinModule],
+  imports: [
+    CommonModule,
+    FormsModule,
+    ChatComponent,
+    DetailsPageComponent,
+    NzSpinModule,
+  ],
   templateUrl: './details.component.html',
-  styleUrls: ['./details.component.css']
+  styleUrls: ['./details.component.css'],
 })
 export class DetailsComponent implements OnInit {
   @Input() modalRef?: NzModalRef;
@@ -27,7 +33,7 @@ export class DetailsComponent implements OnInit {
   isSupervisor: boolean = false;
 
   selectedAnalyst: string = '';
-  analysts: { sub: string; name: string; type:string }[] = [];
+  analysts: { sub: string; name: string; type: string }[] = [];
   selectedAnalystId: string = '';
 
   userTypeFromStorage: 'requester' | 'analyst' | 'supervisor' = 'requester';
@@ -52,7 +58,8 @@ export class DetailsComponent implements OnInit {
         await this.fetchSolicitudById(id);
         if (this.isSupervisor) {
           await this.fetchAnalistas();
-          this.selectedAnalystId = this.solicitud?.supervisor_id || this.solicitud?.analyst_id || '';
+          this.selectedAnalystId =
+            this.solicitud?.supervisor_id || this.solicitud?.analyst_id || '';
         }
       }
     } finally {
@@ -74,14 +81,17 @@ export class DetailsComponent implements OnInit {
     }
 
     try {
-      const response = await axios.get(`http://localhost:3002/api/v1/requests/id/${id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`
+      const response = await axios.get(
+        `http://ec2-34-207-55-72.compute-1.amazonaws.com:3002/api/v1/requests/id/${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         }
-      });
+      );
 
       const data = response.data?.data || {};
-      console.log(data)
+      console.log(data);
 
       let creditStatus = 'Desconocido';
       switch (data.status) {
@@ -116,9 +126,9 @@ export class DetailsComponent implements OnInit {
         ...data,
         creditType: creditTypeText,
         creditStatus: creditStatus,
-        chat: Array.isArray(data.chat) ? [...data.chat] : [] 
+        chat: Array.isArray(data.chat) ? [...data.chat] : [],
       };
-      console.log("Solicitud",this.solicitud)
+      console.log('Solicitud', this.solicitud);
     } catch (error) {
       console.error('Error al obtener solicitud por ID:', error);
     }
@@ -138,13 +148,21 @@ export class DetailsComponent implements OnInit {
     try {
       const parsed = JSON.parse(rawType);
       const userType = parsed._value || parsed || 'requester';
-      if (userType === 'analyst' || userType === 'supervisor' || userType === 'requester') {
+      if (
+        userType === 'analyst' ||
+        userType === 'supervisor' ||
+        userType === 'requester'
+      ) {
         return userType;
       } else {
         return 'requester';
       }
     } catch {
-      if (rawType === 'analyst' || rawType === 'supervisor' || rawType === 'requester') {
+      if (
+        rawType === 'analyst' ||
+        rawType === 'supervisor' ||
+        rawType === 'requester'
+      ) {
         return rawType;
       }
       return 'requester';
@@ -168,24 +186,27 @@ export class DetailsComponent implements OnInit {
         decoded = JSON.parse(atob(payload));
       }
 
-      const response = await axios.get('http://localhost:3006/api/v1/staff/analyst/all', {
-        headers: {
-          Authorization: `Bearer ${token}`
+      const response = await axios.get(
+        'http://ec2-34-207-55-72.compute-1.amazonaws.com:3006/api/v1/staff/analyst/all',
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         }
-      });
+      );
       const data = response.data.data || [];
       this.analysts = data.map((analyst: any) => ({
         sub: analyst.sub || '',
         name: analyst.name || analyst.full_name || 'Analista',
-        type: 'analyst'
+        type: 'analyst',
       }));
       if (decoded?.sub && decoded['name']) {
-        const yaExiste = this.analysts.some(a => a.sub === decoded.sub);
+        const yaExiste = this.analysts.some((a) => a.sub === decoded.sub);
         if (!yaExiste) {
           this.analysts.unshift({
             sub: decoded.sub,
             name: decoded['name'],
-            type: 'supervisor'
+            type: 'supervisor',
           });
         }
       }
@@ -195,7 +216,9 @@ export class DetailsComponent implements OnInit {
   }
 
   async assignAnalyst(): Promise<void> {
-    const seleccionado = this.analysts.find(a => a.sub === this.selectedAnalystId);
+    const seleccionado = this.analysts.find(
+      (a) => a.sub === this.selectedAnalystId
+    );
     if (!seleccionado) {
       console.warn('Analista no encontrado');
       return;
@@ -214,7 +237,7 @@ export class DetailsComponent implements OnInit {
     }
 
     const id = this.solicitud?.id;
-    const url = `http://localhost:3002/api/v1/requests/${id}`;
+    const url = `http://ec2-34-207-55-72.compute-1.amazonaws.com:3002/api/v1/requests/${id}`;
 
     const body =
       seleccionado.type === 'supervisor'
@@ -224,8 +247,8 @@ export class DetailsComponent implements OnInit {
     try {
       const response = await axios.patch(url, body, {
         headers: {
-          Authorization: `Bearer ${token}`
-        }
+          Authorization: `Bearer ${token}`,
+        },
       });
       console.log('Asignación exitosa:', response.data);
     } catch (error) {
@@ -237,7 +260,7 @@ export class DetailsComponent implements OnInit {
     const userType = this.localStorage.get('typeUser');
     this.isAnalyst = userType === 'analyst';
     this.isSupervisor = userType === 'supervisor';
-    this.isAdmin = userType === 'admin'; 
+    this.isAdmin = userType === 'admin';
   }
 
   details(): void {

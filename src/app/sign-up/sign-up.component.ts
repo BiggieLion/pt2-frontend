@@ -1,5 +1,10 @@
 import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  Validators,
+  AbstractControl,
+} from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { NzFormModule } from 'ng-zorro-antd/form';
@@ -108,7 +113,7 @@ export class SignUpComponent {
     const adults = form.get('count_adults')?.value || 0;
     const total = form.get('count_family_members')?.value || 0;
 
-    return (children + adults) <= total ? null : { familyMismatch: true };
+    return children + adults <= total ? null : { familyMismatch: true };
   }
 
   onBirthdateBlur(): void {
@@ -129,7 +134,8 @@ export class SignUpComponent {
       formValue.birthdate = new Date(year, month - 1, day);
 
       try {
-        const url = 'http://localhost:3004/api/v1/requester';
+        const url =
+          'http://ec2-34-207-55-72.compute-1.amazonaws.com:3004/api/v1/requester';
         await axios.post(url, formValue);
         this.message.success('Formulario enviado correctamente');
         this.validateForm.reset();
@@ -139,12 +145,21 @@ export class SignUpComponent {
         const status = error.response?.status;
         const backendMessage = error.response?.data?.message;
 
-        if (status === 409 && backendMessage === 'Requester RFC already registered') {
-          this.message.error('El RFC ya está registrado. Verifica la información.');
+        if (
+          status === 409 &&
+          backendMessage === 'Requester RFC already registered'
+        ) {
+          this.message.error(
+            'El RFC ya está registrado. Verifica la información.'
+          );
         } else if (status === 500 && backendMessage === 'User already exists') {
-          this.message.error('El usuario ya existe. Intenta con otro correo electrónico.');
+          this.message.error(
+            'El usuario ya existe. Intenta con otro correo electrónico.'
+          );
         } else {
-          this.message.error('Error al enviar el formulario. Intenta más tarde.');
+          this.message.error(
+            'Error al enviar el formulario. Intenta más tarde.'
+          );
         }
       }
     } else {
@@ -153,7 +168,9 @@ export class SignUpComponent {
         return;
       }
       if (this.validateForm.errors?.['familyMismatch']) {
-        this.message.error('La suma de niños y adultos no puede ser mayor que los miembros del hogar');
+        this.message.error(
+          'La suma de niños y adultos no puede ser mayor que los miembros del hogar'
+        );
         return;
       }
 

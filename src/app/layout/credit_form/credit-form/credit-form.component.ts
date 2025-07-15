@@ -28,8 +28,8 @@ import axios from 'axios';
     NzUploadModule,
     NzModalModule,
     NzMessageModule,
-    NavBarComponent
-  ]
+    NavBarComponent,
+  ],
 })
 export class CreditFormComponent {
   validateForm: FormGroup;
@@ -40,30 +40,27 @@ export class CreditFormComponent {
     ine: null,
     birth: null,
     address: null,
-    guaranteeDoc: null
+    guaranteeDoc: null,
   };
 
   documentUrls: { [key: string]: string | null } = {
     ine: null,
     birth: null,
     address: null,
-    guaranteeDoc: null
+    guaranteeDoc: null,
   };
 
-  constructor(
-    private fb: FormBuilder,
-    private message: NzMessageService
-  ) {
+  constructor(private fb: FormBuilder, private message: NzMessageService) {
     this.validateForm = this.fb.group({
       credit: ['', Validators.required],
-      term: [null, [Validators.required, Validators.min(1)]], 
-      amount: [null, [Validators.required, Validators.min(1000)]], 
+      term: [null, [Validators.required, Validators.min(1)]],
+      amount: [null, [Validators.required, Validators.min(1000)]],
       guarantee: [''],
-      guaranteeValue: ['']
+      guaranteeValue: [''],
     });
   }
 
-  lastRequestId: string = ''; 
+  lastRequestId: string = '';
 
   async onGuaranteeChange(): Promise<void> {
     const value = this.validateForm.get('guarantee')?.value;
@@ -83,11 +80,14 @@ export class CreditFormComponent {
       }
 
       try {
-        const response = await axios.get('http://localhost:3002/api/v1/requests/last', {
-          headers: {
-            Authorization: `Bearer ${token}`
+        const response = await axios.get(
+          'http://ec2-34-207-55-72.compute-1.amazonaws.com:3002/api/v1/requests/last',
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
           }
-        });
+        );
         this.lastRequestId = response.data?.data?.lastId + 1 || '';
       } catch (error) {
         console.error('Error al consultar la última solicitud:', error);
@@ -100,7 +100,7 @@ export class CreditFormComponent {
     if (input.files && input.files.length > 0) {
       const file = input.files[0];
 
-      const maxSizeInBytes = 1.5 * 1024 * 1024; 
+      const maxSizeInBytes = 1.5 * 1024 * 1024;
 
       if (file.type !== 'application/pdf') {
         this.message.error('Solo se permiten archivos en formato PDF.');
@@ -133,13 +133,15 @@ export class CreditFormComponent {
           this.message.error('No se ha obtenido el ID de la última solicitud.');
           return;
         }
-        uploadUrl = `http://localhost:3010/api/v1/documents/${this.lastRequestId}/guarantee`;
-        getUrl = `http://localhost:3010/api/v1/documents/guarantee/file/${this.lastRequestId}`;
+        uploadUrl = `http://ec2-34-207-55-72.compute-1.amazonaws.com:3010/api/v1/documents/${this.lastRequestId}/guarantee`;
+        getUrl = `http://ec2-34-207-55-72.compute-1.amazonaws.com:3010/api/v1/documents/guarantee/file/${this.lastRequestId}`;
       } else {
         const endpoints: Record<string, string> = {
-          ine: 'http://localhost:3010/api/v1/documents/ine',
-          birth: 'http://localhost:3010/api/v1/documents/birth',
-          address: 'http://localhost:3010/api/v1/documents/domicile'
+          ine: 'http://ec2-34-207-55-72.compute-1.amazonaws.com:3010/api/v1/documents/ine',
+          birth:
+            'http://ec2-34-207-55-72.compute-1.amazonaws.com:3010/api/v1/documents/birth',
+          address:
+            'http://ec2-34-207-55-72.compute-1.amazonaws.com:3010/api/v1/documents/domicile',
         };
         uploadUrl = endpoints[type];
         getUrl = endpoints[type];
@@ -152,13 +154,13 @@ export class CreditFormComponent {
         await axios.post(uploadUrl, formData, {
           headers: {
             Authorization: `Bearer ${token}`,
-            'Content-Type': 'multipart/form-data'
-          }
+            'Content-Type': 'multipart/form-data',
+          },
         });
         this.message.success(`Documento ${type} subido correctamente`);
 
         const response = await axios.get(getUrl, {
-          headers: { Authorization: `Bearer ${token}` }
+          headers: { Authorization: `Bearer ${token}` },
         });
 
         const url = response.data?.data?.url || null;
@@ -169,7 +171,10 @@ export class CreditFormComponent {
           this.message.warning(`No se obtuvo URL para el documento ${type}`);
         }
       } catch (error) {
-        console.error(`Error al subir u obtener URL del documento ${type}:`, error);
+        console.error(
+          `Error al subir u obtener URL del documento ${type}:`,
+          error
+        );
         this.message.error(`Error al subir documento ${type}`);
       }
     }
@@ -192,7 +197,9 @@ export class CreditFormComponent {
               errores.push('Plazo inválido. Debe estar entre 1 y 120 meses.');
               break;
             case 'amount':
-              errores.push('Monto del crédito inválido. Debe ser mayor o igual a $1,000.');
+              errores.push(
+                'Monto del crédito inválido. Debe ser mayor o igual a $1,000.'
+              );
               break;
             case 'guarantee':
               errores.push('Tipo de garantía es obligatorio.');
@@ -204,23 +211,29 @@ export class CreditFormComponent {
         }
       });
 
-      errores.forEach(msg => this.message.error(msg));
+      errores.forEach((msg) => this.message.error(msg));
       return;
     }
 
     const { amount, term, guaranteeValue } = this.validateForm.value;
 
     if (amount < 1000) {
-      this.message.error('El monto del crédito debe ser mayor o igual a $1,000.');
+      this.message.error(
+        'El monto del crédito debe ser mayor o igual a $1,000.'
+      );
       return;
     }
 
-    if (term < 1 ) {
+    if (term < 1) {
       this.message.error('Ingrese un plazo válido.');
       return;
     }
 
-    if (this.showGuaranteeDoc && guaranteeValue !== null && guaranteeValue < 0) {
+    if (
+      this.showGuaranteeDoc &&
+      guaranteeValue !== null &&
+      guaranteeValue < 0
+    ) {
       this.message.error('El valor de la garantía no puede ser negativo.');
       return;
     }
@@ -229,36 +242,39 @@ export class CreditFormComponent {
       documentosRequeridos.push('guaranteeDoc');
     }
 
-    const documentosFaltantes = documentosRequeridos.filter(doc => !this.documentUrls[doc]);
+    const documentosFaltantes = documentosRequeridos.filter(
+      (doc) => !this.documentUrls[doc]
+    );
 
     if (documentosFaltantes.length > 0) {
       const nombresDocumentos: Record<string, string> = {
         ine: 'INE',
         birth: 'Acta de nacimiento',
         address: 'Comprobante de domicilio',
-        guaranteeDoc: 'Comprobante de garantía'
+        guaranteeDoc: 'Comprobante de garantía',
       };
 
-      documentosFaltantes.forEach(doc => {
-        this.message.error(`Falta subir el documento: ${nombresDocumentos[doc]}`);
+      documentosFaltantes.forEach((doc) => {
+        this.message.error(
+          `Falta subir el documento: ${nombresDocumentos[doc]}`
+        );
       });
 
       return;
     }
-
 
     const formValues = this.validateForm.value;
 
     const creditMap: Record<string, number> = {
       personal: 1,
       hipotecario: 2,
-      prendario: 3
+      prendario: 3,
     };
 
     const guaranteeMap: Record<string, number> = {
       mueble: 1,
       inmueble: 2,
-      noGuarantee: 0
+      noGuarantee: 0,
     };
 
     const result = {
@@ -270,7 +286,9 @@ export class CreditFormComponent {
       url_ine: this.documentUrls['ine'],
       url_birth_certificate: this.documentUrls['birth'],
       url_address: this.documentUrls['address'],
-      url_guarantee: this.showGuaranteeDoc ? this.documentUrls['guaranteeDoc'] : null
+      url_guarantee: this.showGuaranteeDoc
+        ? this.documentUrls['guaranteeDoc']
+        : null,
     };
 
     const rawToken = localStorage.getItem('accessToken');
@@ -284,13 +302,13 @@ export class CreditFormComponent {
       }
     }
 
-    const url = `http://localhost:3002/api/v1/requests`;
+    const url = `http://ec2-34-207-55-72.compute-1.amazonaws.com:3002/api/v1/requests`;
 
     try {
       const response = await axios.post(url, result, {
         headers: {
-          Authorization: `Bearer ${token}`
-        }
+          Authorization: `Bearer ${token}`,
+        },
       });
       this.message.success('Solicitud creada correctamente.');
       console.log('Respuesta:', response.data);
@@ -300,13 +318,13 @@ export class CreditFormComponent {
         ine: null,
         birth: null,
         address: null,
-        guaranteeDoc: null
+        guaranteeDoc: null,
       };
       this.documentUrls = {
         ine: null,
         birth: null,
         address: null,
-        guaranteeDoc: null
+        guaranteeDoc: null,
       };
       this.showGuaranteeDoc = false;
       this.lastRequestId = '';
