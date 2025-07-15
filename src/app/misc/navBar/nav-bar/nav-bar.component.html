@@ -7,6 +7,9 @@
             <a (click)="navigateTo('/dashboard')">Inicio</a>
           </li>
           <li nz-menu-item>        
+            <a (click)="navigateTo('/requester-edit')">Mi información</a>
+          </li>
+          <li nz-menu-item>        
             <a (click)="navigateTo('/form')">Solicitud de crédito</a>
           </li>
           <li *ngIf="userType === 'supervisor'" nz-menu-item>        

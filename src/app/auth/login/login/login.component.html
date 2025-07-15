@@ -2,21 +2,34 @@
 
 <div class="container">
   <form nz-form [formGroup]="validateForm" class="login-form" (ngSubmit)="submitForm()">
-    <h1>Bienvenido!</h1>
-
+    <h1 style="font-size: 48px;"><strong>¡Bienvenido!</strong></h1>
     <nz-form-item>
       <nz-form-control nzErrorTip="Ingresa tu correo!">
         <nz-input-group nzPrefixIcon="user">
-          <input type="text" nz-input formControlName="userName" placeholder="Correo" />
+          <input type="text" nz-input formControlName="userName" placeholder="Correo" 
+            style="padding-left: 10px; padding-right: 10px;"/>
         </nz-input-group>
       </nz-form-control>
     </nz-form-item>
 
     <nz-form-item>
       <nz-form-control nzErrorTip="Ingresa contraseña!">
-        <nz-input-group nzPrefixIcon="lock">
-          <input type="password" nz-input formControlName="password" placeholder="Contraseña" />
+        <nz-input-group nzPrefixIcon="lock" [nzSuffix]="suffixIcon">
+          <input
+            [type]="passwordVisible ? 'text' : 'password'"
+            nz-input
+            formControlName="password"
+            placeholder="Contraseña"
+          />
         </nz-input-group>
+        <ng-template #suffixIcon>
+          <i
+            nz-icon
+            [nzType]="passwordVisible ? 'eye-invisible' : 'eye'"
+            (click)="togglePasswordVisibility()"
+            style="cursor: pointer;"
+          ></i>
+        </ng-template>
       </nz-form-control>
     </nz-form-item>
 

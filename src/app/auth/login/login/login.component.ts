@@ -84,6 +84,12 @@ export class LoginComponent {
     );
   }
 
+  passwordVisible = false;
+
+  togglePasswordVisibility(): void {
+    this.passwordVisible = !this.passwordVisible;
+  }
+
   openRecoverModal(): void {
     this.recoverForm.reset();
     this.confirmForm.reset();
