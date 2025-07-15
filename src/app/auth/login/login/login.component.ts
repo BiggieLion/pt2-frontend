@@ -86,6 +86,12 @@ export class LoginComponent {
     );
   }
 
+  passwordVisible = false;
+
+  togglePasswordVisibility(): void {
+    this.passwordVisible = !this.passwordVisible;
+  }
+
   openRecoverModal(): void {
     this.recoverForm.reset();
     this.confirmForm.reset();
@@ -196,6 +202,7 @@ export class LoginComponent {
       const payload = parseJwt(token);
       const group = payload?.['cognito:groups']?.[0] || 'normal';
       this.localStorage.set('typeUser', group);
+      this.localStorage.set('nameUser', payload?.name || 'Usuario');
 
       this.router.navigate(['/dashboard']);
     } catch (error: any) {

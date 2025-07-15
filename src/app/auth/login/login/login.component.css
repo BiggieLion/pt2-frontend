@@ -81,11 +81,10 @@
 
 .custom-recover-btn:hover {
   background-color: white;
-  color: #1890ff; /* color de texto al hacer hover */
+  color: #1890ff;
   border-color: white;
 }
 
-/* Formularios del modal */
 .modal-form {
   display: flex;
   flex-direction: column;
@@ -95,7 +94,6 @@
   margin: 0 auto;
 }
 
-/* Inputs redondeados y con padding */
 .modal-input {
   border-radius: 12px !important;
   padding: 10px 14px;

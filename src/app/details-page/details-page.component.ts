@@ -331,7 +331,7 @@ export class DetailsPageComponent implements OnInit {
     let resultadoIA: number = 50;
     try {
       const response = await axios.post(
-        `http://ec2-34-207-55-72.compute-1.amazonaws.com:3002/api/v1/requests/evaluate/${this.solicitud?.id}`,
+        `http://localhost:3002/api/v1/requests/evaluate/${this.solicitud?.id}`,
         output,
         {
           headers: {

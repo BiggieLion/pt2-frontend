@@ -44,6 +44,8 @@ export class DetailsComponent implements OnInit {
     private solicitudService: SolicitudService
   ) {}
 
+  userName: string = this.localStorage.get('userName') || 'Usuario Anonimo';
+
   loading: boolean = true;
 
   async ngOnInit(): Promise<void> {
@@ -82,7 +84,7 @@ export class DetailsComponent implements OnInit {
 
     try {
       const response = await axios.get(
-        `http://ec2-34-207-55-72.compute-1.amazonaws.com:3002/api/v1/requests/id/${id}`,
+        `http://localhost:3002/api/v1/requests/id/${id}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -187,7 +189,7 @@ export class DetailsComponent implements OnInit {
       }
 
       const response = await axios.get(
-        'http://ec2-34-207-55-72.compute-1.amazonaws.com:3006/api/v1/staff/analyst/all',
+        'http://localhost:3006/api/v1/staff/analyst/all',
         {
           headers: {
             Authorization: `Bearer ${token}`,

@@ -12,6 +12,7 @@ import { FormsModule } from '@angular/forms';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import axios from 'axios';
+import { LocalStorageService } from 'angular-web-storage';
 
 interface Message {
   time: string;
@@ -37,6 +38,8 @@ export class ChatComponent implements OnInit, OnChanges {
   localMessages: Message[] = [];
   newMessage: string = '';
 
+  constructor(private localStorage: LocalStorageService) {}
+
   ngOnInit(): void {
     if (!this.userType) {
       this.userType = this.getUserTypeFromStorage();
@@ -56,6 +59,8 @@ export class ChatComponent implements OnInit, OnChanges {
   }
 
   async sendMessage(): Promise<void> {
+    this.nombreCorto = this.getUserNameFromStorage();
+    console.log('🔵 Enviando mensaje:', this.nombreCorto);
     if (this.newMessage.trim()) {
       const newMsg: Message = {
         sender: this.userType,
@@ -63,6 +68,7 @@ export class ChatComponent implements OnInit, OnChanges {
         time: this.formatTime(new Date()),
         nombreCorto: this.nombreCorto,
       };
+      console.log('Enviando mensaje:', newMsg);
 
       const rawToken = localStorage.getItem('accessToken');
       let token = '';
@@ -79,7 +85,7 @@ export class ChatComponent implements OnInit, OnChanges {
       const url = `http://ec2-34-207-55-72.compute-1.amazonaws.com:3002/api/v1/requests/${this.id}`;
 
       try {
-        const updatedChat = [...this.chat, newMsg];
+        const updatedChat = [newMsg];
 
         await axios.patch(
           url,
@@ -115,6 +121,17 @@ export class ChatComponent implements OnInit, OnChanges {
       return parsed._value || rawType || 'requester';
     } catch {
       return (rawType as any) || 'requester';
+    }
+  }
+
+  getUserNameFromStorage(): string {
+    const rawNmae = this.localStorage.get('nameUser');
+    console.log('🔵 Nombre de usuario desde localStorage:', rawNmae);
+    try {
+      const parsed = JSON.parse(rawNmae || '{}');
+      return parsed._value || rawNmae || 'Usuario Anonimo';
+    } catch {
+      return (rawNmae as any) || 'Usuario Anonimo';
     }
   }
 
