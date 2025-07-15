@@ -5,7 +5,7 @@ import {
   Validators,
   FormsModule,
   ReactiveFormsModule,
-  AbstractControl
+  AbstractControl,
 } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
@@ -38,10 +38,10 @@ import axios from 'axios';
     NzIconModule,
     TopMenuComponent,
     NzMessageModule,
-    NzModalModule
+    NzModalModule,
   ],
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css']
+  styleUrls: ['./login.component.css'],
 })
 export class LoginComponent {
   validateForm: FormGroup;
@@ -61,11 +61,11 @@ export class LoginComponent {
     this.validateForm = this.fb.group({
       userName: ['', [Validators.required]],
       password: ['', [Validators.required]],
-      remember: [true]
+      remember: [true],
     });
 
     this.recoverForm = this.fb.group({
-      email: ['', [Validators.required, Validators.email]]
+      email: ['', [Validators.required, Validators.email]],
     });
 
     this.confirmForm = this.fb.group(
@@ -74,11 +74,13 @@ export class LoginComponent {
           '',
           [
             Validators.required,
-            Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/)
-          ]
+            Validators.pattern(
+              /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/
+            ),
+          ],
         ],
         confirmPassword: ['', [Validators.required]],
-        confirmationCode: ['', [Validators.required]]
+        confirmationCode: ['', [Validators.required]],
       },
       { validators: this.passwordsMatchValidator }
     );
@@ -101,7 +103,9 @@ export class LoginComponent {
     this.isRecoverModalVisible = false;
   }
 
-  passwordsMatchValidator(group: AbstractControl): { [key: string]: boolean } | null {
+  passwordsMatchValidator(
+    group: AbstractControl
+  ): { [key: string]: boolean } | null {
     const newPassword = group.get('newPassword')?.value;
     const confirmPassword = group.get('confirmPassword')?.value;
     return newPassword === confirmPassword ? null : { passwordMismatch: true };
@@ -126,7 +130,7 @@ export class LoginComponent {
     const body = {
       email: this.recoverForm.value.email,
       confirmationCode: this.confirmForm.value.confirmationCode,
-      newPassword: this.confirmForm.value.newPassword
+      newPassword: this.confirmForm.value.newPassword,
     };
 
     try {
@@ -159,7 +163,7 @@ export class LoginComponent {
         this.login(userName, password);
       }
     } else {
-      Object.values(this.validateForm.controls).forEach(control => {
+      Object.values(this.validateForm.controls).forEach((control) => {
         if (control.invalid) {
           control.markAsDirty();
           control.updateValueAndValidity({ onlySelf: true });
@@ -179,7 +183,9 @@ export class LoginComponent {
       const parseJwt = (token: string) => {
         try {
           const base64Payload = token.split('.')[1];
-          const payload = atob(base64Payload.replace(/-/g, '+').replace(/_/g, '/'));
+          const payload = atob(
+            base64Payload.replace(/-/g, '+').replace(/_/g, '/')
+          );
           return JSON.parse(payload);
         } catch {
           return null;
@@ -189,17 +195,21 @@ export class LoginComponent {
       const payload = parseJwt(token);
       const group = payload?.['cognito:groups']?.[0] || 'normal';
       this.localStorage.set('typeUser', group);
+      this.localStorage.set('nameUser', payload?.name || 'Usuario');
 
       this.router.navigate(['/dashboard']);
     } catch (error: any) {
       const serverMessage = error?.response?.data?.message;
       const errorMessages: Record<string, string> = {
-        'User is not confirmed.': 'El usuario no está confirmado. Por favor verifica tu correo.',
+        'User is not confirmed.':
+          'El usuario no está confirmado. Por favor verifica tu correo.',
         'invalid password': 'Contraseña no válida.',
-        'Incorrect username or password.': 'Datos erróneos.'
+        'Incorrect username or password.': 'Datos erróneos.',
       };
 
-      const msg = errorMessages[serverMessage] || 'Ocurrió un error durante el inicio de sesión.';
+      const msg =
+        errorMessages[serverMessage] ||
+        'Ocurrió un error durante el inicio de sesión.';
       this.message.error(msg);
     }
   }
