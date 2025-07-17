@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { NavBarComponent } from '../../../misc/navBar/nav-bar/nav-bar.component';
-
+import { environment } from '../../../../environments/environment';
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzSelectModule } from 'ng-zorro-antd/select';
@@ -81,7 +81,7 @@ export class CreditFormComponent {
 
       try {
         const response = await axios.get(
-          'http://13.221.39.214:3002/api/v1/requests/last',
+          `${environment.DOCUMENTS_SERVICE_URL}/last`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -133,13 +133,13 @@ export class CreditFormComponent {
           this.message.error('No se ha obtenido el ID de la última solicitud.');
           return;
         }
-        uploadUrl = `http://13.221.39.214:3010/api/v1/documents/${this.lastRequestId}/guarantee`;
-        getUrl = `http://13.221.39.214:3010/api/v1/documents/guarantee/file/${this.lastRequestId}`;
+        uploadUrl = `${environment.DOCUMENTS_SERVICE_URL}/${this.lastRequestId}/guarantee`;
+        getUrl = `${environment.DOCUMENTS_SERVICE_URL}/guarantee/file/${this.lastRequestId}`;
       } else {
         const endpoints: Record<string, string> = {
-          ine: 'http://13.221.39.214:3010/api/v1/documents/ine',
-          birth: 'http://13.221.39.214:3010/api/v1/documents/birth',
-          address: 'http://13.221.39.214:3010/api/v1/documents/domicile',
+          ine: `${environment.DOCUMENTS_SERVICE_URL}/ine`,
+          birth: `${environment.DOCUMENTS_SERVICE_URL}/birth`,
+          address: `${environment.DOCUMENTS_SERVICE_URL}/domicile`,
         };
         uploadUrl = endpoints[type];
         getUrl = endpoints[type];
@@ -300,7 +300,7 @@ export class CreditFormComponent {
       }
     }
 
-    const url = `http://13.221.39.214:3002/api/v1/requests`;
+    const url = `${environment.DOCUMENTS_SERVICE_URL}`;
 
     try {
       const response = await axios.post(url, result, {

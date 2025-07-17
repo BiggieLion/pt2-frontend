@@ -9,6 +9,7 @@ import { NzModalRef } from 'ng-zorro-antd/modal';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
 import { SolicitudService } from '../../../services/solicitud.service';
 import axios from 'axios';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-details',
@@ -84,7 +85,7 @@ export class DetailsComponent implements OnInit {
 
     try {
       const response = await axios.get(
-        `http://13.221.39.214:3002/api/v1/requests/id/${id}`,
+        `${environment.REQUESTS_SERVICE_URL}/id/${id}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -189,7 +190,7 @@ export class DetailsComponent implements OnInit {
       }
 
       const response = await axios.get(
-        'http://13.221.39.214:3006/api/v1/staff/analyst/all',
+        `${environment.STAFF_SERVICE_URL}/analyst/all`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -239,7 +240,7 @@ export class DetailsComponent implements OnInit {
     }
 
     const id = this.solicitud?.id;
-    const url = `http://13.221.39.214:3002/api/v1/requests/${id}`;
+    const url = `${environment.REQUESTS_SERVICE_URL}/${id}`;
 
     const body =
       seleccionado.type === 'supervisor'

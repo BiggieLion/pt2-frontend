@@ -13,6 +13,7 @@ import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import axios from 'axios';
 import { LocalStorageService } from 'angular-web-storage';
+import { environment } from '../../../../environments/environment';
 
 interface Message {
   time: string;
@@ -82,7 +83,7 @@ export class ChatComponent implements OnInit, OnChanges {
         }
       }
 
-      const url = `http://13.221.39.214:3002/api/v1/requests/${this.id}`;
+      const url = `${environment.REQUESTS_SERVICE_URL}/${this.id}`;
 
       try {
         const updatedChat = [newMsg];

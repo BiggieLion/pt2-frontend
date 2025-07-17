@@ -10,6 +10,7 @@ import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
 import { NzMessageService, NzMessageModule } from 'ng-zorro-antd/message';
 import { NavBarComponent } from '../misc/navBar/nav-bar/nav-bar.component';
 import axios from 'axios';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-requester-edit',
@@ -79,7 +80,7 @@ export class RequesterEditComponent implements OnInit {
         }
       }
 
-      const endpoint = 'http://13.221.39.214:3004/api/v1/requester';
+      const endpoint = `${environment.REQUESTER_SERVICE_URL}`;
       const response = await axios.get(endpoint, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -89,7 +90,7 @@ export class RequesterEditComponent implements OnInit {
       const data = response.data?.data || {};
       console.log('Datos recibidos:', data);
 
-      this.userId = data.sub; // <- Guardamos el ID del usuario
+      this.userId = data.sub;
 
       const allowedKeys = Object.keys(this.validateForm.controls);
       const filteredData: any = {};
@@ -141,7 +142,7 @@ export class RequesterEditComponent implements OnInit {
           return;
         }
 
-        const url = `http://13.221.39.214:3004/api/v1/requester/${this.userId}`;
+        const url = `${environment.REQUESTER_SERVICE_URL}/${this.userId}`;
         await axios.patch(url, formValue, {
           headers: { Authorization: `Bearer ${token}` },
         });

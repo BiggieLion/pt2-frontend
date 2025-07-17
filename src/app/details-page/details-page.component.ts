@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { SolicitudService } from '../services/solicitud.service';
 import { NzMessageModule, NzMessageService } from 'ng-zorro-antd/message';
 import axios from 'axios';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-details-page',
@@ -84,7 +85,6 @@ export class DetailsPageComponent implements OnInit {
         occupationType,
       };
 
-      // Obtener token
       const rawToken = localStorage.getItem('accessToken');
       let token = '';
       if (rawToken) {
@@ -96,12 +96,11 @@ export class DetailsPageComponent implements OnInit {
         }
       }
 
-      // Consultar documentos ine, birth, domicile
       const docEndpoints = ['ine', 'birth', 'domicile'];
       for (const doc of docEndpoints) {
         try {
           const res = await axios.get(
-            `http://13.221.39.214:3010/api/v1/documents/${this.solicitud.requester_id}/${doc}`,
+            `${environment.DOCUMENTS_SERVICE_URL}/${this.solicitud.requester_id}/${doc}`,
             {
               headers: {
                 Authorization: `Bearer ${token}`,
@@ -124,7 +123,7 @@ export class DetailsPageComponent implements OnInit {
       // Consultar documento de garantía
       try {
         const res = await axios.get(
-          `http://13.221.39.214:3010/api/v1/documents/guarantee/${this.solicitud.id}/${this.solicitud.requester_id}`,
+          `${environment.DOCUMENTS_SERVICE_URL}/guarantee/${this.solicitud.id}/${this.solicitud.requester_id}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -191,7 +190,7 @@ export class DetailsPageComponent implements OnInit {
     }
 
     const id = this.solicitud.id;
-    const url = `http://13.221.39.214:3002/api/v1/requests/${id}`;
+    const url = `${environment.REQUESTS_SERVICE_URL}/${id}`;
 
     try {
       const response = await axios.patch(
@@ -223,7 +222,7 @@ export class DetailsPageComponent implements OnInit {
     }
 
     const id = this.solicitud.id;
-    const url = `http://13.221.39.214:3002/api/v1/requests/${id}`;
+    const url = `${environment.REQUESTS_SERVICE_URL}/${id}`;
 
     try {
       const response = await axios.patch(
@@ -331,7 +330,7 @@ export class DetailsPageComponent implements OnInit {
     let resultadoIA: number = 50;
     try {
       const response = await axios.post(
-        `http://13.221.39.214:3002/api/v1/requests/evaluate/${this.solicitud?.id}`,
+        `${environment.REQUESTS_SERVICE_URL}/evaluate/${this.solicitud?.id}`,
         output,
         {
           headers: {
@@ -346,7 +345,7 @@ export class DetailsPageComponent implements OnInit {
 
     console.log('Resultado de la IA', resultadoIA);
     const id = this.solicitud.id;
-    const url = `http://13.221.39.214:3002/api/v1/requests/${id}`;
+    const url = `${environment.REQUESTS_SERVICE_URL}/${id}`;
     try {
       const response = await axios.patch(
         url,

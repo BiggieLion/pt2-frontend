@@ -13,6 +13,7 @@ import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzMessageService, NzMessageModule } from 'ng-zorro-antd/message';
 import axios from 'axios';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-staff-sign',
@@ -110,8 +111,8 @@ export class StaffSignComponent {
 
     const url =
       formValue.rol === 'supervisor'
-        ? 'http://13.221.39.214:3006/api/v1/staff/supervisor'
-        : 'http://13.221.39.214:3006/api/v1/staff/analyst';
+        ? `${environment.STAFF_SERVICE_URL}/supervisor`
+        : `${environment.STAFF_SERVICE_URL}/analyst`;
 
     // 🔐 Obtener Bearer Token
     const rawToken = localStorage.getItem('accessToken');

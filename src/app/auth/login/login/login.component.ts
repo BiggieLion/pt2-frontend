@@ -21,6 +21,7 @@ import { NzModalModule } from 'ng-zorro-antd/modal';
 import { TopMenuComponent } from '../../../misc/topMenu/top-menu/top-menu.component';
 import { LocalStorageService } from 'angular-web-storage';
 import axios from 'axios';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-login',
@@ -38,7 +39,7 @@ import axios from 'axios';
     NzIconModule,
     TopMenuComponent,
     NzMessageModule,
-    NzModalModule,
+    NzModalModule
   ],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css'],
@@ -116,7 +117,7 @@ export class LoginComponent {
 
     try {
       await this.http
-        .post('http://13.221.39.214:3000/api/v1/auth/forgot-password', {
+        .post(`${environment.AUTH_SERVICE_URL}/auth/forgot-password`, {
           email,
         })
         .toPromise();
@@ -137,7 +138,7 @@ export class LoginComponent {
 
     try {
       await this.http
-        .post('http://13.221.39.214:3000/api/v1/auth/confirm-password', body)
+        .post(`${environment.AUTH_SERVICE_URL}/confirm-password`, body)
         .toPromise();
       this.message.success('Contraseña actualizada');
       this.isRecoverModalVisible = false;
@@ -154,16 +155,7 @@ export class LoginComponent {
   submitForm(): void {
     if (this.validateForm.valid) {
       const { userName, password } = this.validateForm.value;
-
-      if (userName === 'risky@mail.com' && password === 'test123') {
-        this.localStorage.set('typeUser', 'normal');
-        this.router.navigate(['/dashboard']);
-      } else if (userName === 'radmin@mail.com' && password === 'admin123') {
-        this.localStorage.set('typeUser', 'admin');
-        this.router.navigate(['/dashboard']);
-      } else {
         this.login(userName, password);
-      }
     } else {
       Object.values(this.validateForm.controls).forEach((control) => {
         if (control.invalid) {
@@ -176,7 +168,8 @@ export class LoginComponent {
 
   async login(email: string, password: string) {
     try {
-      const url = 'http://13.221.39.214:3000/api/v1/auth/login';
+      const url = `${environment.AUTH_SERVICE_URL}/login`;
+      console.log("intenta enviar ", url)
       const response = await axios.post(url, { email, password });
       const token = response.data.data.accessToken;
 

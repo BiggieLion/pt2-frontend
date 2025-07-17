@@ -8,6 +8,7 @@ import { NzModalModule } from 'ng-zorro-antd/modal';
 import { NgChartsModule } from 'ng2-charts';
 import { ChartData } from 'chart.js';
 import axios from 'axios';
+import { environment } from '../../../../environments/environment';
 
 type Estado = 'Enviada' | 'En revisión' | 'Aprobada' | 'Rechazada';
 
@@ -79,11 +80,11 @@ export class CardComponent implements OnInit {
         } catch (e) {}
       }
 
-      let endpoint = 'http://13.221.39.214:3002/api/v1/requests/requester';
+      let endpoint = `${environment.REQUESTS_SERVICE_URL}/requester`;
       if (userType === 'supervisor') {
-        endpoint = 'http://13.221.39.214:3002/api/v1/requests/all';
+        endpoint = `${environment.REQUESTS_SERVICE_URL}/all`;
       } else if (userType === 'analyst') {
-        endpoint = 'http://13.221.39.214:3002/api/v1/requests/analyst';
+        endpoint = `${environment.REQUESTS_SERVICE_URL}/analyst`;
       }
 
       const response = await axios.get(endpoint, {

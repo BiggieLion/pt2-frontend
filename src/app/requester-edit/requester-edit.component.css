@@ -1,7 +1,7 @@
 .container {
   display: flex;
   justify-content: center;
-  background-color: #f43a49;
+  background-color: #53E3ED;
   padding: 40px 20px;
   min-height: 100vh;
 }
