@@ -88,7 +88,7 @@ export class RequesterEditComponent implements OnInit {
       const data = response.data?.data || {};
       console.log('Datos recibidos:', data);
 
-      this.userId = data.id; // <- Guardamos el ID del usuario
+      this.userId = data.sub; 
 
       const allowedKeys = Object.keys(this.validateForm.controls);
       const filteredData: any = {};
