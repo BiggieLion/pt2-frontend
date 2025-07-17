@@ -14,9 +14,16 @@ type Estado = 'Enviada' | 'En revisión' | 'Aprobada' | 'Rechazada';
 @Component({
   selector: 'app-card',
   standalone: true,
-  imports: [NzCardModule, DetailsComponent, CommonModule, NzModalModule, ProgressBarComponent, NgChartsModule],
+  imports: [
+    NzCardModule,
+    DetailsComponent,
+    CommonModule,
+    NzModalModule,
+    ProgressBarComponent,
+    NgChartsModule,
+  ],
   templateUrl: './card.component.html',
-  styleUrls: ['./card.component.css']
+  styleUrls: ['./card.component.css'],
 })
 export class CardComponent implements OnInit {
   solicitudes: any[] = [];
@@ -25,18 +32,21 @@ export class CardComponent implements OnInit {
 
   pieData: ChartData<'pie', number[], Estado> = {
     labels: this.pieLabels,
-    datasets: [{ data: [] }]
+    datasets: [{ data: [] }],
   };
 
   barData: ChartData<'bar'> = {
     labels: [],
-    datasets: [{ data: [], label: 'Solicitudes' }]
+    datasets: [{ data: [], label: 'Solicitudes' }],
   };
 
   modalRef?: NzModalRef;
   isBrowser = false;
 
-  constructor(private modal: NzModalService, @Inject(PLATFORM_ID) private platformId: Object) {}
+  constructor(
+    private modal: NzModalService,
+    @Inject(PLATFORM_ID) private platformId: Object
+  ) {}
 
   ngOnInit(): void {
     this.isBrowser = isPlatformBrowser(this.platformId);
@@ -69,27 +79,30 @@ export class CardComponent implements OnInit {
         } catch (e) {}
       }
 
-      let endpoint = 'http://localhost:3002/api/v1/requests/requester';
+      let endpoint =
+        'http://ec2-34-207-55-72.compute-1.amazonaws.com:3002/api/v1/requests/requester';
       if (userType === 'supervisor') {
-        endpoint = 'http://localhost:3002/api/v1/requests/all';
+        endpoint =
+          'http://ec2-34-207-55-72.compute-1.amazonaws.com:3002/api/v1/requests/all';
       } else if (userType === 'analyst') {
-        endpoint = 'http://localhost:3002/api/v1/requests/analyst';
+        endpoint =
+          'http://ec2-34-207-55-72.compute-1.amazonaws.com:3002/api/v1/requests/analyst';
       }
 
       const response = await axios.get(endpoint, {
         headers: {
-          Authorization: `Bearer ${token}`
-        }
+          Authorization: `Bearer ${token}`,
+        },
       });
 
       const solicitudesCrudas = response.data.data;
-      console.log(response.data.data)
+      console.log(response.data.data);
 
       this.solicitudes = solicitudesCrudas.map((s: any) => ({
         ...s,
         statusInt: s.status,
         status: this.convertirEstado(s.status),
-        creditType: this.convertirTipoCredito(s.credit_type)
+        creditType: this.convertirTipoCredito(s.credit_type),
       }));
 
       this.generarDatosGraficas();
@@ -104,7 +117,7 @@ export class CardComponent implements OnInit {
     if (valor === 1 || valor === false) return 'Enviada';
     if (valor === 2) return 'En revisión';
     if (valor === 3 || valor === true) return 'Aprobada';
-    return 'Enviada'; 
+    return 'Enviada';
   }
 
   convertirTipoCredito(id: number): string {
@@ -122,14 +135,14 @@ export class CardComponent implements OnInit {
 
   generarDatosGraficas(): void {
     const estados: Record<Estado, number> = {
-      'Enviada': 0,
+      Enviada: 0,
       'En revisión': 0,
-      'Aprobada': 0,
-      'Rechazada': 0
+      Aprobada: 0,
+      Rechazada: 0,
     };
     const creditos: { [tipo: string]: number } = {};
 
-    this.solicitudes.forEach(s => {
+    this.solicitudes.forEach((s) => {
       const status = s.status as Estado;
       if (this.pieLabels.includes(status)) {
         estados[status]++;
@@ -141,31 +154,25 @@ export class CardComponent implements OnInit {
 
     this.pieData = {
       labels: this.pieLabels,
-      datasets: [{
-        data: Object.values(estados),
-        backgroundColor: [
-          '#6CB3DD', 
-          '#527C96', 
-          '#619100', 
-          '#AD0019'  
-        ],
-        borderColor: '#fff',
-        borderWidth: 1
-      }]
+      datasets: [
+        {
+          data: Object.values(estados),
+          backgroundColor: ['#6CB3DD', '#527C96', '#619100', '#AD0019'],
+          borderColor: '#fff',
+          borderWidth: 1,
+        },
+      ],
     };
 
     this.barData = {
       labels: Object.keys(creditos),
-      datasets: [{
-        data: Object.values(creditos),
-        label: 'Solicitudes',
-        backgroundColor: [
-          '#FF9E9B',
-          '#936366',
-          '#E84F59'
-
-        ] 
-      }]
+      datasets: [
+        {
+          data: Object.values(creditos),
+          label: 'Solicitudes',
+          backgroundColor: ['#FF9E9B', '#936366', '#E84F59'],
+        },
+      ],
     };
   }
 
@@ -174,7 +181,7 @@ export class CardComponent implements OnInit {
       nzTitle: 'Detalles de la solicitud',
       nzContent: DetailsComponent,
       nzFooter: null,
-      nzWrapClassName: 'custom-modal'
+      nzWrapClassName: 'custom-modal',
     });
     this.modalRef.componentInstance!.solicitud = solicitud;
     this.modalRef.componentInstance!.modalRef = this.modalRef;

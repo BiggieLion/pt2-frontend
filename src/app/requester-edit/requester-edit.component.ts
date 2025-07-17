@@ -23,15 +23,15 @@ import axios from 'axios';
     NzCheckboxModule,
     NzInputNumberModule,
     NzMessageModule,
-    NavBarComponent
+    NavBarComponent,
   ],
   templateUrl: './requester-edit.component.html',
-  styleUrl: './requester-edit.component.css'
+  styleUrl: './requester-edit.component.css',
 })
 export class RequesterEditComponent implements OnInit {
   validateForm: FormGroup;
   isBrowser = false;
-  userId: number | null = null; 
+  userId: number | null = null;
 
   constructor(
     private fb: FormBuilder,
@@ -73,6 +73,7 @@ export class RequesterEditComponent implements OnInit {
         try {
           const parsed = JSON.parse(rawToken);
           token = parsed._value || '';
+          console.log('Token obtenido:', token);
         } catch (e) {
           token = rawToken;
         }
@@ -81,8 +82,8 @@ export class RequesterEditComponent implements OnInit {
       const endpoint = 'http://localhost:3004/api/v1/requester';
       const response = await axios.get(endpoint, {
         headers: {
-          Authorization: `Bearer ${token}`
-        }
+          Authorization: `Bearer ${token}`,
+        },
       });
 
       const data = response.data?.data || {};
@@ -110,25 +111,42 @@ export class RequesterEditComponent implements OnInit {
     const adults = form.get('count_adults')?.value || 0;
     const total = form.get('count_family_members')?.value || 0;
 
-    return (children + adults) <= total ? null : { familyMismatch: true };
+    return children + adults <= total ? null : { familyMismatch: true };
   }
 
   async submitForm(): Promise<void> {
     if (this.validateForm.valid) {
       const formValue = { ...this.validateForm.value };
       console.log(formValue);
+      formValue.monthly_income = Number(formValue.monthly_income);
+
+      const rawToken = localStorage.getItem('accessToken');
+      let token = '';
+
+      if (rawToken) {
+        try {
+          const parsed = JSON.parse(rawToken);
+          token = parsed._value || '';
+          console.log('Token obtenido:', token);
+        } catch (e) {
+          token = rawToken;
+        }
+      }
 
       try {
         if (!this.userId) {
-          this.message.error('No se pudo identificar al usuario para actualizar.');
+          this.message.error(
+            'No se pudo identificar al usuario para actualizar.'
+          );
           return;
         }
 
         const url = `http://localhost:3004/api/v1/requester/${this.userId}`;
-        await axios.patch(url, formValue);
+        await axios.patch(url, formValue, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
 
         this.message.success('Formulario enviado correctamente');
-        this.validateForm.reset();
       } catch (error: any) {
         console.error('Error al enviar formulario:', error);
 
@@ -137,7 +155,9 @@ export class RequesterEditComponent implements OnInit {
       }
     } else {
       if (this.validateForm.errors?.['familyMismatch']) {
-        this.message.error('La suma de niños y adultos no puede ser mayor que los miembros del hogar');
+        this.message.error(
+          'La suma de niños y adultos no puede ser mayor que los miembros del hogar'
+        );
         return;
       }
 

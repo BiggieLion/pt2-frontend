@@ -1,5 +1,10 @@
 import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  Validators,
+  AbstractControl,
+} from '@angular/forms';
 import { NavBarComponent } from '../misc/navBar/nav-bar/nav-bar.component';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -22,7 +27,7 @@ import axios from 'axios';
     NzMessageModule,
   ],
   templateUrl: './staff-sign.component.html',
-  styleUrls: ['./staff-sign.component.css']
+  styleUrls: ['./staff-sign.component.css'],
 })
 export class StaffSignComponent {
   validateForm: FormGroup;
@@ -40,25 +45,34 @@ export class StaffSignComponent {
         address: ['', Validators.required],
         gender: ['', Validators.required],
         birthdate: ['', [Validators.required, this.birthdateValidator]],
-        rol: ['', Validators.required]
+        rol: ['', Validators.required],
       },
       { validators: this.passwordMatchValidator }
     );
   }
 
   curpValidator(control: AbstractControl) {
-    const regex = /^[A-Z]{1}[AEIOU]{1}[A-Z]{2}\d{2}(0[1-9]|1[0-2])(0[1-9]|[12]\d|3[01])[HM]{1}[A-Z]{2}[B-DF-HJ-NP-TV-Z]{3}[A-Z\d]{1}\d{1}$/i;
-    return control.value && !regex.test(control.value) ? { invalidCurp: true } : null;
+    const regex =
+      /^[A-Z]{1}[AEIOU]{1}[A-Z]{2}\d{2}(0[1-9]|1[0-2])(0[1-9]|[12]\d|3[01])[HM]{1}[A-Z]{2}[B-DF-HJ-NP-TV-Z]{3}[A-Z\d]{1}\d{1}$/i;
+    return control.value && !regex.test(control.value)
+      ? { invalidCurp: true }
+      : null;
   }
 
   rfcValidator(control: AbstractControl) {
-    const regex = /^([A-ZÑ&]{3,4}) ?-? ?(\d{2}(0[1-9]|1[0-2])(0[1-9]|[12]\d|3[01])) ?-? ?([A-Z\d]{3})$/i;
-    return control.value && !regex.test(control.value) ? { invalidRfc: true } : null;
+    const regex =
+      /^([A-ZÑ&]{3,4}) ?-? ?(\d{2}(0[1-9]|1[0-2])(0[1-9]|[12]\d|3[01])) ?-? ?([A-Z\d]{3})$/i;
+    return control.value && !regex.test(control.value)
+      ? { invalidRfc: true }
+      : null;
   }
 
   passwordValidator(control: AbstractControl) {
-    const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-    return control.value && !regex.test(control.value) ? { weakPassword: true } : null;
+    const regex =
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    return control.value && !regex.test(control.value)
+      ? { weakPassword: true }
+      : null;
   }
 
   birthdateValidator(control: AbstractControl) {
@@ -69,7 +83,9 @@ export class StaffSignComponent {
 
     const [day, month, year] = value.split('/').map(Number);
     const date = new Date(year, month - 1, day);
-    return date.getFullYear() !== year || date.getMonth() !== month - 1 || date.getDate() !== day
+    return date.getFullYear() !== year ||
+      date.getMonth() !== month - 1 ||
+      date.getDate() !== day
       ? { invalidDate: true }
       : null;
   }
@@ -94,8 +110,8 @@ export class StaffSignComponent {
 
     const url =
       formValue.rol === 'supervisor'
-        ? 'http://localhost:3006/api/v1/staff/supervisor'
-        : 'http://localhost:3006/api/v1/staff/analyst';
+        ? 'http://ec2-34-207-55-72.compute-1.amazonaws.com:3006/api/v1/staff/supervisor'
+        : 'http://ec2-34-207-55-72.compute-1.amazonaws.com:3006/api/v1/staff/analyst';
 
     // 🔐 Obtener Bearer Token
     const rawToken = localStorage.getItem('accessToken');
@@ -113,8 +129,8 @@ export class StaffSignComponent {
     try {
       const response = await axios.post(url, formValue, {
         headers: {
-          Authorization: `Bearer ${token}`
-        }
+          Authorization: `Bearer ${token}`,
+        },
       });
       this.message.success('Registro completado correctamente');
       this.validateForm.reset();
@@ -141,9 +157,13 @@ export class StaffSignComponent {
         } else if (control.errors['invalidRfc']) {
           this.message.error('RFC con formato inválido');
         } else if (control.errors['weakPassword']) {
-          this.message.error('La contraseña debe tener al menos 8 caracteres, incluir mayúsculas, minúsculas, números y símbolos');
+          this.message.error(
+            'La contraseña debe tener al menos 8 caracteres, incluir mayúsculas, minúsculas, números y símbolos'
+          );
         } else if (control.errors['invalidFormat']) {
-          this.message.error('Fecha de nacimiento con formato inválido (DD/MM/AAAA)');
+          this.message.error(
+            'Fecha de nacimiento con formato inválido (DD/MM/AAAA)'
+          );
         } else if (control.errors['invalidDate']) {
           this.message.error('Fecha de nacimiento inválida');
         }

@@ -1,33 +1,44 @@
-import { Component, Input, OnInit, OnChanges, SimpleChanges, Output, EventEmitter } from '@angular/core';
-import { CommonModule } from '@angular/common'; 
-import { FormsModule } from '@angular/forms'; 
+import {
+  Component,
+  Input,
+  OnInit,
+  OnChanges,
+  SimpleChanges,
+  Output,
+  EventEmitter,
+} from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import axios from 'axios';
+import { LocalStorageService } from 'angular-web-storage';
 
 interface Message {
   time: string;
   sender: 'requester' | 'analyst' | 'supervisor';
   text: string;
-  nombreCorto?: string; 
+  nombreCorto?: string;
 }
 
 @Component({
   selector: 'app-chat',
   standalone: true,
-  imports: [CommonModule, FormsModule, NzInputModule, NzButtonModule], 
+  imports: [CommonModule, FormsModule, NzInputModule, NzButtonModule],
   templateUrl: './chat.component.html',
-  styleUrls: ['./chat.component.css']
+  styleUrls: ['./chat.component.css'],
 })
 export class ChatComponent implements OnInit, OnChanges {
   @Input() userType: 'requester' | 'analyst' | 'supervisor' = 'requester';
-  @Input() chat: Message[] = []; 
+  @Input() chat: Message[] = [];
   @Input() id: number = 0;
-  @Input() nombreCorto: string = "Usuario";
+  @Input() nombreCorto: string = 'Usuario';
   @Output() messageSent = new EventEmitter<void>();
 
-  localMessages: Message[] = []; 
+  localMessages: Message[] = [];
   newMessage: string = '';
+
+  constructor(private localStorage: LocalStorageService) {}
 
   ngOnInit(): void {
     if (!this.userType) {
@@ -39,19 +50,25 @@ export class ChatComponent implements OnInit, OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['chat'] && changes['chat'].currentValue) {
-      this.localMessages = [...this.chat]; 
-      console.log('ngOnChanges - Chat actualizado desde padre:', this.localMessages);
+      this.localMessages = [...this.chat];
+      console.log(
+        'ngOnChanges - Chat actualizado desde padre:',
+        this.localMessages
+      );
     }
   }
 
   async sendMessage(): Promise<void> {
+    this.nombreCorto = this.getUserNameFromStorage();
+    console.log('🔵 Enviando mensaje:', this.nombreCorto);
     if (this.newMessage.trim()) {
       const newMsg: Message = {
         sender: this.userType,
         text: this.newMessage,
         time: this.formatTime(new Date()),
-        nombreCorto: this.nombreCorto 
+        nombreCorto: this.nombreCorto,
       };
+      console.log('Enviando mensaje:', newMsg);
 
       const rawToken = localStorage.getItem('accessToken');
       let token = '';
@@ -65,16 +82,20 @@ export class ChatComponent implements OnInit, OnChanges {
         }
       }
 
-      const url = `http://localhost:3002/api/v1/requests/${this.id}`;
+      const url = `http://ec2-34-207-55-72.compute-1.amazonaws.com:3002/api/v1/requests/${this.id}`;
 
       try {
-        const updatedChat = [...this.chat, newMsg];
+        const updatedChat = [newMsg];
 
-        await axios.patch(url, { chat: updatedChat }, {
-          headers: {
-            Authorization: `Bearer ${token}`
+        await axios.patch(
+          url,
+          { chat: updatedChat },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
           }
-        });
+        );
 
         this.messageSent.emit();
         this.newMessage = '';
@@ -86,7 +107,11 @@ export class ChatComponent implements OnInit, OnChanges {
 
   formatTime(date: Date): string {
     const pad = (n: number) => n.toString().padStart(2, '0');
-    return `${pad(date.getDate())}/${pad(date.getMonth() + 1)}/${date.getFullYear()} ${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`;
+    return `${pad(date.getDate())}/${pad(
+      date.getMonth() + 1
+    )}/${date.getFullYear()} ${pad(date.getHours())}:${pad(
+      date.getMinutes()
+    )}:${pad(date.getSeconds())}`;
   }
 
   getUserTypeFromStorage(): 'requester' | 'analyst' | 'supervisor' {
@@ -96,6 +121,17 @@ export class ChatComponent implements OnInit, OnChanges {
       return parsed._value || rawType || 'requester';
     } catch {
       return (rawType as any) || 'requester';
+    }
+  }
+
+  getUserNameFromStorage(): string {
+    const rawNmae = this.localStorage.get('nameUser');
+    console.log('🔵 Nombre de usuario desde localStorage:', rawNmae);
+    try {
+      const parsed = JSON.parse(rawNmae || '{}');
+      return parsed._value || rawNmae || 'Usuario Anonimo';
+    } catch {
+      return (rawNmae as any) || 'Usuario Anonimo';
     }
   }
 
