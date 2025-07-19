@@ -6,6 +6,7 @@ import { ProgressBarComponent } from '../progress-bar/progress-bar.component';
 import { NzCardModule } from 'ng-zorro-antd/card';
 import { NzModalModule } from 'ng-zorro-antd/modal';
 import { NgChartsModule } from 'ng2-charts';
+import { NzDescriptionsModule } from 'ng-zorro-antd/descriptions';
 import { ChartData } from 'chart.js';
 import axios from 'axios';
 import { environment } from '../../../../environments/environment';
@@ -22,6 +23,7 @@ type Estado = 'Enviada' | 'En revisión' | 'Aprobada' | 'Rechazada';
     NzModalModule,
     ProgressBarComponent,
     NgChartsModule,
+    NzDescriptionsModule
   ],
   templateUrl: './card.component.html',
   styleUrls: ['./card.component.css'],
@@ -43,6 +45,7 @@ export class CardComponent implements OnInit {
 
   modalRef?: NzModalRef;
   isBrowser = false;
+  userType: string = '';
 
   constructor(
     private modal: NzModalService,
@@ -61,7 +64,6 @@ export class CardComponent implements OnInit {
       const rawToken = localStorage.getItem('accessToken');
       const type = localStorage.getItem('typeUser');
       let token = '';
-      let userType = '';
 
       if (rawToken) {
         try {
@@ -75,15 +77,14 @@ export class CardComponent implements OnInit {
       if (type) {
         try {
           const parsed = JSON.parse(type);
-          console.log(parsed);
-          userType = parsed._value || '';
+          this.userType = parsed._value || '';
         } catch (e) {}
       }
 
       let endpoint = `${environment.REQUESTS_SERVICE_URL}/requester`;
-      if (userType === 'supervisor') {
+      if (this.userType === 'supervisor') {
         endpoint = `${environment.REQUESTS_SERVICE_URL}/all`;
-      } else if (userType === 'analyst') {
+      } else if (this.userType === 'analyst') {
         endpoint = `${environment.REQUESTS_SERVICE_URL}/analyst`;
       }
 
