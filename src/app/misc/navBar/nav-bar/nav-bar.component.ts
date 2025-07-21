@@ -20,8 +20,9 @@ export class NavBarComponent implements OnInit {
   constructor(private router: Router) {}
 
   ngOnInit(): void {
-    this.userType = this.getUserTypeFromStorage();
-    const rawToken = localStorage.getItem('accessToken');
+    if (typeof window !== 'undefined') {
+      this.userType = this.getUserTypeFromStorage();
+      const rawToken = localStorage.getItem('accessToken');
       let token = '';
       if (rawToken) {
         try {
@@ -31,7 +32,7 @@ export class NavBarComponent implements OnInit {
           token = rawToken;
         }
       }
-      console.log(token)
+    }
   }
 
   getUserTypeSpanish(): string {
@@ -52,6 +53,8 @@ export class NavBarComponent implements OnInit {
   }
 
   getUserTypeFromStorage(): 'requester' | 'analyst' | 'supervisor' {
+    if (typeof window === 'undefined') return 'requester';
+
     const rawType = localStorage.getItem('typeUser');
     if (!rawType) return 'requester';
 

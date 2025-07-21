@@ -1,13 +1,9 @@
-.login-form-margin {
-    margin-bottom: 16px;
-  }
-  
+
   .login-form-forgot {
     float: right;
   }
   
   .login-form-item {
-    width: 100%;
     margin-bottom: 16px; 
   }
  
@@ -43,7 +39,6 @@
   }
   
   .login-form {
-    max-height: 93%;
     max-width: 50%;
     background-color: #53E3ED;
     border: 0px solid grey;
@@ -51,7 +46,6 @@
   }
   
   .content {
-    max-height: 93%;
     max-width: 50%;
     padding: 20px;
     background-color: #303135;
@@ -81,7 +75,7 @@
 
 .custom-recover-btn:hover {
   background-color: white;
-  color: #1890ff;
+  color: #6DE3F2;
   border-color: white;
 }
 

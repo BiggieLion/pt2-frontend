@@ -8,6 +8,7 @@ import { NzModalModule } from 'ng-zorro-antd/modal';
 import { NgChartsModule } from 'ng2-charts';
 import { NzDescriptionsModule } from 'ng-zorro-antd/descriptions';
 import { ChartData } from 'chart.js';
+import { FormsModule } from '@angular/forms';
 import axios from 'axios';
 import { environment } from '../../../../environments/environment';
 
@@ -23,7 +24,8 @@ type Estado = 'Enviada' | 'En revisión' | 'Aprobada' | 'Rechazada';
     NzModalModule,
     ProgressBarComponent,
     NgChartsModule,
-    NzDescriptionsModule
+    NzDescriptionsModule,
+    FormsModule
   ],
   templateUrl: './card.component.html',
   styleUrls: ['./card.component.css'],
@@ -46,6 +48,14 @@ export class CardComponent implements OnInit {
   modalRef?: NzModalRef;
   isBrowser = false;
   userType: string = '';
+
+  selectedStatus: string = '';
+selectedCredit: string = '';
+
+tiposCredito: string[] = ['Personal', 'Hipotecario', 'Prendario'];
+
+solicitudesOriginal: any[] = []; // copia sin filtrar
+
 
   constructor(
     private modal: NzModalService,
@@ -97,12 +107,14 @@ export class CardComponent implements OnInit {
       const solicitudesCrudas = response.data.data;
       console.log(response.data.data);
 
-      this.solicitudes = solicitudesCrudas.map((s: any) => ({
-        ...s,
-        statusInt: s.status,
-        status: this.convertirEstado(s.status),
-        creditType: this.convertirTipoCredito(s.credit_type),
-      }));
+this.solicitudesOriginal = this.solicitudes = solicitudesCrudas.map((s: any) => ({
+  ...s,
+  statusInt: s.status,
+  status: this.convertirEstado(s.status),
+  creditType: this.convertirTipoCredito(s.credit_type),
+}));
+
+
 
       this.generarDatosGraficas();
       console.log('Solicitudes obtenidas:', this.solicitudes);
@@ -111,6 +123,7 @@ export class CardComponent implements OnInit {
     }
   }
 
+  
   convertirEstado(valor: any): Estado {
     if (valor === 4 || valor === null) return 'Rechazada';
     if (valor === 1 || valor === false) return 'Enviada';
@@ -118,6 +131,16 @@ export class CardComponent implements OnInit {
     if (valor === 3 || valor === true) return 'Aprobada';
     return 'Enviada';
   }
+  aplicarFiltros(): void {
+  this.solicitudes = this.solicitudesOriginal.filter((sol) => {
+    const coincideStatus = this.selectedStatus === '' || sol.status === this.selectedStatus;
+    const coincideCredito = this.selectedCredit === '' || sol.creditType === this.selectedCredit;
+    return coincideStatus && coincideCredito;
+  });
+
+  this.generarDatosGraficas();
+}
+
 
   convertirTipoCredito(id: number): string {
     switch (id) {
@@ -156,7 +179,7 @@ export class CardComponent implements OnInit {
       datasets: [
         {
           data: Object.values(estados),
-          backgroundColor: ['#6CB3DD', '#527C96', '#619100', '#AD0019'],
+          backgroundColor: ['#6DE3F2', '#F7E450', '#76FF8B', '#FF5E57'],
           borderColor: '#fff',
           borderWidth: 1,
         },

@@ -1,5 +1,6 @@
 <nz-layout>
-  <nz-header style="position: fixed; top: 0; left: 0; right: 0; height: 64px; background: #001529; color: white; display: flex; align-items: center; justify-content: space-between; padding: 0 16px; z-index: 1100;">
+  <nz-header style="position: fixed; top: 0; left: 0; right: 0; height: 64px; background: #001529; color: white; display: flex; align-items: center; padding: 0 16px; z-index: 1100;">
+    
     <span
       style="cursor: pointer; margin-left: 15px;"
       (click)="toggleCollapsed()"
@@ -7,9 +8,10 @@
       <i nz-icon [nzType]="isCollapsed ? 'menu-unfold' : 'menu-fold'" nzTheme="outline" style="font-size: 20px; color: #53E3ED;"></i>
     </span>
 
-    <span style="font-weight: 600;">
+    <span style="position: absolute; left: 50%; transform: translateX(-50%); font-weight: 600;">
       {{ getUserTypeSpanish() }}
     </span>
+
   </nz-header>
 
   <nz-sider
@@ -51,6 +53,5 @@
         <span *ngIf="!isCollapsed">Salir</span>
       </li>
     </ul>
-
   </nz-sider>
 </nz-layout>

@@ -8,47 +8,42 @@
       <h3 class="form-section-title">Datos personales</h3>
 
       <nz-form-item>
-        <nz-form-label nzRequired nzFor="firstname">Nombre(s)</nz-form-label>
+        <nz-form-label class="white-label" nzRequired nzFor="firstname">Nombre(s)</nz-form-label>
         <nz-form-control>
           <input nz-input formControlName="firstname" id="firstname" />
         </nz-form-control>
       </nz-form-item>
 
       <nz-form-item>
-        <nz-form-label nzRequired nzFor="lastname">Apellidos</nz-form-label>
+        <nz-form-label class="white-label" nzRequired nzFor="lastname">Apellidos</nz-form-label>
         <nz-form-control>
           <input nz-input formControlName="lastname" id="lastname" />
         </nz-form-control>
       </nz-form-item>
 
       <nz-form-item>
-        <nz-form-label nzRequired nzFor="rfc">RFC</nz-form-label>
+        <nz-form-label class="white-label" nzRequired nzFor="rfc">RFC</nz-form-label>
         <nz-form-control>
           <input nz-input formControlName="rfc" id="rfc" />
         </nz-form-control>
       </nz-form-item>
 
       <nz-form-item>
-        <nz-form-label nzRequired nzFor="curp">CURP</nz-form-label>
+        <nz-form-label class="white-label" nzRequired nzFor="curp">CURP</nz-form-label>
         <nz-form-control>
           <input nz-input formControlName="curp" id="curp" />
         </nz-form-control>
       </nz-form-item>
 
       <nz-form-item>
-        <nz-form-label nzRequired nzFor="birthdate">Fecha de nacimiento</nz-form-label>
+        <nz-form-label class="white-label" nzRequired nzFor="birthdate">Fecha de nacimiento</nz-form-label>
         <nz-form-control>
-          <input
-            nz-input
-            formControlName="birthdate"
-            id="birthdate"
-            placeholder="DD/MM/AAAA"
-            (blur)="onBirthdateBlur()" />
+          <input nz-input formControlName="birthdate" id="birthdate" placeholder="DD/MM/AAAA" (blur)="onBirthdateBlur()" />
         </nz-form-control>
       </nz-form-item>
 
       <nz-form-item>
-        <nz-form-label nzRequired nzFor="civil_status">Estado civil</nz-form-label>
+        <nz-form-label class="white-label" nzRequired nzFor="civil_status">Estado civil</nz-form-label>
         <nz-form-control>
           <select nz-select formControlName="civil_status" id="civil_status">
             <option value="soltero">Soltero</option>
@@ -59,7 +54,7 @@
       </nz-form-item>
 
       <nz-form-item>
-        <nz-form-label nzRequired nzFor="education_level">Nivel educativo</nz-form-label>
+        <nz-form-label class="white-label" nzRequired nzFor="education_level">Nivel educativo</nz-form-label>
         <nz-form-control>
           <select nz-select formControlName="education_level" id="education_level">
             <option value="secundaria">Secundaria</option>
@@ -71,7 +66,7 @@
       </nz-form-item>
 
       <nz-form-item>
-        <nz-form-label nzRequired nzFor="gender">Género</nz-form-label>
+        <nz-form-label class="white-label" nzRequired nzFor="gender">Género</nz-form-label>
         <nz-form-control>
           <select nz-select formControlName="gender" id="gender">
             <option value="M">Masculino</option>
@@ -81,21 +76,21 @@
       </nz-form-item>
 
       <nz-form-item>
-        <nz-form-label nzRequired nzFor="monthly_income">Ingreso mensual</nz-form-label>
+        <nz-form-label class="white-label" nzRequired nzFor="monthly_income">Ingreso mensual</nz-form-label>
         <nz-form-control>
           <nz-input-number formControlName="monthly_income" [nzMin]="0" [nzStep]="1000" style="width: 100%;" />
         </nz-form-control>
       </nz-form-item>
 
       <nz-form-item>
-        <nz-form-label nzRequired nzFor="days_employed">Días trabajando</nz-form-label>
+        <nz-form-label class="white-label" nzRequired nzFor="days_employed">Días trabajando</nz-form-label>
         <nz-form-control>
           <nz-input-number formControlName="days_employed" [nzMin]="0" style="width: 100%;" id="days_employed" />
         </nz-form-control>
       </nz-form-item>
 
       <nz-form-item>
-        <nz-form-label nzRequired nzFor="occupation_type">Ocupación</nz-form-label>
+        <nz-form-label class="white-label" nzRequired nzFor="occupation_type">Ocupación</nz-form-label>
         <nz-form-control>
           <select nz-select formControlName="occupation_type" id="occupation_type">
             <option [ngValue]="0">Empleado</option>
@@ -109,21 +104,21 @@
       <h3 class="form-section-title">Inmueble</h3>
 
       <nz-form-item>
-        <nz-form-label nzRequired>¿Cuenta con automóvil?</nz-form-label>
+        <nz-form-label class="white-label" nzRequired>¿Cuenta con automóvil?</nz-form-label>
         <nz-form-control>
           <label nz-checkbox formControlName="has_own_car">Sí</label>
         </nz-form-control>
       </nz-form-item>
 
       <nz-form-item>
-        <nz-form-label nzRequired>¿Cuenta con propiedad?</nz-form-label>
+        <nz-form-label class="white-label" nzRequired>¿Cuenta con propiedad?</nz-form-label>
         <nz-form-control>
           <label nz-checkbox formControlName="has_own_realty">Sí</label>
         </nz-form-control>
       </nz-form-item>
 
       <nz-form-item>
-        <nz-form-label nzRequired nzFor="address">Dirección completa</nz-form-label>
+        <nz-form-label class="white-label" nzRequired nzFor="address">Dirección completa</nz-form-label>
         <nz-form-control>
           <textarea nz-input formControlName="address" id="address" rows="3"></textarea>
         </nz-form-control>
@@ -132,44 +127,37 @@
       <h3 class="form-section-title">Datos familiares</h3>
 
       <nz-form-item>
-        <nz-form-label nzRequired nzFor="count_children">Número de niños</nz-form-label>
+        <nz-form-label class="white-label" nzRequired nzFor="count_children">Número de niños</nz-form-label>
         <nz-form-control>
           <nz-input-number formControlName="count_children" [nzMin]="0" style="width: 100%;" />
         </nz-form-control>
       </nz-form-item>
 
       <nz-form-item>
-        <nz-form-label nzRequired nzFor="count_adults">Número de adultos</nz-form-label>
+        <nz-form-label class="white-label" nzRequired nzFor="count_adults">Número de adultos</nz-form-label>
         <nz-form-control>
           <nz-input-number formControlName="count_adults" [nzMin]="0" style="width: 100%;" />
         </nz-form-control>
       </nz-form-item>
-
-      <nz-form-item>
-        <nz-form-label nzRequired nzFor="count_family_members">Miembros en el hogar</nz-form-label>
-        <nz-form-control>
-          <nz-input-number formControlName="count_family_members" [nzMin]="0" style="width: 100%;" />
-        </nz-form-control>
-      </nz-form-item>
-
+      
       <h3 class="form-section-title">Credenciales</h3>
 
       <nz-form-item>
-        <nz-form-label nzRequired nzFor="email">Correo electrónico</nz-form-label>
+        <nz-form-label class="white-label" nzRequired nzFor="email">Correo electrónico</nz-form-label>
         <nz-form-control>
           <input nz-input type="email" formControlName="email" id="email" />
         </nz-form-control>
       </nz-form-item>
 
       <nz-form-item>
-        <nz-form-label nzRequired nzFor="password">Contraseña</nz-form-label>
+        <nz-form-label class="white-label" nzRequired nzFor="password">Contraseña</nz-form-label>
         <nz-form-control>
           <input nz-input type="password" formControlName="password" id="password" />
         </nz-form-control>
       </nz-form-item>
 
       <nz-form-item>
-        <nz-form-label nzRequired nzFor="confirmPassword">Confirmar contraseña</nz-form-label>
+        <nz-form-label class="white-label" nzRequired nzFor="confirmPassword">Confirmar contraseña</nz-form-label>
         <nz-form-control>
           <input nz-input type="password" formControlName="confirmPassword" id="confirmPassword" />
         </nz-form-control>

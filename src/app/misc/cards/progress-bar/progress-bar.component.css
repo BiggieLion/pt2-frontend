@@ -10,6 +10,7 @@
     width: 100%;
     display: flex;
     z-index: 1;
+    background-color: #3a3b3e;
   }
   
   .progress-segment {
@@ -18,26 +19,25 @@
   
   .segment-1 {
     width: 33%;
-    background-color: #6CB3DD;
+    background-color: #6DE3F2;
     border-top-left-radius: 5px; 
-    border-bottom-left-radius: 5px; 
   }
   
   .segment-2 {
     width: 33%;
-    background-color: #527C96;
+    background-color: #F7E450;
   }
   
   .segment-3-approved {
     width: 34%;
-    background-color: #619100;
+    background-color: #76FF8B; 
     border-top-right-radius: 5px; 
-    border-bottom-right-radius: 5px; 
   }
   
   .segment-3-rejected {
     width: 34%;
-    background-color: #AD0019;
+    background-color: #FF5E57; 
+    border-top-right-radius: 5px; 
   }
   
   nz-progress {

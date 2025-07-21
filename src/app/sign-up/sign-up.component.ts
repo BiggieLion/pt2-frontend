@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ViewEncapsulation } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -20,6 +20,7 @@ import { environment } from '../../environments/environment';
 @Component({
   selector: 'app-sign-up',
   standalone: true,
+  encapsulation: ViewEncapsulation.None,
   imports: [
     TopMenuComponent,
     CommonModule,
@@ -30,6 +31,7 @@ import { environment } from '../../environments/environment';
     NzCheckboxModule,
     NzInputNumberModule,
     NzMessageModule,
+    
   ],
   templateUrl: './sign-up.component.html',
   styleUrls: ['./sign-up.component.css'],
@@ -54,7 +56,7 @@ export class SignUpComponent {
         has_own_realty: [false],
         count_children: [0, [Validators.required, Validators.min(0)]],
         count_adults: [0, [Validators.required, Validators.min(0)]],
-        count_family_members: [0, [Validators.required, Validators.min(0)]],
+        count_family_members: [0], // no validators, no input in form
         address: ['', Validators.required],
         email: ['', [Validators.required, Validators.email]],
         password: ['', [Validators.required, this.securePasswordValidator]],
@@ -63,6 +65,20 @@ export class SignUpComponent {
       },
       { validators: [this.passwordMatchValidator, this.familyMembersValidator] }
     );
+    this.validateForm.get('count_children')?.valueChanges.subscribe(() => {
+      this.updateFamilyMembersCount();
+    });
+    this.validateForm.get('count_adults')?.valueChanges.subscribe(() => {
+      this.updateFamilyMembersCount();
+    });
+    this.updateFamilyMembersCount();
+  }
+
+  private updateFamilyMembersCount(): void {
+    const children = this.validateForm.get('count_children')?.value || 0;
+    const adults = this.validateForm.get('count_adults')?.value || 0;
+    const total = children + adults;
+    this.validateForm.get('count_family_members')?.setValue(total, { emitEvent: false });
   }
 
   birthdateValidator = (control: AbstractControl) => {
@@ -114,7 +130,7 @@ export class SignUpComponent {
     const adults = form.get('count_adults')?.value || 0;
     const total = form.get('count_family_members')?.value || 0;
 
-    return children + adults <= total ? null : { familyMismatch: true };
+    return children + adults === total ? null : { familyMismatch: true };
   }
 
   onBirthdateBlur(): void {
@@ -139,6 +155,7 @@ export class SignUpComponent {
         await axios.post(url, formValue);
         this.message.success('Formulario enviado correctamente');
         this.validateForm.reset();
+        this.updateFamilyMembersCount();
       } catch (error: any) {
         console.error('Error al enviar formulario:', error);
 

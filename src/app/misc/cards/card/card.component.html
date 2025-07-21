@@ -1,7 +1,22 @@
 <div class="custom-container">
+
+  <div class="filters-wrapper">
+    <label for="statusFilter">Estatus:</label>
+    <select id="statusFilter" [(ngModel)]="selectedStatus" (change)="aplicarFiltros()">
+      <option value="">Todos</option>
+      <option *ngFor="let estado of pieLabels" [value]="estado">{{ estado }}</option>
+    </select>
+
+    <label for="creditFilter">Tipo de crédito:</label>
+    <select id="creditFilter" [(ngModel)]="selectedCredit" (change)="aplicarFiltros()">
+      <option value="">Todos</option>
+      <option *ngFor="let tipo of tiposCredito" [value]="tipo">{{ tipo }}</option>
+    </select>
+  </div>
+
   <div class="card-container">
     <div *ngIf="!solicitudes || solicitudes.length === 0" class="no-solicitudes">
-      <p style="text-align: center; font-weight: bold;">Sin solicitudes a mostrar...</p>
+      <p style="text-align: center; font-weight: bold; color: aliceblue;">Sin solicitudes a mostrar...</p>
     </div>
 
     <div class="progress-bar-wrapper" *ngFor="let solicitud of solicitudes">

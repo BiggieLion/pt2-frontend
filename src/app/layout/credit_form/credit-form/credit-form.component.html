@@ -4,22 +4,21 @@
   <div class="form-container">
     <form nz-form [formGroup]="validateForm" (ngSubmit)="submitForm()">
         <h3 class="form-section-title">Datos del crédito</h3>
-
         <nz-form-item nz-row>
-        <nz-form-label [nzSpan]="6" nzRequired nzFor="credit">Tipo de crédito</nz-form-label>
-        <nz-form-control [nzSpan]="6">
-            <select nz-select formControlName="credit" id="credit">
-            <option value="personal">Personal</option>
-            <option value="hipotecario">Hipotecario</option>
-            <option value="prendario">Prendario</option>
-            </select>
-        </nz-form-control>
-        <nz-form-label [nzSpan]="6" nzRequired nzFor="term">Plazo (Meses)</nz-form-label>
-        <nz-form-control [nzSpan]="6">
-            <select nz-select formControlName="term" id="term">
-            <option *ngFor="let i of opciones0a99" [ngValue]="i">{{ i }}</option>
-            </select>
-        </nz-form-control>
+          <nz-form-label [nzSpan]="6" nzRequired nzFor="credit">Tipo de crédito</nz-form-label>
+          <nz-form-control [nzSpan]="6">
+              <select nz-select formControlName="credit" id="credit">
+              <option value="personal">Personal</option>
+              <option value="hipotecario">Hipotecario</option>
+              <option value="prendario">Prendario</option>
+              </select>
+          </nz-form-control>
+          <nz-form-label [nzSpan]="6" nzRequired nzFor="term">Plazo (Meses)</nz-form-label>
+          <nz-form-control [nzSpan]="6">
+              <select nz-select formControlName="term" id="term">
+              <option *ngFor="let i of opciones0a99" [ngValue]="i">{{ i }}</option>
+              </select>
+          </nz-form-control>
         </nz-form-item>
         <nz-form-item nz-row>
         <nz-form-label [nzSpan]="6" nzRequired nzFor="amount">Monto del crédito</nz-form-label>
@@ -85,7 +84,7 @@
 
       <nz-form-item nz-row class="register-area">
         <nz-form-control [nzSpan]="14" [nzOffset]="6">
-          <button nz-button nzType="primary" type="submit">Solicitar</button>
+          <button nz-button class="btn-dark-rounded" nzType="primary" type="submit">Solicitar</button>
         </nz-form-control>
       </nz-form-item>
     </form>

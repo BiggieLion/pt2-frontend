@@ -1,54 +1,26 @@
 .container {
-  background-color: #53E3ED;
+  display: flex;
   justify-content: center;
-  align-items: center;
-  padding-bottom: 20px;
-  padding-top: 20px;
-  padding-left: 50px;
-  padding-right: 50px;
+  background-color: #3a3b3e;
+  padding: 40px 20px;
+  min-height: 100vh;
 }
 
 .form-container {
-  display: flex;
   background-color: white;
-  border-radius: 10px; 
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 30px 40px;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  width: 100%;
+  max-width: 1100px;
 }
 
-.personal {
-  display: flex;
-}
-
-.house {
-  display: flex;
-}
-
-.proffesional {
-  display: flex;
-}
-
-[nz-form] {
-  max-width: 1000px; 
-  min-width: 1000px;
-  padding: 20px;
-}
-
-.register-area {
-  margin-top: 20px; 
-}
-
-nz-form-label {
-  margin-right: 5px; 
-  width: 250px; 
-  min-width: 250px;
-}
-
-nz-form-control {
-  flex: 1; 
-}
-
-nz-form-control input {
-  width: 150px;
+.title {
+  text-align: center;
+  margin-bottom: 30px;
+  font-size: 24px;
+  font-weight: bold;
+  color: #333;
 }
 
 .form-section-title {
@@ -60,56 +32,92 @@ nz-form-control input {
   color: #444;
 }
 
-.credit-group nz-form-item:not(:last-child) {
-  margin-bottom: 16px;
+/* Grid general del formulario */
+[nz-form] {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px 24px;
 }
 
-/* Estilos responsivos */
-@media (max-width: 768px) {
-  .container {
-    padding-left: 15px;
-    padding-right: 15px;
-  }
+/* Textarea con buena altura */
+textarea[nz-input] {
+  min-height: 90px;
+  resize: vertical;
+}
 
+/* Checkbox ajustados */
+nz-form-control nz-checkbox {
+  display: flex;
+  align-items: center;
+}
+
+/* Opcional: quitar margen automático del texto del checkbox */
+nz-checkbox {
+  font-size: 14px;
+}
+
+/* Inputs y selects */
+input[nz-input],
+nz-select .ant-select-selector,
+nz-input-number {
+  border-radius: 8px !important;
+  height: 38px;
+}
+
+/* Botón de registro ocupa 2 columnas */
+.register-area {
+  grid-column: 1 / -1;
+  margin-top: 24px;
+}
+
+button[nz-button] {
+  border-radius: 8px;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
   [nz-form] {
-    max-width: 100%;
-    min-width: auto;
-    padding: 15px;
+    grid-template-columns: 1fr;
   }
 
-  .form-container {
-    flex-direction: column;
-    padding: 15px;
+  .register-area {
+    margin-top: 16px;
   }
+}
 
-  .personal,
-  .house,
-  .proffesional {
-    flex-direction: column;
-  }
+/* --- Estilos profundos para NG-ZORRO con sombra y bordes --- */
 
-  nz-form-label {
-    width: 100% !important;
-    min-width: auto !important;
-    margin-bottom: 6px;
-  }
+/* INPUTS */
+::ng-deep input[nz-input] {
+  border-radius: 8px !important;
+  height: 38px !important;
+  box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.2);
+  transition: box-shadow 0.3s ease;
+}
 
-  nz-form-control {
-    width: 100%;
-    flex: none;
-  }
+/* SELECTOR */
+::ng-deep nz-select .ant-select-selector {
+  border-radius: 8px !important;
+  height: 38px !important;
+  display: flex;
+  align-items: center;
+  box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.2);
+  transition: box-shadow 0.3s ease;
+}
 
-  nz-form-control input {
-    width: 100% !important;
-    min-width: auto;
-  }
+/* INPUT NUMBER */
+::ng-deep nz-input-number .ant-input-number {
+  border-radius: 8px !important;
+  height: 38px !important;
+  box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.2);
+  transition: box-shadow 0.3s ease;
+}
 
-  nz-form-item[nz-row] {
-    flex-direction: column !important;
-  }
-
-  .register-area nz-form-control {
-    width: 100% !important;
-    margin-top: 20px;
-  }
+/* FOCUS STATES */
+::ng-deep input[nz-input]:focus,
+::ng-deep .ant-select-focused .ant-select-selector,
+::ng-deep .ant-input-number-focused {
+  box-shadow: 4px 4px 12px rgba(0, 0, 0, 0.25) !important;
+  border-color: #40a9ff !important;
+  outline: none;
 }
