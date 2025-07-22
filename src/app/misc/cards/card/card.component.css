@@ -247,3 +247,29 @@ html, body {
   border-right: none !important;
   border-bottom: none !important;
 }
+
+.custom-modal {
+  background-color: #303135 !important;
+  color: white !important;
+}
+
+.custom-modal .ant-modal-header {
+  background-color: #303135 !important;
+  border-bottom: 1px solid #444;
+  color: white !important;
+}
+
+.custom-modal .ant-modal-title {
+  color: white !important;
+  font-weight: bold;
+}
+
+.custom-modal-body {
+  background-color: #303135 !important;
+  color: white !important;
+}
+
+.custom-modal .ant-modal-footer {
+  background-color: #303135 !important;
+  border-top: 1px solid #444;
+}

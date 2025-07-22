@@ -3,8 +3,8 @@
   flex-direction: column;
   height: 350px;
   border: 1px solid #d9d9d9;
-  border-radius: 4px;
-  max-width: 300px;
+  border-radius: 8px;
+  width: 400px;
   margin-left: 20px;
   font-family: Arial, sans-serif;
 }
@@ -29,37 +29,37 @@
 }
 
 .sent-requester {
-  background-color: #6CB4DC;
+  background-color: #74A8C1;
   margin-left: auto;
   text-align: left;
 }
 
 .received-requester {
-  background-color: #6CB4DC;
+  background-color: #74A8C1;
   margin-right: auto;
   text-align: left;
 }
 
 .sent-analyst {
-  background-color: #A86368;
+  background-color: #FACF55;
   margin-left: auto;
   text-align: left;
 }
 
 .received-analyst {
-  background-color: #A86368;
+  background-color: #FACF55;
   margin-right: auto;
   text-align: left;
 }
 
 .sent-supervisor {
-  background-color: #E84F59;
+  background-color: #FA5578;
   margin-left: auto;
   text-align: left;
 }
 
 .received-supervisor {
-  background-color: #E84F59;
+  background-color: #FA5578;
   margin-right: auto;
   text-align: left;
 }

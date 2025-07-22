@@ -1,21 +1,17 @@
 
-/* Aplica fondo rojo a todo el contenido */
 .outer-container {
     background-color: #53E3ED ;
 }
 
-/* Opcional: Aplica fondo rojo a todo el contenido incluyendo el espacio dentro de los paneles de colapsos */
 .nz-collapse,
 .nz-collapse-panel {
     background-color: #53E3ED ;
 }
 
-/* Opcional: Cambia el color del texto para que sea legible sobre el fondo rojo */
 .nz-collapse-panel-content {
     color: white;
 }
 
-/* Estilo para el contenedor */
 .custom-container {
     display: flex;
     justify-content: center; 
@@ -23,10 +19,9 @@
     padding: 30px;
   }
   
-  /* Estilo para la nz-card */
   .custom-card {
     width: 900px;
-    background: #f98787;
+    background: #53E3ED;
     border-radius: 5px;
     color: aliceblue;
   }
@@ -35,8 +30,7 @@
     color: white;
   }
 
-  /* Estilo para cambiar el color del botón a negro */
-button.nz-button.primary {
-    background-color: black !important;
-    color: white; /* Para asegurar la legibilidad del texto */
-}
+  button.nz-button.primary {
+      background-color: black !important;
+      color: white; 
+  }

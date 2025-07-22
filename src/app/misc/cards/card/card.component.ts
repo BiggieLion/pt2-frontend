@@ -54,7 +54,7 @@ selectedCredit: string = '';
 
 tiposCredito: string[] = ['Personal', 'Hipotecario', 'Prendario'];
 
-solicitudesOriginal: any[] = []; // copia sin filtrar
+solicitudesOriginal: any[] = []; 
 
 
   constructor(
@@ -203,7 +203,8 @@ this.solicitudesOriginal = this.solicitudes = solicitudesCrudas.map((s: any) => 
       nzTitle: 'Detalles de la solicitud',
       nzContent: DetailsComponent,
       nzFooter: null,
-      nzWrapClassName: 'custom-modal',
+      nzWrapClassName: 'custom-modal', 
+      nzClassName: 'custom-modal-body',
     });
     this.modalRef.componentInstance!.solicitud = solicitud;
     this.modalRef.componentInstance!.modalRef = this.modalRef;

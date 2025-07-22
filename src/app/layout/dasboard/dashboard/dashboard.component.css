@@ -13,12 +13,12 @@
 
 .card-container {
   display: grid;
-  grid-template-columns: repeat(3, 1fr); /* Crear tres columnas con el mismo ancho */
-  gap: 20px; /* Espacio entre las tarjetas */
-  justify-content: center; /* Centrar las tarjetas horizontalmente */
-  align-items: center; /* Centrar las tarjetas verticalmente */
+  grid-template-columns: repeat(3, 1fr); 
+  gap: 20px; 
+  justify-content: center; 
+  align-items: center; 
 }
 
 .custom-card {
-  width: 300px; /* Ancho de cada tarjeta */
+  width: 300px; 
 }
