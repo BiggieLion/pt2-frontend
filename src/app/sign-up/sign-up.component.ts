@@ -14,6 +14,9 @@ import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
 import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
 import { NzMessageService, NzMessageModule } from 'ng-zorro-antd/message';
 import { TopMenuComponent } from '../misc/topMenu/top-menu/top-menu.component';
+import { NzIconModule } from 'ng-zorro-antd/icon';
+import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
+import { NzPopoverModule } from 'ng-zorro-antd/popover';
 import axios from 'axios';
 import { environment } from '../../environments/environment';
 
@@ -31,7 +34,9 @@ import { environment } from '../../environments/environment';
     NzCheckboxModule,
     NzInputNumberModule,
     NzMessageModule,
-    
+    NzIconModule,
+    NzToolTipModule,
+    NzPopoverModule
   ],
   templateUrl: './sign-up.component.html',
   styleUrls: ['./sign-up.component.css'],
@@ -107,6 +112,22 @@ export class SignUpComponent {
     return regex.test(value) ? null : { insecure: true };
   };
 
+  showPassword = false;
+  showConfirmPassword = false;
+
+  togglePasswordVisibility(): void {
+    this.showPassword = !this.showPassword;
+  }
+
+  toggleConfirmPasswordVisibility(): void {
+    this.showConfirmPassword = !this.showConfirmPassword;
+  }
+
+  preventClipboardAction(event: ClipboardEvent): void {
+    event.preventDefault();
+  }
+
+
   rfcValidator = (control: AbstractControl) => {
     const value = control.value;
     const regex = /^([A-ZÑ&]{3,4})\d{6}[A-Z0-9]{3}$/;
@@ -118,6 +139,19 @@ export class SignUpComponent {
     const regex = /^[A-Z]{4}\d{6}[HM][A-Z]{5}[A-Z0-9]\d$/;
     return regex.test(value) ? null : { invalidCurp: true };
   };
+
+  private rfcCurpConsistencyCheck(): boolean {
+    const rfc = this.validateForm.get('rfc')?.value;
+    const curp = this.validateForm.get('curp')?.value;
+    if (!rfc || !curp) return true;
+
+    const rfcPrefix = rfc.substring(0, 4);
+    const rfcDate = rfc.substring(4, 10);
+    const curpPrefix = curp.substring(0, 4);
+    const curpDate = curp.substring(4, 10);
+
+    return rfcPrefix === curpPrefix && rfcDate === curpDate;
+  }
 
   passwordMatchValidator(form: FormGroup) {
     const password = form.get('password')?.value;
@@ -143,6 +177,10 @@ export class SignUpComponent {
   }
 
   async submitForm(): Promise<void> {
+    if (!this.rfcCurpConsistencyCheck()) {
+      this.message.error('El RFC no coincide con la CURP. Verifica que pertenezcan a la misma persona.');
+      return;
+    }
     if (this.validateForm.valid) {
       const formValue = { ...this.validateForm.value };
       delete formValue.confirmPassword;
@@ -150,35 +188,37 @@ export class SignUpComponent {
       const [day, month, year] = formValue.birthdate.split('/').map(Number);
       formValue.birthdate = new Date(year, month - 1, day);
 
-      try {
-        const url = `${environment.REQUESTER_SERVICE_URL}`;
-        await axios.post(url, formValue);
-        this.message.success('Formulario enviado correctamente');
-        this.validateForm.reset();
-        this.updateFamilyMembersCount();
-      } catch (error: any) {
-        console.error('Error al enviar formulario:', error);
+      console.log(formValue)
 
-        const status = error.response?.status;
-        const backendMessage = error.response?.data?.message;
+      // try {
+      //   const url = `${environment.REQUESTER_SERVICE_URL}`;
+      //   await axios.post(url, formValue);
+      //   this.message.success('Formulario enviado correctamente');
+      //   this.validateForm.reset();
+      //   this.updateFamilyMembersCount();
+      // } catch (error: any) {
+      //   console.error('Error al enviar formulario:', error);
 
-        if (
-          status === 409 &&
-          backendMessage === 'Requester RFC already registered'
-        ) {
-          this.message.error(
-            'El RFC ya está registrado. Verifica la información.'
-          );
-        } else if (status === 500 && backendMessage === 'User already exists') {
-          this.message.error(
-            'El usuario ya existe. Intenta con otro correo electrónico.'
-          );
-        } else {
-          this.message.error(
-            'Error al enviar el formulario. Intenta más tarde.'
-          );
-        }
-      }
+      //   const status = error.response?.status;
+      //   const backendMessage = error.response?.data?.message;
+
+      //   if (
+      //     status === 409 &&
+      //     backendMessage === 'Requester RFC already registered'
+      //   ) {
+      //     this.message.error(
+      //       'El RFC ya está registrado. Verifica la información.'
+      //     );
+      //   } else if (status === 500 && backendMessage === 'User already exists') {
+      //     this.message.error(
+      //       'El usuario ya existe. Intenta con otro correo electrónico.'
+      //     );
+      //   } else {
+      //     this.message.error(
+      //       'Error al enviar el formulario. Intenta más tarde.'
+      //     );
+      //   }
+      // }
     } else {
       if (this.validateForm.errors?.['mismatch']) {
         this.message.error('Las contraseñas no coinciden');

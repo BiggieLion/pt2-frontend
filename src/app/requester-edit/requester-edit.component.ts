@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject, PLATFORM_ID } from '@angular/core';
+import { Component, OnInit, Inject, PLATFORM_ID, ViewEncapsulation  } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -14,6 +14,7 @@ import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-requester-edit',
+  encapsulation: ViewEncapsulation.None,
   standalone: true,
   imports: [
     CommonModule,
@@ -56,6 +57,13 @@ export class RequesterEditComponent implements OnInit {
       },
       { validators: [this.familyMembersValidator] }
     );
+    this.validateForm.get('count_children')?.valueChanges.subscribe(() => {
+      this.updateFamilyMembersCount();
+    });
+    this.validateForm.get('count_adults')?.valueChanges.subscribe(() => {
+      this.updateFamilyMembersCount();
+    });
+    this.updateFamilyMembersCount();
   }
 
   ngOnInit(): void {
@@ -105,6 +113,13 @@ export class RequesterEditComponent implements OnInit {
     } catch (error) {
       console.error('Error al obtener solicitudes:', error);
     }
+  }
+
+    private updateFamilyMembersCount(): void {
+    const children = this.validateForm.get('count_children')?.value || 0;
+    const adults = this.validateForm.get('count_adults')?.value || 0;
+    const total = children + adults;
+    this.validateForm.get('count_family_members')?.setValue(total, { emitEvent: false });
   }
 
   familyMembersValidator(form: FormGroup) {

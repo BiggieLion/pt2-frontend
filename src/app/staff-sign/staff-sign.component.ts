@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ViewEncapsulation  } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -12,11 +12,15 @@ import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzMessageService, NzMessageModule } from 'ng-zorro-antd/message';
+import { NzIconModule } from 'ng-zorro-antd/icon';
+import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
+import { NzPopoverModule } from 'ng-zorro-antd/popover';
 import axios from 'axios';
 import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-staff-sign',
+  encapsulation: ViewEncapsulation.None,
   standalone: true,
   imports: [
     NavBarComponent,
@@ -26,6 +30,9 @@ import { environment } from '../../environments/environment';
     NzInputModule,
     NzSelectModule,
     NzMessageModule,
+    NzToolTipModule,
+    NzIconModule,
+    NzPopoverModule
   ],
   templateUrl: './staff-sign.component.html',
   styleUrls: ['./staff-sign.component.css'],
@@ -60,6 +67,19 @@ export class StaffSignComponent {
       : null;
   }
 
+  private rfcCurpConsistencyCheck(): boolean {
+    const rfc = this.validateForm.get('rfc')?.value;
+    const curp = this.validateForm.get('curp')?.value;
+    if (!rfc || !curp) return true;
+
+    const rfcPrefix = rfc.substring(0, 4);
+    const rfcDate = rfc.substring(4, 10);
+    const curpPrefix = curp.substring(0, 4);
+    const curpDate = curp.substring(4, 10);
+
+    return rfcPrefix === curpPrefix && rfcDate === curpDate;
+  }
+
   rfcValidator(control: AbstractControl) {
     const regex =
       /^([A-ZÑ&]{3,4}) ?-? ?(\d{2}(0[1-9]|1[0-2])(0[1-9]|[12]\d|3[01])) ?-? ?([A-Z\d]{3})$/i;
@@ -75,6 +95,22 @@ export class StaffSignComponent {
       ? { weakPassword: true }
       : null;
   }
+
+    showPassword = false;
+  showConfirmPassword = false;
+
+  togglePasswordVisibility(): void {
+    this.showPassword = !this.showPassword;
+  }
+
+  toggleConfirmPasswordVisibility(): void {
+    this.showConfirmPassword = !this.showConfirmPassword;
+  }
+
+  preventClipboardAction(event: ClipboardEvent): void {
+    event.preventDefault();
+  }
+
 
   birthdateValidator(control: AbstractControl) {
     const value = control.value;
@@ -98,6 +134,10 @@ export class StaffSignComponent {
   }
 
   async submitForm(): Promise<void> {
+        if (!this.rfcCurpConsistencyCheck()) {
+      this.message.error('El RFC no coincide con la CURP. Verifica que pertenezcan a la misma persona.');
+      return;
+    }
     if (this.validateForm.invalid) {
       this.handleErrors();
       return;

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component,  ViewEncapsulation  } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -16,6 +16,7 @@ import axios from 'axios';
 @Component({
   selector: 'app-credit-form',
   standalone: true,
+  encapsulation: ViewEncapsulation.None,
   templateUrl: './credit-form.component.html',
   styleUrls: ['./credit-form.component.css'],
   imports: [
