@@ -1,93 +1,111 @@
 <app-nav-bar></app-nav-bar>
+
 <div class="container">
-  <h2>Solicitud de crédito</h2>
   <div class="form-container">
+    <h2 class="title">Solicitud de crédito</h2>
     <form nz-form [formGroup]="validateForm" (ngSubmit)="submitForm()">
-        <h3 class="form-section-title">Datos del crédito</h3>
-        <nz-form-item nz-row>
-          <nz-form-label [nzSpan]="6" nzRequired nzFor="credit">Tipo de crédito</nz-form-label>
-          <nz-form-control [nzSpan]="6">
-              <select nz-select formControlName="credit" id="credit">
-              <option value="personal">Personal</option>
-              <option value="hipotecario">Hipotecario</option>
-              <option value="prendario">Prendario</option>
-              </select>
-          </nz-form-control>
-          <nz-form-label [nzSpan]="6" nzRequired nzFor="term">Plazo (Meses)</nz-form-label>
-          <nz-form-control [nzSpan]="6">
-              <select nz-select formControlName="term" id="term">
-              <option *ngFor="let i of opciones0a99" [ngValue]="i">{{ i }}</option>
-              </select>
-          </nz-form-control>
-        </nz-form-item>
-        <nz-form-item nz-row>
-        <nz-form-label [nzSpan]="6" nzRequired nzFor="amount">Monto del crédito</nz-form-label>
-        <nz-form-control [nzSpan]="6">
-            <input nz-input formControlName="amount" id="amount" type="number" />
+
+    <h3 class="form-section-title">Datos del crédito</h3>
+    <div class="credit-data-section">
+      <nz-form-item>
+        <nz-form-label nzRequired nzFor="credit">Tipo de crédito</nz-form-label>
+        <nz-form-control>
+          <select nz-select formControlName="credit" id="credit">
+            <option value="personal">Personal</option>
+            <option value="hipotecario">Hipotecario</option>
+            <option value="prendario">Prendario</option>
+          </select>
         </nz-form-control>
-        </nz-form-item>
-      <h3 class="form-section-title">Datos de garantía</h3>
-      <div class="personal">
-        <nz-form-item>
-          <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="guarantee">Tipo de garantía</nz-form-label>
-          <nz-form-control [nzSm]="14" [nzXs]="24">
-            <select nz-select formControlName="guarantee" id="guarantee" (ngModelChange)="onGuaranteeChange()">
-              <option value="mueble">Mueble (Bien movible)</option>
-              <option value="inmueble">Inmueble (Bien inamovible)</option>
-              <option value="noGuarantee">Sin garantía</option>
-            </select>
-          </nz-form-control>
-        </nz-form-item>
-        <nz-form-item>
-          <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="guaranteeValue">Valor de la garantía</nz-form-label>
-          <nz-form-control [nzSm]="14" [nzXs]="24">
-            <input nz-input formControlName="guaranteeValue" id="guaranteeValue" type="number" />
-          </nz-form-control>
-        </nz-form-item>
-      </div>
+      </nz-form-item>
+
+      <nz-form-item>
+        <nz-form-label nzRequired nzFor="term">Plazo ({{ isMortgage ? 'Años' : 'Meses' }})</nz-form-label>
+        <nz-form-control>
+          <select nz-select formControlName="term" id="term">
+            <option *ngFor="let i of opciones0a99" [ngValue]="i">{{ i }}</option>
+          </select>
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item>
+        <nz-form-label nzRequired nzFor="amount">Monto del crédito</nz-form-label>
+        <nz-form-control>
+          <nz-input-number [nzMin]="0" [nzStep]="1000" nz-input formControlName="amount" id="amount" type="number" />
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+
+    <h3 class="form-section-title">Datos de garantía</h3>
+    <div class="guarantee-data-section">
+      <nz-form-item>
+        <nz-form-label nzRequired nzFor="guarantee">Tipo de garantía</nz-form-label>
+        <nz-form-control>
+          <select nz-select formControlName="guarantee" id="guarantee" (ngModelChange)="onGuaranteeChange()">
+            <option value="mueble">Mueble (Bien movible)</option>
+            <option value="inmueble">Inmueble (Bien inamovible)</option>
+            <option value="noGuarantee">Sin garantía</option>
+          </select>
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item>
+        <nz-form-label  nzFor="guaranteeValue" type="number">Valor de la garantía</nz-form-label>
+        <nz-form-control>
+          <nz-input-number [nzMin]="0" [nzStep]="1000" nz-input formControlName="guaranteeValue" id="guaranteeValue" type="number" />
+        </nz-form-control>
+      </nz-form-item>
+    </div>
 
       <h2 class="form-section-title">Documentación</h2>
-      <p>Por favor, cargue los siguientes documentos:</p>
-      <ul>
-        <li>INE</li>
-        <li>Acta de nacimiento</li>
-        <li>Comprobante de domicilio</li>
-        <li *ngIf="showGuaranteeDoc">*Comprobante de su garantía</li>
-      </ul>
-      <nz-form-item>
-        <nz-form-label [nzSm]="6">INE</nz-form-label>
-        <nz-form-control [nzSm]="14">
-          <input type="file" style="width: 100%" (change)="handleFileChange($event, 'ine')" />
-        </nz-form-control>
-      </nz-form-item>
 
-      <nz-form-item>
-        <nz-form-label [nzSm]="6">Acta de nacimiento</nz-form-label>
-        <nz-form-control [nzSm]="14">
-          <input type="file" style="width: 100%" (change)="handleFileChange($event, 'birth')" />
-        </nz-form-control>
-      </nz-form-item>
+      <div class="document-section">
+        <p style="color: aliceblue;">Por favor, cargue los siguientes documentos:</p>
 
-      <nz-form-item>
-        <nz-form-label [nzSm]="6">Comprobante de domicilio</nz-form-label>
-        <nz-form-control [nzSm]="14">
-          <input type="file" style="width: 100%" (change)="handleFileChange($event, 'address')" />
-        </nz-form-control>
-      </nz-form-item>
+        <ul style="color: aliceblue;">
+          <li>INE</li>
+          <li>Acta de nacimiento</li>
+          <li>Comprobante de domicilio</li>
+          <li>Comprobante de ingresos, DE LOS ÚLTIMOS 3 MESES, en caso de laboral actualmente</li>
+          <li *ngIf="showGuaranteeDoc">*Comprobante de su garantía</li>
+        </ul>
 
-      <nz-form-item *ngIf="showGuaranteeDoc">
-        <nz-form-label [nzSm]="6">Comprobante de garantía</nz-form-label>
-        <nz-form-control [nzSm]="14">
-          <input type="file" style="width: 100%" (change)="handleFileChange($event, 'guaranteeDoc')" />
-        </nz-form-control>
-      </nz-form-item>
+        <!-- Inputs debajo de la lista -->
+        <div class="document-columns">
+          <div class="form-field">
+            <label>INE</label>
+            <input type="file" (change)="handleFileChange($event, 'ine')" />
+          </div>
+
+          <div class="form-field">
+            <label>Acta de nacimiento</label>
+            <input type="file" (change)="handleFileChange($event, 'birth')" />
+          </div>
+
+          <div class="form-field">
+            <label>Comprobante de domicilio</label>
+            <input type="file" (change)="handleFileChange($event, 'address')" />
+          </div>
+
+          <div class="form-field" *ngIf="showGuaranteeDoc">
+            <label>Comprobante de garantía</label>
+            <input type="file" (change)="handleFileChange($event, 'guaranteeDoc')" />
+          </div>
+
+          <div class="form-field">
+            <label>Comprobante de ingresos (últimos 3 meses)</label>
+            <input type="file" (change)="handleFileChange($event, 'income')" />
+          </div>
+        </div>
+      </div>
 
       <nz-form-item nz-row class="register-area">
-        <nz-form-control [nzSpan]="14" [nzOffset]="6">
-          <button nz-button class="btn-dark-rounded" 
-            class="custom-register-button" nzType="primary" type="submit">Solicitar</button>
+        <nz-form-control [nzSpan]="24">
+          <button nz-button class="btn-dark-rounded custom-register-button" nzType="primary" type="submit">
+            Solicitar
+          </button>
         </nz-form-control>
       </nz-form-item>
+
     </form>
   </div>
 </div>

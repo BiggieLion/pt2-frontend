@@ -2,8 +2,14 @@
   display: flex;
   justify-content: center;
   background-color: #3a3b3e;
-  padding: 40px 20px;
+  margin-left: 80px;
+  padding: 80px 50px;
   min-height: 100vh;
+}
+
+app-nav-bar {
+  position: relative; /* o fixed/absolute si es necesario */
+  z-index: 10; /* un valor bajo, menor que el z-index de los mensajes */
 }
 
 .form-container {
@@ -42,11 +48,6 @@ nz-form-label,
   color: white !important;
 }
 
-[nz-form] {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 20px 24px;
-}
 
 textarea[nz-input] {
   min-height: 90px;
@@ -74,7 +75,6 @@ nz-input-number {
   border: 1px solid #ccc;
   box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.2);
   transition: box-shadow 0.3s ease;
-  width: 100%;
 }
 
 select option {
@@ -156,7 +156,8 @@ select {
   color: white;
   box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.2);
   transition: box-shadow 0.3s ease;
-  width: 100%;
+  width: auto; 
+  max-width: 100%;
   appearance: none;
   background-image: url("data:image/svg+xml;utf8,<svg fill='white' height='16' viewBox='0 0 24 24' width='16' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");
   background-repeat: no-repeat;
@@ -188,7 +189,8 @@ select option {
 .input-with-help {
   display: flex;
   align-items: center;
-  width: 100%;
+    width: auto; 
+  max-width: 100%;
   gap: 8px;
   position: relative;
 }
@@ -246,6 +248,41 @@ select option {
 }
 
 .custom-register-button:hover {
-  background-color: #3ecdd9 !important; /* Versión más oscura al pasar el mouse */
+  background-color: #3ecdd9 !important;
+}
+.document-section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
+.document-columns {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  color: white;
+}
+
+.form-field label {
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+
+.credit-data-section {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+  max-width: 900px; /* o el tamaño que prefieras */
+}
+
+.guarantee-data-section {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+  max-width: 600px; /* tamaño menor que crédito */
+}

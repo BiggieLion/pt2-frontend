@@ -2,8 +2,14 @@
   display: flex;
   justify-content: center;
   background-color: #3a3b3e;
-  padding: 40px 20px;
+  margin-left: 80px;
+  padding: 80px 50px;
   min-height: 100vh;
+}
+
+app-nav-bar {
+  position: relative; 
+  z-index: 10; 
 }
 
 .form-container {
@@ -242,7 +248,7 @@ select option {
   padding: 2px 20px !important;
   font-weight: bold;
   transition: background-color 0.3s ease;
-  width: 100px;
+  width: 150px;
 }
 
 .custom-register-button:hover {

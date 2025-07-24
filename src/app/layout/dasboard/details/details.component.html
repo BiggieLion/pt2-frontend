@@ -75,6 +75,12 @@
             </option>
           </select>
         </div>
+        <div *ngIf="isSupervisor" style="margin-top: 10px">
+          <label>
+            <input type="checkbox" [(ngModel)]="isFinished" (change)="requestFinished()" />
+            Crédito terminado
+          </label>
+        </div>
       </div>
 
       <div>

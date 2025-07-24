@@ -32,6 +32,7 @@ export class DetailsComponent implements OnInit {
   isAdmin: boolean = false;
   isAnalyst: boolean = false;
   isSupervisor: boolean = false;
+  isFinished: boolean = false;
 
   selectedAnalyst: string = '';
   analysts: { sub: string; name: string; type: string }[] = [];
@@ -246,6 +247,36 @@ export class DetailsComponent implements OnInit {
       seleccionado.type === 'supervisor'
         ? { supervisor_id: seleccionado.sub, status: 2 }
         : { analyst_id: seleccionado.sub };
+
+    try {
+      const response = await axios.patch(url, body, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      console.log('Asignación exitosa:', response.data);
+    } catch (error) {
+      console.error('Error al asignar analista/supervisor:', error);
+    }
+  }
+
+  async requestFinished(): Promise<void> {
+    const rawToken = localStorage.getItem('accessToken');
+    let token = '';
+
+    if (rawToken) {
+      try {
+        const parsed = JSON.parse(rawToken);
+        token = parsed._value || '';
+      } catch (e) {
+        token = rawToken;
+      }
+    }
+
+    const id = this.solicitud?.id;
+    const url = `${environment.REQUESTS_SERVICE_URL}/${id}`;
+
+    const body = { is_fiinished: this.isFinished ? 1 : 0 };
 
     try {
       const response = await axios.patch(url, body, {

@@ -48,3 +48,7 @@
   background-color: #303135 !important;
   border-top: 1px solid #444 !important;
 }
+
+.ant-message {
+  z-index: 99999 !important;
+}

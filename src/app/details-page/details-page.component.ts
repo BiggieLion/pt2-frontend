@@ -4,12 +4,14 @@ import { CommonModule } from '@angular/common';
 import { SolicitudService } from '../services/solicitud.service';
 import { NzMessageModule, NzMessageService } from 'ng-zorro-antd/message';
 import axios from 'axios';
+import { FormsModule } from '@angular/forms';
+
 import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-details-page',
   standalone: true,
-  imports: [CommonModule, NavBarComponent],
+  imports: [CommonModule, NavBarComponent, FormsModule],
   templateUrl: './details-page.component.html',
   styleUrl: './details-page.component.css',
 })
@@ -21,6 +23,13 @@ export class DetailsPageComponent implements OnInit {
   iaResultado: number | null = null;
   iaMensaje: string = '';
   iaColor: string = '';
+
+  documentChecks: Record<string, boolean> = {
+    domicile: false,
+    birth: false,
+    ine: false,
+    guarantee: false
+  };
 
   constructor(
     private solicitudService: SolicitudService,
@@ -245,6 +254,14 @@ export class DetailsPageComponent implements OnInit {
 
   async procesarIA(): Promise<void> {
     if (!this.solicitud) return;
+    const requiredDocs = ['domicile', 'birth', 'ine'];
+      for (const doc of requiredDocs) {
+        const url = this.solicitud?.[`url_${doc}`];
+        if (url && !this.documentChecks[doc]) {
+          this.message.error(`Falta marcar el documento: ${doc.toUpperCase()}`);
+          return;
+        }
+      }
 
     const rawToken = localStorage.getItem('accessToken');
     let token = '';
@@ -366,7 +383,7 @@ export class DetailsPageComponent implements OnInit {
       this.iaMensaje = 'Solicitud Rechazada por IA';
       this.iaColor = '#cc0000';
       this.rechazarSolicitud();
-    } else if (resultadoIA < 60) {
+    } else if (resultadoIA < 61) {
       this.iaMensaje =
         'Solicitud a revisión manual, por favor tome las medidas necesarias...';
       this.iaColor = '#b97800';

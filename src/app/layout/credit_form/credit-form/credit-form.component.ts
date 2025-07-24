@@ -10,6 +10,7 @@ import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzUploadModule } from 'ng-zorro-antd/upload';
 import { NzModalModule } from 'ng-zorro-antd/modal';
+import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
 import { NzMessageModule, NzMessageService } from 'ng-zorro-antd/message';
 import axios from 'axios';
 
@@ -30,18 +31,22 @@ import axios from 'axios';
     NzModalModule,
     NzMessageModule,
     NavBarComponent,
+    NzInputNumberModule
   ],
+  
 })
 export class CreditFormComponent {
   validateForm: FormGroup;
   opciones0a99: number[] = Array.from({ length: 100 }, (_, i) => i);
   showGuaranteeDoc = false;
+  isMortgage = false;
 
   documentFiles: { [key: string]: File | null } = {
     ine: null,
     birth: null,
     address: null,
     guaranteeDoc: null,
+    //income: null,
   };
 
   documentUrls: { [key: string]: string | null } = {
@@ -49,6 +54,7 @@ export class CreditFormComponent {
     birth: null,
     address: null,
     guaranteeDoc: null,
+    //income: null,
   };
 
   constructor(private fb: FormBuilder, private message: NzMessageService) {
@@ -58,6 +64,9 @@ export class CreditFormComponent {
       amount: [null, [Validators.required, Validators.min(1000)]],
       guarantee: [''],
       guaranteeValue: [''],
+    });
+    this.validateForm.get('credit')?.valueChanges.subscribe((value) => {
+      this.isMortgage = value === 'hipotecario';
     });
   }
 
@@ -141,6 +150,7 @@ export class CreditFormComponent {
           ine: `${environment.DOCUMENTS_SERVICE_URL}/ine`,
           birth: `${environment.DOCUMENTS_SERVICE_URL}/birth`,
           address: `${environment.DOCUMENTS_SERVICE_URL}/domicile`,
+          //income: `${environment.DOCUMENTS_SERVICE_URL}/income`,
         };
         uploadUrl = endpoints[type];
         getUrl = endpoints[type];
@@ -182,6 +192,10 @@ export class CreditFormComponent {
   async submitForm(): Promise<void> {
     if (!this.validateForm.valid) {
       const errores: string[] = [];
+      let { term, credit } = this.validateForm.value;
+      if (credit === 'hipotecario') {
+        term = term * 12;
+      }
 
       Object.entries(this.validateForm.controls).forEach(([key, control]) => {
         if (control.invalid) {
@@ -279,12 +293,13 @@ export class CreditFormComponent {
     const result = {
       credit_type: creditMap[formValues.credit] || 0,
       amount: formValues.amount,
-      loan_term: formValues.term,
+      loan_term: term,
       guarantee_type: guaranteeMap[formValues.guarantee] || 0,
       guarantee_value: formValues.guaranteeValue || 0,
       url_ine: this.documentUrls['ine'],
       url_birth_certificate: this.documentUrls['birth'],
       url_address: this.documentUrls['address'],
+      // url_income: this.documentUrls['income'],
       url_guarantee: this.showGuaranteeDoc
         ? this.documentUrls['guaranteeDoc']
         : null,
