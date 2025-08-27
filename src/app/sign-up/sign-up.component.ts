@@ -59,14 +59,21 @@ export class SignUpComponent {
         monthly_income: [null, [Validators.required, Validators.min(0)]],
         has_own_car: [false],
         has_own_realty: [false],
-        count_children: [0, [Validators.required, Validators.min(0)]],
-        count_adults: [0, [Validators.required, Validators.min(0)]],
+        count_children: ['', [Validators.required, Validators.min(0)]],
+        count_adults: ['', [Validators.required, Validators.min(1)]],
         count_family_members: [0], // no validators, no input in form
         address: ['', Validators.required],
         email: ['', [Validators.required, Validators.email]],
         password: ['', [Validators.required, this.securePasswordValidator]],
         confirmPassword: ['', Validators.required],
         days_employed: [null, [Validators.required, Validators.min(0)]],
+        food_expenses: [null, [Validators.required, Validators.min(0)]],
+        education_expenses: [null, [Validators.required, Validators.min(0)]],
+        transport_expenses: [null, [Validators.required, Validators.min(0)]],
+        utilities_expenses: [null, [Validators.required, Validators.min(0)]],
+        health_expenses: [null, [Validators.required, Validators.min(0)]],
+        maintenance_expenses: [null, [Validators.required, Validators.min(0)]],
+        rent_expenses: [null, [Validators.min(0)]],
       },
       { validators: [this.passwordMatchValidator, this.familyMembersValidator] }
     );
@@ -76,6 +83,17 @@ export class SignUpComponent {
     this.validateForm.get('count_adults')?.valueChanges.subscribe(() => {
       this.updateFamilyMembersCount();
     });
+    this.validateForm.get('has_own_realty')?.valueChanges.subscribe((isOwner) => {
+      const rentControl = this.validateForm.get('rent_expenses');
+      if (isOwner) {
+        rentControl?.clearValidators();  
+        rentControl?.setValue(null);    
+      } else {
+        rentControl?.setValidators([Validators.required, Validators.min(0)]);
+      }
+      rentControl?.updateValueAndValidity();
+    });
+
     this.updateFamilyMembersCount();
   }
 
@@ -255,8 +273,40 @@ export class SignUpComponent {
         }
       }
 
+      const fieldLabels: { [key: string]: string } = {
+        firstname: 'Nombre(s)',
+        lastname: 'Apellidos',
+        rfc: 'RFC',
+        curp: 'CURP',
+        birthdate: 'Fecha de nacimiento',
+        civil_status: 'Estado civil',
+        education_level: 'Nivel educativo',
+        occupation_type: 'Ocupación',
+        gender: 'Género',
+        monthly_income: 'Ingreso mensual',
+        has_own_car: '¿Cuenta con automóvil?',
+        has_own_realty: '¿Cuenta con propiedad?',
+        count_children: 'Número de hijos',
+        count_adults: 'Número de adultos',
+        count_family_members: 'Miembros en el hogar',
+        address: 'Dirección',
+        email: 'Correo electrónico',
+        password: 'Contraseña',
+        confirmPassword: 'Confirmar contraseña',
+        days_employed: 'Días trabajando',
+        food_expenses: 'Gastos en alimentación',
+        education_expenses: 'Gastos en educación',
+        transport_expenses: 'Gastos en transporte',
+        utilities_expenses: 'Gastos en servicios públicos',
+        health_expenses: 'Gastos en salud',
+        maintenance_expenses: 'Gastos en mantenimiento del hogar',
+        rent_expenses: 'Gastos de la renta del hogar'
+      };
+
+      const invalidLabels = invalidFields.map(field => fieldLabels[field] || field);
+
       this.message.error(
-        `Corrige los siguientes campos: ${invalidFields.join(', ')}`
+        `Corrige los siguientes campos: ${invalidLabels.join(', ')}`
       );
 
       Object.values(this.validateForm.controls).forEach((control) => {

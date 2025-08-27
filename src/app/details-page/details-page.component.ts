@@ -20,9 +20,23 @@ export class DetailsPageComponent implements OnInit {
   esfuerzo: number = 0;
   esfuerzoAlto: boolean = false;
 
+  totalGastos: number = 0;
+  ingresoDisponible: number = 0;
+  mensualidad: number = 0;
+
   iaResultado: number | null = null;
   iaMensaje: string = '';
   iaColor: string = '';
+
+  gastos = {
+    food_expenses: 1500,
+    education_expenses: 1000,
+    transport_expenses: 800,
+    utilities_expenses: 1200,
+    health_expenses: 600,
+    maintenance_expenses: 500,
+    rent_expenses: 2500,
+  };
 
   documentChecks: Record<string, boolean> = {
     domicile: false,
@@ -42,8 +56,17 @@ export class DetailsPageComponent implements OnInit {
 
     if (this.solicitud) {
       const ingresoMensual = this.solicitud.monthly_income;
-      const mensualidad = this.solicitud.amount / this.solicitud.loan_term;
-      this.esfuerzo = +((mensualidad / ingresoMensual) * 100).toFixed(2);
+
+      // <-- Aquí cambiamos const por this.
+      this.totalGastos = Object.values(this.gastos).reduce(
+        (acc, g) => acc + g,
+        0
+      );
+      this.ingresoDisponible = ingresoMensual - this.totalGastos;
+
+      this.mensualidad = this.solicitud.amount / this.solicitud.loan_term;
+      console.log("--------------------------------",this.mensualidad, this.totalGastos, this.ingresoDisponible)
+      this.esfuerzo = +((this.mensualidad / this.ingresoDisponible) * 100).toFixed(2);
       console.log('Relación de esfuerzo calculada:', this.esfuerzo);
 
       const tipo = this.solicitud.creditType?.toLowerCase();
@@ -355,6 +378,7 @@ export class DetailsPageComponent implements OnInit {
           },
         }
       );
+      console.log(response.data)
       resultadoIA = response.data?.data?.score;
     } catch (error) {
       console.error('Error al obtener solicitud por ID:', error);

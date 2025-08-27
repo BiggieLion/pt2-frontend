@@ -9,6 +9,7 @@ import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
 import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
 import { NzMessageService, NzMessageModule } from 'ng-zorro-antd/message';
 import { NavBarComponent } from '../misc/navBar/nav-bar/nav-bar.component';
+import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
 import axios from 'axios';
 import { environment } from '../../environments/environment';
 
@@ -26,6 +27,7 @@ import { environment } from '../../environments/environment';
     NzInputNumberModule,
     NzMessageModule,
     NavBarComponent,
+    NzToolTipModule
   ],
   templateUrl: './requester-edit.component.html',
   styleUrl: './requester-edit.component.css',
@@ -54,6 +56,13 @@ export class RequesterEditComponent implements OnInit {
         count_family_members: [0, [Validators.required, Validators.min(0)]],
         address: ['', Validators.required],
         days_employed: [null, [Validators.required, Validators.min(0)]],
+        food_expenses: [null, [Validators.required, Validators.min(0)]],
+        education_expenses: [null, [Validators.required, Validators.min(0)]],
+        transport_expenses: [null, [Validators.required, Validators.min(0)]],
+        utilities_expenses: [null, [Validators.required, Validators.min(0)]],
+        health_expenses: [null, [Validators.required, Validators.min(0)]],
+        maintenance_expenses: [null, [Validators.required, Validators.min(0)]],
+        rent_expenses: [null, [Validators.min(0)]],
       },
       { validators: [this.familyMembersValidator] }
     );
@@ -62,6 +71,16 @@ export class RequesterEditComponent implements OnInit {
     });
     this.validateForm.get('count_adults')?.valueChanges.subscribe(() => {
       this.updateFamilyMembersCount();
+    });
+    this.validateForm.get('has_own_realty')?.valueChanges.subscribe((isOwner) => {
+      const rentControl = this.validateForm.get('rent_expenses');
+      if (isOwner) {
+        rentControl?.clearValidators();  
+        rentControl?.setValue(null);    
+      } else {
+        rentControl?.setValidators([Validators.required, Validators.min(0)]);
+      }
+      rentControl?.updateValueAndValidity();
     });
     this.updateFamilyMembersCount();
   }

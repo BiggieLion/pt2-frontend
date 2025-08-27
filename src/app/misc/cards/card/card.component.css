@@ -13,6 +13,7 @@ html, body {
   margin-left: 50px;
   margin-top: 50px;
   flex-wrap: wrap;
+  min-height: 100%;
   background-color: #3a3b3e;
 }
 

@@ -111,9 +111,48 @@
 
     <section>
       <h3>Relación de esfuerzo</h3>
+
       <p>
         <span class="bullet-badge"></span>
-        <strong>Mensualidad estimada:</strong> ${{
+        <strong>Gastos de alimentación:</strong> ${{ gastos.food_expenses }}
+      </p>
+      <p>
+        <span class="bullet-badge"></span>
+        <strong>Gastos de educación:</strong> ${{ gastos.education_expenses }}
+      </p>
+      <p>
+        <span class="bullet-badge"></span>
+        <strong>Gastos de transporte:</strong> ${{ gastos.transport_expenses }}
+      </p>
+      <p>
+        <span class="bullet-badge"></span>
+        <strong>Gastos de servicios:</strong> ${{ gastos.utilities_expenses }}
+      </p>
+      <p>
+        <span class="bullet-badge"></span>
+        <strong>Gastos de salud:</strong> ${{ gastos.health_expenses }}
+      </p>
+      <p>
+        <span class="bullet-badge"></span>
+        <strong>Gastos de mantenimiento:</strong> ${{ gastos.maintenance_expenses }}
+      </p>
+      <p>
+        <span class="bullet-badge"></span>
+        <strong>Gastos de renta:</strong> ${{ gastos.rent_expenses }}
+      </p>
+
+      <p>
+      <span class="bullet-badge"></span>
+      <strong>Gastos totales:</strong> ${{ totalGastos }}
+    </p>
+    <p>
+      <span class="bullet-badge"></span>
+      <strong>Ingreso disponible:</strong> ${{ ingresoDisponible }}
+    </p>
+
+      <p>
+        <span class="bullet-badge"></span>
+        <strong>Mensualidad estimada del crédito]:</strong> ${{
           solicitud.amount / solicitud.loan_term | number : "1.2-2"
         }}
       </p>
