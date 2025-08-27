@@ -273,3 +273,77 @@ html, body {
   background-color: #303135 !important;
   border-top: 1px solid #444;
 }
+
+:host {
+  display: block;
+}
+
+/* layout simple */
+.charts-grid {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.chart-card {
+  background: transparent;
+  padding: 8px;
+  width: 100%;
+  max-width: 520px;
+}
+.chart-area {
+  position: relative;
+  height: 350px; /* ajusta */
+}
+
+
+:host ::ng-deep .chartjs-legend,
+:host ::ng-deep .chart-legend,
+:host ::ng-deep .ng2-charts .chartjs-legend,
+:host ::ng-deep .ng2-charts-legend,
+:host ::ng-deep ul.chartjs-legend,
+:host ::ng-deep ul.chart-legend,
+:host ::ng-deep .chartjs-legend ul,
+:host ::ng-deep .chartjs-legend li {
+  color: #ffffff !important;
+  fill: #ffffff !important; /* por si el texto es SVG */
+}
+
+/* El texto de los LI (etiquetas) */
+:host ::ng-deep .chartjs-legend li,
+:host ::ng-deep .chart-legend li,
+:host ::ng-deep .ng2-charts-legend li {
+  color: #ffffff !important;
+  opacity: 1 !important;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* El cuadrito de color (span) */
+:host ::ng-deep .chartjs-legend li span,
+:host ::ng-deep .chart-legend li span,
+:host ::ng-deep .ng2-charts-legend li span {
+  display: inline-block !important;
+  width: 18px !important;
+  height: 10px !important;
+  margin-right: 6px !important;
+  border-radius: 2px !important;
+  border: 1px solid rgba(255,255,255,0.18) !important;
+}
+
+/* selectors alternativos (por si Chart.js pone la UL justo después del canvas) */
+:host ::ng-deep canvas + ul.chartjs-legend,
+:host ::ng-deep canvas + .chartjs-legend {
+  color: #ffffff !important;
+}
+
+/* Tooltips */
+:host ::ng-deep .chartjs-tooltip,
+:host ::ng-deep .chartjs-tooltip * {
+  color: #ffffff !important;
+}
+
+/* Fallback global (si aún no aplica, copia estas reglas a src/styles.css sin ::ng-deep) */
+
+

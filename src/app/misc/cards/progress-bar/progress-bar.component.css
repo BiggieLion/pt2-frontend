@@ -19,24 +19,28 @@
   
   .segment-1 {
     width: 33%;
-    background-color: #6DE3F2;
+    background-color: #6DE3F2; 
+    /* #71c6cc */
     border-top-left-radius: 5px; 
   }
   
   .segment-2 {
     width: 33%;
-    background-color: #F7E450;
+    background-color: #f0da69;
+    /* #F7E450; */
   }
   
   .segment-3-approved {
     width: 34%;
-    background-color: #76FF8B; 
+    background-color: #81cd87;
+    /* #76FF8B;  */
     border-top-right-radius: 5px; 
   }
   
   .segment-3-rejected {
     width: 34%;
-    background-color: #FF5E57; 
+    background-color: #ee6c64;
+    /* #FF5E57;  */
     border-top-right-radius: 5px; 
   }
   

@@ -11,6 +11,14 @@
 .nz-collapse-panel-content {
     color: white;
 }
+.custom-card .ant-card-head-title {
+  color: white;
+}
+
+::ng-deep .custom-card .ant-card-head-title {
+  color: white !important;
+}
+
 
 .custom-container {
     display: flex;

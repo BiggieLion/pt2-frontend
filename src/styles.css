@@ -52,3 +52,7 @@
 .ant-message {
   z-index: 99999 !important;
 }
+
+:host ::ng-deep .chartjs-render-monitor .legend text {
+  fill: white !important;
+}

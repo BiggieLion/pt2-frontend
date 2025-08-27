@@ -51,12 +51,26 @@
   <div class="charts-container" *ngIf="isBrowser && userType !== 'requester'">
     <div>
       <h3 style="text-align: center;">Distribución por Estatus</h3>
-      <canvas baseChart [data]="pieData" [type]="'pie'"></canvas>
+      <div class="chart-area">
+        <canvas
+          baseChart
+          [data]="pieData"
+          [options]="pieOptions"
+          [type]="pieType">
+        </canvas>
+      </div>
     </div>
 
     <div>
       <h3 style="text-align: center;">Solicitudes por Tipo de Crédito</h3>
-      <canvas baseChart [data]="barData" [type]="'bar'"></canvas>
+      <div class="chart-area">
+        <canvas
+          baseChart
+          [data]="barData"
+          [options]="barOptions"
+          [type]="barType">
+        </canvas>
+      </div>
     </div>
   </div>
 </div>

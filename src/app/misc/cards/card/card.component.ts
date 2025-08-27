@@ -7,7 +7,7 @@ import { NzCardModule } from 'ng-zorro-antd/card';
 import { NzModalModule } from 'ng-zorro-antd/modal';
 import { NgChartsModule } from 'ng2-charts';
 import { NzDescriptionsModule } from 'ng-zorro-antd/descriptions';
-import { ChartData } from 'chart.js';
+import { ChartData, ChartOptions } from 'chart.js';
 import { FormsModule } from '@angular/forms';
 import axios from 'axios';
 import { environment } from '../../../../environments/environment';
@@ -45,17 +45,93 @@ export class CardComponent implements OnInit {
     datasets: [{ data: [], label: 'Solicitudes' }],
   };
 
+  // Tipos (puedes usarlos si quieres mostrar el tipo dinámicamente)
+  pieType: 'pie' = 'pie';
+  barType: 'bar' = 'bar';
+
+  // ---------- OPTIONS robustas (Chart.js v4 compatible) ----------
+  pieOptions: ChartOptions<'pie'> = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        display: true,
+        position: 'bottom',
+        labels: {
+          // color para canvas-legend y para los casos HTML (Chart.js v4)
+          color: '#ffffff',
+          usePointStyle: true,
+          boxWidth: 12,
+          boxHeight: 12,
+          padding: 12,
+          // font: { size: 13 } // si quieres ajustar tamaño
+        }
+      },
+      tooltip: {
+        // colores del tooltip
+        titleColor: '#ffffff',
+        bodyColor: '#ffffff',
+        backgroundColor: '#2b2b2b',
+        borderColor: '#444',
+        borderWidth: 1
+      }
+    }
+  };
+
+  barOptions: ChartOptions<'bar'> = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        display: true,
+        position: 'bottom',
+        labels: {
+          color: '#ffffff',
+          usePointStyle: true,
+          boxWidth: 12,
+          boxHeight: 12,
+          padding: 12
+        }
+      },
+      tooltip: {
+        titleColor: '#ffffff',
+        bodyColor: '#ffffff',
+        backgroundColor: '#2b2b2b',
+        borderColor: '#444',
+        borderWidth: 1
+      }
+    },
+    scales: {
+      x: {
+        // ticks de eje X
+        ticks: {
+          color: '#ffffff'
+        },
+        grid: {
+          color: 'rgba(255,255,255,0.03)'
+        }
+      },
+      y: {
+        ticks: {
+          color: '#ffffff'
+        },
+        grid: {
+          color: 'rgba(255,255,255,0.03)'
+        }
+      }
+    }
+  };
+
   modalRef?: NzModalRef;
   isBrowser = false;
   userType: string = '';
 
   selectedStatus: string = '';
-selectedCredit: string = '';
+  selectedCredit: string = '';
 
-tiposCredito: string[] = ['Personal', 'Hipotecario', 'Prendario'];
+  tiposCredito: string[] = ['Personal', 'Hipotecario', 'Prendario'];
 
-solicitudesOriginal: any[] = []; 
-
+  solicitudesOriginal: any[] = [];
 
   constructor(
     private modal: NzModalService,
@@ -105,25 +181,20 @@ solicitudesOriginal: any[] = [];
       });
 
       const solicitudesCrudas = response.data.data;
-      console.log(response.data.data);
 
-this.solicitudesOriginal = this.solicitudes = solicitudesCrudas.map((s: any) => ({
-  ...s,
-  statusInt: s.status,
-  status: this.convertirEstado(s.status),
-  creditType: this.convertirTipoCredito(s.credit_type),
-}));
-
-
+      this.solicitudesOriginal = this.solicitudes = solicitudesCrudas.map((s: any) => ({
+        ...s,
+        statusInt: s.status,
+        status: this.convertirEstado(s.status),
+        creditType: this.convertirTipoCredito(s.credit_type),
+      }));
 
       this.generarDatosGraficas();
-      console.log('Solicitudes obtenidas:', this.solicitudes);
     } catch (error) {
       console.error('Error al obtener solicitudes:', error);
     }
   }
 
-  
   convertirEstado(valor: any): Estado {
     if (valor === 4 || valor === null) return 'Rechazada';
     if (valor === 1 || valor === false) return 'Enviada';
@@ -131,16 +202,16 @@ this.solicitudesOriginal = this.solicitudes = solicitudesCrudas.map((s: any) => 
     if (valor === 3 || valor === true) return 'Aprobada';
     return 'Enviada';
   }
+
   aplicarFiltros(): void {
-  this.solicitudes = this.solicitudesOriginal.filter((sol) => {
-    const coincideStatus = this.selectedStatus === '' || sol.status === this.selectedStatus;
-    const coincideCredito = this.selectedCredit === '' || sol.creditType === this.selectedCredit;
-    return coincideStatus && coincideCredito;
-  });
+    this.solicitudes = this.solicitudesOriginal.filter((sol) => {
+      const coincideStatus = this.selectedStatus === '' || sol.status === this.selectedStatus;
+      const coincideCredito = this.selectedCredit === '' || sol.creditType === this.selectedCredit;
+      return coincideStatus && coincideCredito;
+    });
 
-  this.generarDatosGraficas();
-}
-
+    this.generarDatosGraficas();
+  }
 
   convertirTipoCredito(id: number): string {
     switch (id) {
@@ -179,7 +250,7 @@ this.solicitudesOriginal = this.solicitudes = solicitudesCrudas.map((s: any) => 
       datasets: [
         {
           data: Object.values(estados),
-          backgroundColor: ['#6DE3F2', '#F7E450', '#76FF8B', '#FF5E57'],
+          backgroundColor: ['#6DE3F2', '#f0da69', '#81cd87', '#ee6c64'],
           borderColor: '#fff',
           borderWidth: 1,
         },
@@ -192,7 +263,7 @@ this.solicitudesOriginal = this.solicitudes = solicitudesCrudas.map((s: any) => 
         {
           data: Object.values(creditos),
           label: 'Solicitudes',
-          backgroundColor: ['#FF9E9B', '#936366', '#E84F59'],
+          backgroundColor: ['#6DE3F2', '#98dde2', '#60b9be'],
         },
       ],
     };
@@ -203,7 +274,7 @@ this.solicitudesOriginal = this.solicitudes = solicitudesCrudas.map((s: any) => 
       nzTitle: 'Detalles de la solicitud',
       nzContent: DetailsComponent,
       nzFooter: null,
-      nzWrapClassName: 'custom-modal', 
+      nzWrapClassName: 'custom-modal',
       nzClassName: 'custom-modal-body',
     });
     this.modalRef.componentInstance!.solicitud = solicitud;
