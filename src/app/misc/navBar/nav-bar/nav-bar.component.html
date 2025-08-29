@@ -38,9 +38,22 @@
         <span *ngIf="!isCollapsed">Mi información</span>
       </li>
 
-      <li nz-menu-item (click)="navigateTo('/form')" title="Solicitud de crédito">
-        <i nz-icon nzType="file-text" nzTheme="outline" style="color: #53E3ED; font-size: 18px; margin-right: 10px;"></i>
-        <span *ngIf="!isCollapsed">Solicitud de crédito</span>
+      <li 
+        nz-menu-item 
+        (click)="!hasActiveSolicitud && navigateTo('/form')" 
+        [nzDisabled]="hasActiveSolicitud"
+        [title]="hasActiveSolicitud ? 'Ya tiene una solicitud en proceso' : 'Solicitud de crédito'"
+      >
+        <i 
+          nz-icon 
+          nzType="file-text" 
+          nzTheme="outline" 
+          [style.color]="hasActiveSolicitud ? '#888888' : '#53E3ED'" 
+          style="font-size: 18px; margin-right: 10px;"
+        ></i>
+        <span *ngIf="!isCollapsed" [style.color]="hasActiveSolicitud ? '#888888' : ''">
+          Solicitud de crédito
+        </span>
       </li>
 
       <li *ngIf="userType === 'supervisor'" nz-menu-item (click)="navigateTo('/sign-staff')" title="Registro de colaboradores">

@@ -24,3 +24,7 @@
 nz-sider nz-menu ::ng-deep .anticon {
   color: #53E3ED !important;
 }
+
+.disabled {
+  opacity: 0.5;
+}

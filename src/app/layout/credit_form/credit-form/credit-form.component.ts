@@ -91,7 +91,7 @@ export class CreditFormComponent {
 
       try {
         const response = await axios.get(
-          `${environment.DOCUMENTS_SERVICE_URL}/last`,
+          `${environment.REQUESTS_SERVICE_URL}/last`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -316,7 +316,7 @@ export class CreditFormComponent {
       }
     }
 
-    const url = `${environment.DOCUMENTS_SERVICE_URL}`;
+    const url = `${environment.REQUESTS_SERVICE_URL}`;
 
     try {
       const response = await axios.post(url, result, {
