@@ -10,6 +10,7 @@ import { NzSpinModule } from 'ng-zorro-antd/spin';
 import { SolicitudService } from '../../../services/solicitud.service';
 import axios from 'axios';
 import { environment } from '../../../../environments/environment';
+import { NzMessageModule, NzMessageService } from 'ng-zorro-antd/message';
 
 @Component({
   selector: 'app-details',
@@ -19,6 +20,7 @@ import { environment } from '../../../../environments/environment';
     FormsModule,
     ChatComponent,
     DetailsPageComponent,
+    NzMessageModule,
     NzSpinModule,
   ],
   templateUrl: './details.component.html',
@@ -40,10 +42,29 @@ export class DetailsComponent implements OnInit {
 
   userTypeFromStorage: 'requester' | 'analyst' | 'supervisor' = 'requester';
 
+  uploadMode: boolean = false; // controla el switch documentos
+  documentChecks: { [key: string]: boolean } = {};
+  documentFiles: { [key: string]: File | null } = {
+    ine: null,
+    birth: null,
+    address: null,
+    guaranteeDoc: null,
+    //income: null,
+  };
+
+  documentUrls: { [key: string]: string | null } = {
+    ine: null,
+    birth: null,
+    address: null,
+    guaranteeDoc: null,
+    //income: null,
+  };
+
   constructor(
     private localStorage: LocalStorageService,
     private router: Router,
-    private solicitudService: SolicitudService
+    private solicitudService: SolicitudService,
+    private message: NzMessageService
   ) {}
 
   userName: string = this.localStorage.get('userName') || 'Usuario Anonimo';
@@ -68,6 +89,90 @@ export class DetailsComponent implements OnInit {
       }
     } finally {
       this.loading = false;
+    }
+  }
+
+    openInNewTab(url: string): void {
+    window.open(url, '_blank');
+  }
+
+    async handleFileChange(event: Event, type: string): Promise<void> {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      const file = input.files[0];
+
+      const maxSizeInBytes = 1.5 * 1024 * 1024;
+
+      if (file.type !== 'application/pdf') {
+        this.message.error('Solo se permiten archivos en formato PDF.');
+        return;
+      }
+
+      if (file.size > maxSizeInBytes) {
+        this.message.error('El archivo excede el tamaño máximo de 1.5 MB.');
+        return;
+      }
+
+      this.documentFiles[type] = file;
+
+      const rawToken = localStorage.getItem('accessToken');
+      let token = '';
+      if (rawToken) {
+        try {
+          const parsed = JSON.parse(rawToken);
+          token = parsed._value || '';
+        } catch (e) {
+          token = rawToken;
+        }
+      }
+
+      let uploadUrl = '';
+      let getUrl = '';
+
+      // if (type === 'guaranteeDoc') {
+      //   uploadUrl = `${environment.DOCUMENTS_SERVICE_URL}/${this.lastRequestId}/guarantee`;
+      //   getUrl = `${environment.DOCUMENTS_SERVICE_URL}/guarantee/file/${this.lastRequestId}`;
+      // } else {
+        const endpoints: Record<string, string> = {
+          ine: `${environment.DOCUMENTS_SERVICE_URL}/ine`,
+          birth: `${environment.DOCUMENTS_SERVICE_URL}/birth`,
+          address: `${environment.DOCUMENTS_SERVICE_URL}/domicile`,
+          //income: `${environment.DOCUMENTS_SERVICE_URL}/income`,
+        };
+        uploadUrl = endpoints[type];
+        getUrl = endpoints[type];
+      //}
+
+      try {
+        const formData = new FormData();
+        formData.append('file', file);
+
+        await axios.post(uploadUrl, formData, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'multipart/form-data',
+          },
+        });
+        this.message.success(`Documento ${type} subido correctamente`);
+
+        const response = await axios.get(getUrl, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        const url = response.data?.data?.url || null;
+        if (url) {
+          this.documentUrls[type] = url;
+          console.log(`URL del documento ${type}:`, url);
+        } else {
+          this.message.warning(`No se obtuvo URL para el documento ${type}`);
+        }
+      } catch (error) {
+        console.error(
+          `Error al subir u obtener URL del documento ${type}:`,
+          error
+        );
+        this.message.error(`Error al subir documento ${type}`);
+      }
     }
   }
 
@@ -133,6 +238,36 @@ export class DetailsComponent implements OnInit {
         chat: Array.isArray(data.chat) ? [...data.chat] : [],
       };
       console.log('Solicitud', this.solicitud);
+
+      // 🔹 Aquí obtenemos los documentos asociados
+      const docEndpoints = ['ine', 'birth', 'domicile'];
+      for (const doc of docEndpoints) {
+        try {
+          const res = await axios.get(
+            `${environment.DOCUMENTS_SERVICE_URL}/${doc}`,
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            }
+          );
+          this.solicitud[`url_${doc}`] = res.data?.data?.url || null;
+        } catch (error) {
+          console.warn(`No se pudo obtener documento ${doc}`, error);
+        }
+      }
+
+      // 🔹 Documento de garantía
+      // try {
+      //   const res = await axios.get(
+      //     `${environment.DOCUMENTS_SERVICE_URL}/guarantee/${data.id}/${data.requester_id}`,
+      //     {
+      //       headers: { Authorization: `Bearer ${token}` },
+      //     }
+      //   );
+      //   this.solicitud.url_guarantee = res.data?.data?.url || null;
+      // } catch (error) {
+      //   console.warn('No se pudo obtener documento guarantee', error);
+      // }
+
     } catch (error) {
       console.error('Error al obtener solicitud por ID:', error);
     }
